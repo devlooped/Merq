@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$id$</title>
+		<authors>MobileEssentials</authors>
+		<owners>mobessen</owners>
+		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
+		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
+		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Provides an advanced implementation of IAsyncManager based on the Microsoft.VisualStudio.Threading nuget package, which provides much improved reentrancy support and significantly reduces deadlocks.</summary>
+		<description>Microsoft.VisualStudio.Threading package-based IAsyncManager.</description>
+		<copyright>2015 © MobileEssentials</copyright>
+		<dependencies>
+			<dependency id="Merq.Commands" version="$version$" />
+			<dependency id="Microsoft.VisualStudio.Threading" version="14.1.114" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\net45" />
+		<file src="$id$\bin\$configuration$\$id$.pdb" target="lib\net45" />
+		<file src="$id$\bin\$configuration$\$id$.xml" target="lib\net45" />
+	</files>
+</package>

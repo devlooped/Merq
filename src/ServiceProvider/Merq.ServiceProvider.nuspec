@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$id$</title>
+		<authors>MobileEssentials</authors>
+		<owners>mobessen</owners>
+		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
+		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
+		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Service Locator/Provider pattern</summary>
+		<description>Service Locator/Provider pattern</description>
+		<copyright>2015 © MobileEssentials</copyright>
+	</metadata>
+	<files>
+		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\net45" />
+		<file src="$id$\bin\$configuration$\$id$.pdb" target="lib\net45" />
+		<file src="$id$\bin\$configuration$\$id$.xml" target="lib\net45" />
+	</files>
+</package>
