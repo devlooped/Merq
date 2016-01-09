@@ -35,7 +35,9 @@ public static class AwaitExtensions
 		{
 			get
 			{
-				return ((scheduler == TaskScheduler.Default) && Thread.CurrentThread.IsThreadPoolThread) ||
+				var isThreadPoolThread = SynchronizationContext.Current == null;
+				return
+					((scheduler == TaskScheduler.Default) & isThreadPoolThread) || 
 					((scheduler == TaskScheduler.Current) && (TaskScheduler.Current != TaskScheduler.Default));
 			}
 		}

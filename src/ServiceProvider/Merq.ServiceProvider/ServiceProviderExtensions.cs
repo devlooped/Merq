@@ -12,8 +12,6 @@ namespace Merq
 	[EditorBrowsable (EditorBrowsableState.Never)]
 	public static class ServiceProviderExtensions
 	{
-		static readonly ITracer tracer = Tracer.Get (typeof (ServiceProviderExtensions));
-
 		/// <summary>
 		/// Gets type-based services from the service provider.
 		/// </summary>
@@ -40,10 +38,8 @@ namespace Merq
 			Guard.NotNull ("provider", provider);
 
 			var service = (T)provider.GetService(typeof(T));
-			if (service == null) {
-				tracer.Error (Strings.ServiceProvider.MissingDependency (typeof (T)));
+			if (service == null)
 				throw new MissingDependencyException (Strings.ServiceProvider.MissingDependency (typeof (T)));
-			}
 
 			return service;
 		}

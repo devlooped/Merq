@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Reflection;
 using Merq.Properties;
 
 namespace Merq
@@ -14,8 +15,8 @@ namespace Merq
 	/// </summary>
 	public class EventStream : IEventStream
 	{
-		ConcurrentDictionary<Type, object> subjects = new ConcurrentDictionary<Type, object>();
-		ConcurrentDictionary<Type, object[]> compatibleSubjects = new ConcurrentDictionary<Type, object[]>();
+		ConcurrentDictionary<TypeInfo, object> subjects = new ConcurrentDictionary<TypeInfo, object>();
+		ConcurrentDictionary<TypeInfo, object[]> compatibleSubjects = new ConcurrentDictionary<TypeInfo, object[]>();
 
 		/// <summary>
 		/// Pushes an event to the stream, causing any  subscriber to be invoked if appropriate.
@@ -26,7 +27,7 @@ namespace Merq
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.PublishedEventNotPublic);
 
-			var eventType = @event.GetType();
+			var eventType = @event.GetType().GetTypeInfo();
 
 			InvokeCompatible (@eventType, @event);
 		}
@@ -39,18 +40,18 @@ namespace Merq
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.SubscribedEventNotPublic);
 
-			return (IObservable<TEvent>)subjects.GetOrAdd (typeof (TEvent), type => {
+			return (IObservable<TEvent>)subjects.GetOrAdd (typeof (TEvent).GetTypeInfo(), info => {
 				// If we're creating a new subject, we need to clear the cache of compatible subjects
 				compatibleSubjects.Clear ();
 				return new Subject<TEvent> ();
 			});
 		}
 
-		void InvokeCompatible (Type type, object @event)
+		void InvokeCompatible (TypeInfo info, object @event)
 		{
 			// We will call all subjects that are compatible with
 			// the event type, not just concrete event type subscribers.
-			var compatible = compatibleSubjects.GetOrAdd(type, eventType => subjects.Keys
+			var compatible = compatibleSubjects.GetOrAdd(info, eventType => subjects.Keys
 				.Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
 				.Select(subjectEventType => subjects[subjectEventType])
 				.ToArray());
@@ -60,6 +61,6 @@ namespace Merq
 			}
 		}
 
-		static bool IsValid<TEvent> () => typeof (TEvent).IsPublic || typeof (TEvent).IsNestedPublic;
+		static bool IsValid<TEvent> () => typeof (TEvent).GetTypeInfo().IsPublic || typeof (TEvent).GetTypeInfo().IsNestedPublic;
 	}
 }

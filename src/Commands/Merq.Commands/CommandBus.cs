@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Merq.Properties;
@@ -13,8 +14,6 @@ namespace Merq
 	/// </summary>
 	public class CommandBus : ICommandBus
 	{
-		static readonly ITracer tracer = Tracer.Get<CommandBus>();
-
 		IAsyncManager asyncManager;
 		Dictionary<Type, ICommandHandler> handlerMap;
 
@@ -187,8 +186,7 @@ namespace Merq
 		{
 			ICommandHandler handler;
 			if (!handlerMap.TryGetValue (command.GetType(), out handler)) {
-				tracer.Error (Strings.CommandBus.NoHandler (command.GetType ()));
-				throw new NotSupportedException (command.GetType ().FullName);
+				throw new NotSupportedException (Strings.CommandBus.NoHandler (command.GetType ()));
 			}
 
 			return handler;
@@ -197,20 +195,20 @@ namespace Merq
 		static bool IsMissingReturnType (Type commandType, ICommandHandler handler, out Type returnType)
 		{
 			var commandReturns = typeof(ICommand<>);
-			var commandInterface = commandType.GetInterfaces().FirstOrDefault(iface =>
-				iface.IsGenericType && iface.GetGenericTypeDefinition() == commandReturns);
+			var commandInterface = commandType.GetTypeInfo().ImplementedInterfaces.FirstOrDefault(iface =>
+				iface.IsConstructedGenericType && iface.GetGenericTypeDefinition() == commandReturns);
 
 			if (commandInterface == null) {
 				returnType = null;
 				return false;
 			}
 
-			returnType = commandInterface.GetGenericArguments()[0];
+			returnType = commandInterface.GenericTypeArguments.First();
 			var syncReturns = typeof(ICommandHandler<,>);
 			var asyncReturns = typeof(IAsyncCommandHandler<,>);
 
-			var handlerReturns = handler.GetType().GetInterfaces()
-				.Where(iface => iface.IsGenericType)
+			var handlerReturns = handler.GetType().GetTypeInfo().ImplementedInterfaces
+				.Where(iface => iface.IsConstructedGenericType)
 			 	.Select(iface => new { Concrete = iface, Generic = iface.GetGenericTypeDefinition() })
 				.Where(iface => iface.Generic == syncReturns || iface.Generic == asyncReturns)
 				.FirstOrDefault();
@@ -223,15 +221,15 @@ namespace Merq
 
 		static Type GetCommandType (Type type)
 		{
-			return type.GetInterfaces ()
+			return type.GetTypeInfo().ImplementedInterfaces
 				.Where (x => IsHandlerInterface (x))
-				.Select (x => x.GetGenericArguments ()[0])
+				.Select (x => x.GenericTypeArguments.First())
 				.FirstOrDefault ();
 		}
 
 		static bool IsHandlerInterface (Type type)
 		{
-			if (!type.IsGenericType)
+			if (!type.IsConstructedGenericType)
 				return false;
 
 			var genericType = type.GetGenericTypeDefinition();

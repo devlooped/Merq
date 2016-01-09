@@ -54,25 +54,6 @@ namespace Merq
 			Assert.Equal ("Bar", exception.InnerException.Message);
 		}
 
-		[Fact]
-		public void when_creating_missing_dependency_exception_then_can_serialize ()
-		{
-			var exception = new MissingDependencyException("Foo", new ArgumentException("Bar"));
-
-			var mem = new MemoryStream();
-			var formatter = new BinaryFormatter();
-
-			formatter.Serialize (mem, exception);
-
-			mem.Seek (0, SeekOrigin.Begin);
-
-			var actual = (Exception)formatter.Deserialize(mem);
-
-			Assert.Equal (exception.Message, actual.Message);
-			Assert.NotNull (actual.InnerException);
-			Assert.Equal (exception.InnerException.Message, actual.InnerException.Message);
-		}
-
 		public interface IFoo { }
 	}
 }

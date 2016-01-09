@@ -15,8 +15,8 @@
 		<copyright>2015 © MobileEssentials</copyright>
 	</metadata>
 	<files>
-		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\net45" />
-		<file src="$id$\bin\$configuration$\$id$.pdb" target="lib\net45" />
-		<file src="$id$\bin\$configuration$\$id$.xml" target="lib\net45" />
+		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />
+		<file src="$id$\bin\$configuration$\$id$.pdb" target="lib\portable-net45+win8+wpa81" />
+		<file src="$id$\bin\$configuration$\$id$.xml" target="lib\portable-net45+win8+wpa81" />
 	</files>
 </package>

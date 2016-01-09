@@ -10,8 +10,6 @@ namespace Merq
 	/// </summary>
 	public static class ServiceProvider
 	{
-		static readonly ITracer tracer = Tracer.Get (typeof (ServiceProvider));
-
 		/// <summary>
 		/// The service provider instance to use in the current application.
 		/// </summary>
@@ -47,10 +45,8 @@ namespace Merq
 
 		static void ThrowIfNullInstance ()
 		{
-			if (Instance == null) {
-				tracer.Error (Strings.ServiceProvider.NotInitialized);
+			if (Instance == null)
 				throw new InvalidOperationException (Strings.ServiceProvider.NotInitialized);
-			}
 		}
 	}
 }
