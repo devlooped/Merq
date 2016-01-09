@@ -2,6 +2,7 @@
 ================
 
 > **Mercury:** messenger of the Roman gods
+
 > *Mercury* > *Merq-ry* > **Merq** 
 
 Internal application architecture based on commands and events represented as 
