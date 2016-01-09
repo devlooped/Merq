@@ -171,7 +171,7 @@ namespace Merq
 			Assert.Equal (initialThreadId, runThreadId);
 		}
 
-		[Fact]
+		[StaFact]
 		public async void when_doing_then_does_async ()
 		{
 			var manager = new AsyncManager();

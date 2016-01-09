@@ -30,7 +30,7 @@ namespace Merq
 	}
 
 	[AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
-	[XunitTestCaseDiscoverer ("Merq.StaFactDiscoverer", "Merq.Tests")]
+	[XunitTestCaseDiscoverer ("Merq.StaFactDiscoverer", "Merq.Commands.Tests")]
 	public class StaFactAttribute : FactAttribute { }
 
 	/// <summary>
