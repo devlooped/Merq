@@ -25,7 +25,7 @@ namespace Merq
 		/// using the current synchronization context as the application main thread.
 		/// </summary>
 		public ThreadingAsyncManager ()
-			: this (new JoinableTaskContext (null, null))
+			: this (new JoinableTaskContext ())
 		{
 		}
 
