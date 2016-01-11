@@ -9,32 +9,36 @@ using System.Threading.Tasks;
 namespace Merq
 {
 	/// <summary>
-	/// Default implementation of <see cref="IAsyncManager"/> based on a <see cref="TaskScheduler"/> 
-	/// for the main thread.
+	/// Alternative implementation of <see cref="IAsyncManager"/> based on 
+	/// a <see cref="TaskScheduler"/> for the main thread.
 	/// </summary>
+	/// <remarks>
+	/// This is a very simple async manager that does not perform any 
+	/// reentrancy detection and deadlock avoidance. For those features
+	/// use <see cref="AsyncManager"/> instead.
 	/// <seealso cref="IAsyncManager"/>
-	public class AsyncManager : IAsyncManager
+	public class TaskSchedulerAsyncManager : IAsyncManager
 	{
 		TaskScheduler mainScheduler;
 
 		/// <summary>
-		/// Initializes the <see cref="AsyncManager"/> using 
+		/// Initializes the <see cref="TaskSchedulerAsyncManager"/> using 
 		/// <see cref="TaskScheduler.FromCurrentSynchronizationContext"/> as the main 
 		/// thread scheduler.
 		/// </summary>
-		public AsyncManager ()
+		public TaskSchedulerAsyncManager ()
 			: this (TaskScheduler.FromCurrentSynchronizationContext())
 		{
 		}
 
 		/// <summary>
-		/// Initializes the <see cref="AsyncManager"/> using the 
+		/// Initializes the <see cref="TaskSchedulerAsyncManager"/> using the 
 		/// specified <paramref name="mainThreadScheduler"/> as the main 
 		/// thread task scheduler.
 		/// </summary>
 		/// <param name="mainThreadScheduler">The main thread to switch to when 
 		/// <see cref="SwitchToMainThread"/> is invoked.</param>
-		public AsyncManager (TaskScheduler mainThreadScheduler)
+		public TaskSchedulerAsyncManager (TaskScheduler mainThreadScheduler)
 		{
 			mainScheduler = mainThreadScheduler;
 		}

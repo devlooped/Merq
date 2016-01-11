@@ -7,8 +7,8 @@
     <ProjectGuid>{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Merq.Threading.Tests</RootNamespace>
-    <AssemblyName>Merq.Threading.Tests</AssemblyName>
+    <RootNamespace>Merq.Async.Tests</RootNamespace>
+    <AssemblyName>Merq.Async.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -52,20 +52,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseAsyncManagerSpec.cs" />
     <Compile Include="StaFact.cs" />
+    <Compile Include="TaskSchedulerAsyncManagerSpec.cs" />
     <Compile Include="ThreadingAsyncManagerSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Threading\Merq.Threading.csproj">
+    <ProjectReference Include="..\Merq.Async.Portable\Merq.Async.Portable.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
-      <Name>Merq.Threading</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Commands\Merq.Commands\Merq.Commands.csproj">
-      <Project>{2855a474-dffe-4536-8fa7-19b381a240b0}</Project>
-      <Name>Merq.Commands</Name>
+      <Name>Merq.Async.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

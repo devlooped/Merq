@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.Threading;
 namespace Merq
 {
 	/// <summary>
-	/// An advanced implementation of <see cref="IAsyncManager"/> based on the
-	/// Microsoft.VisualStudio.Threading nuget package, which provides much 
-	/// improved reentrancy support and significantly reduces deadlocks.
+	/// Default implementation of <see cref="IAsyncManager"/>, based on the
+	/// Microsoft.VisualStudio.Threading nuget package, which provides 
+	/// reentrancy deadlocks detection and avoidance.
 	/// </summary>
 	/// <remarks>
 	/// This class must be intantiated only once for the entire app domain, 
@@ -16,15 +16,15 @@ namespace Merq
 	/// in order for the deadlock and reentrancy detection to work properly.
 	/// </remarks>
 	/// <seealso cref="IAsyncManager"/>
-	public class ThreadingAsyncManager : IAsyncManager
+	public class AsyncManager : IAsyncManager
 	{
 		readonly JoinableTaskContext context;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ThreadingAsyncManager" /> class 
+		/// Initializes a new instance of the <see cref="AsyncManager" /> class 
 		/// using the current synchronization context as the application main thread.
 		/// </summary>
-		public ThreadingAsyncManager ()
+		public AsyncManager ()
 			: this (new JoinableTaskContext ())
 		{
 		}
@@ -33,7 +33,7 @@ namespace Merq
 		/// In order to ensure proper behavior for this manager, the received 
 		/// <see cref="JoinableTaskContext"/> must be an application-wide singleton.
 		/// </summary>
-		public ThreadingAsyncManager (JoinableTaskContext context)
+		public AsyncManager (JoinableTaskContext context)
 		{
 			this.context = context;
 		}
@@ -70,7 +70,6 @@ namespace Merq
 		/// See <see cref="IAsyncManager.RunAsync{TResult}(Func{Task{TResult}})"/>.
 		/// </summary>
 		public IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new JoinableTaskAwaitable<TResult> (context.Factory.RunAsync (asyncMethod));
-
 
 		class TaskSchedulerAwaitable : IAwaitable
 		{

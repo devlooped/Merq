@@ -4,24 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Merq
 {
-	public class AsyncManagerSpec
+	public abstract class BaseAsyncManagerSpec
 	{
 		ITestOutputHelper output;
 
-		public AsyncManagerSpec (ITestOutputHelper output)
+		public BaseAsyncManagerSpec (ITestOutputHelper output)
 		{
 			this.output = output;
 		}
 
+		protected abstract IAsyncManager CreateAsyncManager();
+
 		[StaFact]
 		public async void when_switching_to_background_thread_then_changes_current_thread_id ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
@@ -33,7 +36,7 @@ namespace Merq
 		[StaFact]
 		public async void when_switching_to_main_thread_then_switches_to_initial_thread ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			await manager.SwitchToBackground ();
@@ -45,10 +48,25 @@ namespace Merq
 			Assert.Equal (initialThreadId, Thread.CurrentThread.ManagedThreadId);
 		}
 
+		[StaFact]
+		public async void when_switching_to_main_thread_then_switches_to_dispatcher_thread ()
+		{
+			var manager = CreateAsyncManager();
+			var dispatcherThreadId = Dispatcher.CurrentDispatcher.Thread.ManagedThreadId;
+
+			await manager.SwitchToBackground ();
+
+			Assert.NotEqual (dispatcherThreadId, Thread.CurrentThread.ManagedThreadId);
+
+			await manager.SwitchToMainThread ();
+
+			Assert.Equal (dispatcherThreadId, Thread.CurrentThread.ManagedThreadId);
+		}
+
 		[Fact]
 		public void when_running_action_then_runs_on_current_thread ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			manager.Run (async () => {
@@ -60,7 +78,7 @@ namespace Merq
 		[Fact]
 		public void when_running_function_then_runs_on_current_thread ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			var runThreadId = manager.Run (async () => {
@@ -76,7 +94,7 @@ namespace Merq
 		[Fact]
 		public void when_run_result_then_returns_value ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			var result = manager.Run (() => Task.FromResult("foo"));
@@ -87,7 +105,7 @@ namespace Merq
 		[Fact]
 		public async Task when_runasync_result_then_returns_value ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			var result = await manager.RunAsync (() => Task.FromResult("foo"));
@@ -98,7 +116,7 @@ namespace Merq
 		[Fact]
 		public void when_run_throws_then_propagates_exception ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Assert.Throws<InvalidOperationException>(() => manager.Run (async () => {
@@ -110,7 +128,7 @@ namespace Merq
 		[Fact]
 		public void when_runasync_throws_then_propagates_exception ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Assert.ThrowsAsync<InvalidOperationException> (async () => await manager.RunAsync (async () => {
@@ -122,7 +140,7 @@ namespace Merq
 		[Fact]
 		public void when_run_result_throws_then_propagates_exception ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Assert.Throws<InvalidOperationException> (() => manager.Run<bool> (async () => {
@@ -134,7 +152,7 @@ namespace Merq
 		[Fact]
 		public void when_runasync_result_throws_then_propagates_exception ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			Assert.ThrowsAsync<InvalidOperationException> (async () => await manager.RunAsync<bool> (async () => {
@@ -146,7 +164,7 @@ namespace Merq
 		[Fact]
 		public async void when_running_async_action_then_runs_on_current_thread ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			await manager.RunAsync (async () => {
@@ -158,7 +176,7 @@ namespace Merq
 		[Fact]
 		public async void when_running_async_function_then_runs_on_current_thread ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			var runThreadId = await manager.RunAsync (async () => {
@@ -174,7 +192,7 @@ namespace Merq
 		[StaFact]
 		public async void when_doing_then_does_async ()
 		{
-			var manager = new AsyncManager();
+			var manager = CreateAsyncManager();
 
 			await manager.SwitchToMainThread ();
 			var mainThreadId = Thread.CurrentThread.ManagedThreadId;

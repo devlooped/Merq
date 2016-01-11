@@ -18,7 +18,9 @@ public static class AwaitExtensions
 	[EditorBrowsable (EditorBrowsableState.Never)]
 	public static IAwaiter GetAwaiter (this TaskScheduler scheduler)
 	{
-		Guard.NotNull("scheduler", scheduler);
+		if (scheduler == null)
+			throw new ArgumentNullException (nameof (scheduler));
+
 		return new TaskSchedulerAwaiter (scheduler);
 	}
 

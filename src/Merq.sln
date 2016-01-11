@@ -23,15 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Commands", "Commands\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Commands.Tests", "Commands\Merq.Commands.Tests\Merq.Commands.Tests.csproj", "{4B63DDB9-E254-4149-BB37-34D6C4D58CB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Threading", "Threading\Merq.Threading\Merq.Threading.csproj", "{9805DCD7-DE83-4E6F-9B78-88851AB66568}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Threading.Tests", "Threading\Merq.Threading.Tests\Merq.Threading.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Threading", "Threading", "{2531D95B-60F4-4392-8F3C-152202788240}"
-	ProjectSection(SolutionItems) = preProject
-		Threading\Merq.Threading.nuspec = Threading\Merq.Threading.nuspec
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{A0E039A6-549E-4C21-AAE9-5506DE65A3A0}"
 	ProjectSection(SolutionItems) = preProject
 		Commands\Merq.Commands.nuspec = Commands\Merq.Commands.nuspec
@@ -46,14 +37,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Events", "Events\Merq.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Events.Tests", "Events\Merq.Events.Tests\Merq.Events.Tests.csproj", "{3A395046-3F7B-4907-9D63-48F92174D2E5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceProvider", "ServiceProvider", "{3B94EDC8-728C-41DD-BA5F-BC6BF9E37A74}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Async", "Async", "{B1D1E046-35CF-4785-AC95-5099802F3471}"
 	ProjectSection(SolutionItems) = preProject
-		ServiceProvider\Merq.ServiceProvider.nuspec = ServiceProvider\Merq.ServiceProvider.nuspec
+		Async\Merq.Async.nuspec = Async\Merq.Async.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.ServiceProvider", "ServiceProvider\Merq.ServiceProvider\Merq.ServiceProvider.csproj", "{B97F721D-9563-4F0A-9A92-E5B1E57574AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Portable", "Async\Merq.Async.Portable\Merq.Async.Portable.csproj", "{9805DCD7-DE83-4E6F-9B78-88851AB66568}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.ServiceProvider.Tests", "ServiceProvider\Merq.ServiceProvider.Tests\Merq.ServiceProvider.Tests.csproj", "{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Desktop", "Async\Merq.Async.Desktop\Merq.Async.Desktop.csproj", "{31D90692-B7C5-4BE5-9C25-2D2159A157EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Tests", "Async\Merq.Async.Tests\Merq.Async.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,14 +62,6 @@ Global
 		{4B63DDB9-E254-4149-BB37-34D6C4D58CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B63DDB9-E254-4149-BB37-34D6C4D58CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B63DDB9-E254-4149-BB37-34D6C4D58CB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6B16D17-4F6A-4457-8497-92068E53DE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6B16D17-4F6A-4457-8497-92068E53DE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6B16D17-4F6A-4457-8497-92068E53DE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -85,14 +70,18 @@ Global
 		{3A395046-3F7B-4907-9D63-48F92174D2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A395046-3F7B-4907-9D63-48F92174D2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A395046-3F7B-4907-9D63-48F92174D2E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B97F721D-9563-4F0A-9A92-E5B1E57574AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B97F721D-9563-4F0A-9A92-E5B1E57574AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B97F721D-9563-4F0A-9A92-E5B1E57574AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B97F721D-9563-4F0A-9A92-E5B1E57574AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9805DCD7-DE83-4E6F-9B78-88851AB66568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31D90692-B7C5-4BE5-9C25-2D2159A157EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31D90692-B7C5-4BE5-9C25-2D2159A157EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31D90692-B7C5-4BE5-9C25-2D2159A157EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31D90692-B7C5-4BE5-9C25-2D2159A157EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,11 +89,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2855A474-DFFE-4536-8FA7-19B381A240B0} = {A0E039A6-549E-4C21-AAE9-5506DE65A3A0}
 		{4B63DDB9-E254-4149-BB37-34D6C4D58CB3} = {A0E039A6-549E-4C21-AAE9-5506DE65A3A0}
-		{9805DCD7-DE83-4E6F-9B78-88851AB66568} = {2531D95B-60F4-4392-8F3C-152202788240}
-		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64} = {2531D95B-60F4-4392-8F3C-152202788240}
 		{C6B16D17-4F6A-4457-8497-92068E53DE39} = {D01702F6-0CCA-4107-883D-57092F592644}
 		{3A395046-3F7B-4907-9D63-48F92174D2E5} = {D01702F6-0CCA-4107-883D-57092F592644}
-		{B97F721D-9563-4F0A-9A92-E5B1E57574AD} = {3B94EDC8-728C-41DD-BA5F-BC6BF9E37A74}
-		{0A9D5016-CCE3-4EDC-8A22-7634E5C995C1} = {3B94EDC8-728C-41DD-BA5F-BC6BF9E37A74}
+		{9805DCD7-DE83-4E6F-9B78-88851AB66568} = {B1D1E046-35CF-4785-AC95-5099802F3471}
+		{31D90692-B7C5-4BE5-9C25-2D2159A157EF} = {B1D1E046-35CF-4785-AC95-5099802F3471}
+		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 	EndGlobalSection
 EndGlobal
