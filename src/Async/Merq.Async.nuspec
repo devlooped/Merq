@@ -14,7 +14,12 @@
 		<description>Microsoft.VisualStudio.Threading package-based IAsyncManager.</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Microsoft.VisualStudio.Threading" version="12.2" />
+			<group targetFramework="net45">
+				<dependency id="Microsoft.VisualStudio.Threading" version="14.1.114" />
+			</group>
+			<group targetFramework="portable45-net45+win8+wpa81">
+				<dependency id="Microsoft.VisualStudio.Threading" version="12.2.0" />
+			</group>
 		</dependencies>
 	</metadata>
 	<files>
