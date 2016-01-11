@@ -16,7 +16,7 @@
 	</Target>
 
 	<Target Name="GenerateThisAssemblyName" Inputs="$(MSBuildProjectFullPath)" Outputs="$(ThisAssemblyNameFile)">
-
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition=" !Exists('$(IntermediateOutputPath)') " />
 		<WriteLinesToFile Lines='partial class ThisAssembly
 {
       /// &lt;summary&gt;AssemblyName: $(AssemblyName)&lt;/summary&gt;
