@@ -109,6 +109,8 @@ namespace Merq
 			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			var result = await manager.RunAsync (() => Task.FromResult("foo"));
+			
+			await Task.Yield ();
 
 			Assert.Equal ("foo", result);
 		}
