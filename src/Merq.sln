@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Desktop", "Async
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Tests", "Async\Merq.Async.Tests\Merq.Async.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Portable.Tests", "Async\Merq.Async.Portable.Tests\Merq.Async.Portable.Tests.csproj", "{28226B72-AC06-45E6-BEC1-A3DF99365CC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28226B72-AC06-45E6-BEC1-A3DF99365CC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28226B72-AC06-45E6-BEC1-A3DF99365CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28226B72-AC06-45E6-BEC1-A3DF99365CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28226B72-AC06-45E6-BEC1-A3DF99365CC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,5 +100,6 @@ Global
 		{9805DCD7-DE83-4E6F-9B78-88851AB66568} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{31D90692-B7C5-4BE5-9C25-2D2159A157EF} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64} = {B1D1E046-35CF-4785-AC95-5099802F3471}
+		{28226B72-AC06-45E6-BEC1-A3DF99365CC0} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 	EndGlobalSection
 EndGlobal

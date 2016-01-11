@@ -14,7 +14,6 @@
 		<description>Microsoft.VisualStudio.Threading package-based IAsyncManager.</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Commands" version="$version$" />
 			<dependency id="Microsoft.VisualStudio.Threading" version="12.2" />
 		</dependencies>
 	</metadata>
