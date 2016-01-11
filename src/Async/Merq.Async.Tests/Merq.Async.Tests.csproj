@@ -52,9 +52,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\StaFact.cs">
+      <Link>StaFact.cs</Link>
+    </Compile>
     <Compile Include="AwaitExtensionsSpec.cs" />
     <Compile Include="BaseAsyncManagerSpec.cs" />
-    <Compile Include="StaFact.cs" />
     <Compile Include="TaskSchedulerAsyncManagerSpec.cs" />
     <Compile Include="ThreadingAsyncManagerSpec.cs" />
   </ItemGroup>

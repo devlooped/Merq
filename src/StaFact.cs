@@ -30,7 +30,9 @@ namespace Merq
 	}
 
 	[AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
-	[XunitTestCaseDiscoverer ("Merq.StaFactDiscoverer", "Merq.Threading.Tests")]
+#pragma warning disable 0436
+	[XunitTestCaseDiscoverer ("Merq.StaFactDiscoverer", ThisAssembly.AssemblyName)]
+#pragma warning restore 0436
 	public class StaFactAttribute : FactAttribute { }
 
 	/// <summary>

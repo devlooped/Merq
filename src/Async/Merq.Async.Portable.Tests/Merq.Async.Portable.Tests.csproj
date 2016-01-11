@@ -52,7 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Merq.Async.Portable.Tests.targets" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -61,8 +60,24 @@
       <Name>Merq.Async.Portable</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\StaFact.cs">
+      <Link>StaFact.cs</Link>
+    </Compile>
+    <Compile Include="..\Merq.Async.Tests\AwaitExtensionsSpec.cs">
+      <Link>AwaitExtensionsSpec.cs</Link>
+    </Compile>
+    <Compile Include="..\Merq.Async.Tests\BaseAsyncManagerSpec.cs">
+      <Link>BaseAsyncManagerSpec.cs</Link>
+    </Compile>
+    <Compile Include="..\Merq.Async.Tests\TaskSchedulerAsyncManagerSpec.cs">
+      <Link>TaskSchedulerAsyncManagerSpec.cs</Link>
+    </Compile>
+    <Compile Include="..\Merq.Async.Tests\ThreadingAsyncManagerSpec.cs">
+      <Link>ThreadingAsyncManagerSpec.cs</Link>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="Merq.Async.Portable.Tests.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

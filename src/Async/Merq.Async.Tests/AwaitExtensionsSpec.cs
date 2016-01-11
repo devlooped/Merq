@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Merq.Async.Tests
+namespace Merq
 {
 	public class AwaitExtensionsSpec
 	{
