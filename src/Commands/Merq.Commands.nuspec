@@ -14,7 +14,7 @@
 		<description>Command Bus pattern</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Async" version="$version$" />
+			<dependency id="Merq.Async" version="[$version$,)" />
 		</dependencies>
 	</metadata>
 	<files>
