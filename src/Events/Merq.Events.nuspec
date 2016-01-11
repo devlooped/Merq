@@ -13,9 +13,6 @@
 		<summary>Event Stream pattern</summary>
 		<description>Event Stream pattern</description>
 		<copyright>2015 © MobileEssentials</copyright>
-		<dependencies>
-			<dependency id="System.Diagnostics.Tracer" version="1.0.7" />
-		</dependencies>
 	</metadata>
 	<files>
 		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />

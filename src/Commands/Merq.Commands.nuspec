@@ -14,7 +14,6 @@
 		<description>Command Bus pattern</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="System.Diagnostics.Tracer" version="1.0.7" />
 			<dependency id="Merq.Async" version="$version$" />
 		</dependencies>
 	</metadata>
