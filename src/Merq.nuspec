@@ -6,8 +6,9 @@
 		<title>$id$</title>
 		<authors>MobileEssentials</authors>
 		<owners>mobessen</owners>
-		<licenseUrl>https://github.com/MobileEssentials/Merq/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
+		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
+		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Merq = Command Bus + Event Stream</summary>
 		<description>Merq = Command Bus + Event Stream</description>
