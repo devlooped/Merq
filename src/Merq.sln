@@ -9,12 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\build.proj = ..\build.proj
 		..\GitInfo.txt = ..\GitInfo.txt
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
-		Merq.Commands.nuspec = Merq.Commands.nuspec
-		Merq.Events.nuspec = Merq.Events.nuspec
 		Merq.nuspec = Merq.nuspec
 		Merq.props = Merq.props
 		Merq.targets = Merq.targets
-		Merq.Threading.nuspec = Merq.Threading.nuspec
 		Merq.vssettings = Merq.vssettings
 		..\README.md = ..\README.md
 	EndProjectSection
