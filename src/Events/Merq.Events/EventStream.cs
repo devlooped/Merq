@@ -21,7 +21,7 @@ namespace Merq
 		/// <summary>
 		/// Pushes an event to the stream, causing any  subscriber to be invoked if appropriate.
 		/// </summary>
-		public void Push<TEvent>(TEvent @event)
+		public virtual void Push<TEvent>(TEvent @event)
 		{
 			Guard.NotNull ("@event", @event);
 			if (!IsValid<TEvent> ())
@@ -35,7 +35,7 @@ namespace Merq
 		/// <summary>
 		/// Observes the events of a given type <typeparamref name="TEvent"/>.
 		/// </summary>
-		public IObservable<TEvent> Of<TEvent>()
+		public virtual IObservable<TEvent> Of<TEvent>()
 		{
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.SubscribedEventNotPublic);

@@ -71,7 +71,7 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		public void Run (Func<Task> asyncMethod)
+		public virtual void Run (Func<Task> asyncMethod)
 		{
 			var done = new ManualResetEventSlim();
 			AggregateException ex = null;
@@ -98,7 +98,7 @@ namespace Merq
 		/// resumes after an await on the main thread; but if it started on a threadpool thread it resumes on a threadpool thread.</para>
 		/// <para>See the <see cref="Run(Func{Task})" /> overload documentation for an example.</para>
 		/// </remarks>
-		public TResult Run<TResult> (Func<Task<TResult>> asyncMethod)
+		public virtual TResult Run<TResult> (Func<Task<TResult>> asyncMethod)
 		{
 			var done = new ManualResetEventSlim();
 			AggregateException ex = null;
@@ -122,19 +122,19 @@ namespace Merq
 		/// Invokes an async delegate on the caller's thread, and yields back to the caller when the async method yields.
 		/// </summary>
 		/// <param name="asyncMethod">The method that, when executed, will begin the async operation.</param>
-		public IAwaitable RunAsync (Func<Task> asyncMethod) => new TaskAwaitable (asyncMethod ());
+		public virtual IAwaitable RunAsync (Func<Task> asyncMethod) => new TaskAwaitable (asyncMethod ());
 
 		/// <summary>
 		/// Invokes an async delegate on the caller's thread, and yields back to the caller when the async method yields.
 		/// </summary>
 		/// <typeparam name="TResult">The type of value returned by the asynchronous operation.</typeparam>
 		/// <param name="asyncMethod">The method that, when executed, will begin the async operation.</param>
-		public IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new TaskAwaitable<TResult> (asyncMethod ());
+		public virtual IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new TaskAwaitable<TResult> (asyncMethod ());
 
 		/// <summary>
 		/// Gets an awaitable that schedules continuations on the default background scheduler.
 		/// </summary>
-		public IAwaitable SwitchToBackground () => new TaskSchedulerAwaitable (TaskScheduler.Default);
+		public virtual IAwaitable SwitchToBackground () => new TaskSchedulerAwaitable (TaskScheduler.Default);
 
 		/// <summary>
 		/// Gets an awaitable whose continuations execute on the synchronization context that 
@@ -157,7 +157,7 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		public IAwaitable SwitchToMainThread () => new TaskSchedulerAwaitable (mainScheduler);
+		public virtual IAwaitable SwitchToMainThread () => new TaskSchedulerAwaitable (mainScheduler);
 
 		class TaskAwaitable : IAwaitable
 		{

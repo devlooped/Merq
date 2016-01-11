@@ -39,14 +39,14 @@ namespace Merq
 		/// </summary>
 		/// <typeparam name="TCommand">The type of command to query.</typeparam>
 		/// <returns><see langword="true"/> if the command has a registered handler. <see langword="false"/> otherwise.</returns>
-		public bool CanHandle<TCommand> () where TCommand : ICommand => handlerMap.ContainsKey (typeof (TCommand));
+		public virtual bool CanHandle<TCommand> () where TCommand : ICommand => handlerMap.ContainsKey (typeof (TCommand));
 
 		/// <summary>
 		/// Determines whether the given command has a registered handler.
 		/// </summary>
 		/// <param name="command">The command to query.</param>
 		/// <returns><see langword="true"/> if the command has a registered handler. <see langword="false"/> otherwise.</returns>
-		public bool CanHandle (ICommand command)
+		public virtual bool CanHandle (ICommand command)
 		{
 			Guard.NotNull ("command", command);
 
@@ -59,7 +59,7 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the query.</param>
 		/// <returns><see langword="true"/> if the command can be executed. <see langword="false"/> otherwise.</returns>
-		public bool CanExecute (ICommand command)
+		public virtual bool CanExecute (ICommand command)
 		{
 			Guard.NotNull ("command", command);
 
@@ -72,7 +72,7 @@ namespace Merq
 		/// Executes the given command synchronously.
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
-		public void Execute (ICommand command)
+		public virtual void Execute (ICommand command)
 		{
 			Guard.NotNull ("command", command);
 
@@ -91,7 +91,7 @@ namespace Merq
 		/// <typeparam name="TResult">The return type of the command execution.</typeparam>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		public TResult Execute<TResult>(ICommand<TResult> command)
+		public virtual TResult Execute<TResult>(ICommand<TResult> command)
 		{
 			Guard.NotNull ("command", command);
 
@@ -109,7 +109,7 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
-		public Task ExecuteAsync(ICommand command, CancellationToken cancellation)
+		public virtual Task ExecuteAsync (ICommand command, CancellationToken cancellation)
 		{
 			Guard.NotNull ("command", command);
 
@@ -128,7 +128,7 @@ namespace Merq
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		public Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken cancellation)
+		public virtual Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken cancellation)
 		{
 			Guard.NotNull ("command", command);
 

@@ -41,17 +41,17 @@ namespace Merq
 		/// <summary>
 		/// See <see cref="IAsyncManager.SwitchToBackground"/>.
 		/// </summary>
-		public IAwaitable SwitchToBackground () => new TaskSchedulerAwaitable (TaskScheduler.Default.SwitchTo ());
+		public virtual IAwaitable SwitchToBackground () => new TaskSchedulerAwaitable (TaskScheduler.Default.SwitchTo ());
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.SwitchToMainThread"/>.
 		/// </summary>
-		public IAwaitable SwitchToMainThread () => new MainThreadAwaitable (context.Factory.SwitchToMainThreadAsync ());
+		public virtual IAwaitable SwitchToMainThread () => new MainThreadAwaitable (context.Factory.SwitchToMainThreadAsync ());
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.Run(Func{Task})"/>.
 		/// </summary>
-		public void Run (Func<Task> asyncMethod)
+		public virtual void Run (Func<Task> asyncMethod)
 		{
 			context.Factory.Run (asyncMethod);
 		}
@@ -59,17 +59,17 @@ namespace Merq
 		/// <summary>
 		/// See <see cref="IAsyncManager.Run{TResult}(Func{Task{TResult}})"/>.
 		/// </summary>
-		public T Run<T> (Func<Task<T>> asyncMethod) => context.Factory.Run (asyncMethod);
+		public virtual T Run<T> (Func<Task<T>> asyncMethod) => context.Factory.Run (asyncMethod);
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.RunAsync(Func{Task})"/>.
 		/// </summary>
-		public IAwaitable RunAsync (Func<Task> asyncMethod) => new JoinableTaskAwaitable (context.Factory.RunAsync (asyncMethod));
+		public virtual IAwaitable RunAsync (Func<Task> asyncMethod) => new JoinableTaskAwaitable (context.Factory.RunAsync (asyncMethod));
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.RunAsync{TResult}(Func{Task{TResult}})"/>.
 		/// </summary>
-		public IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new JoinableTaskAwaitable<TResult> (context.Factory.RunAsync (asyncMethod));
+		public virtual IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new JoinableTaskAwaitable<TResult> (context.Factory.RunAsync (asyncMethod));
 
 		class TaskSchedulerAwaitable : IAwaitable
 		{
