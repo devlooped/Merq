@@ -15,6 +15,12 @@ namespace Merq
 		{
 		}
 
+		[Fact]
+		public void when_scheduler_is_null_then_throws ()
+		{
+			Assert.Throws<ArgumentNullException> (() => new TaskSchedulerAsyncManager (null));
+		}
+
 		protected override IAsyncManager CreateAsyncManager () => new TaskSchedulerAsyncManager ();
 	}
 }

@@ -35,6 +35,8 @@ namespace Merq
 		/// </summary>
 		public AsyncManager (JoinableTaskContext context)
 		{
+			if (context == null) throw new ArgumentNullException (nameof (context));
+
 			this.context = context;
 		}
 

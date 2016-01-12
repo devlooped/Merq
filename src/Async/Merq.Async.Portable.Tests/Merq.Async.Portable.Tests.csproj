@@ -64,6 +64,9 @@
     <Compile Include="..\..\StaFact.cs">
       <Link>StaFact.cs</Link>
     </Compile>
+    <Compile Include="..\Merq.Async.Tests\AsyncManagerSpec.cs">
+      <Link>AsyncManagerSpec.cs</Link>
+    </Compile>
     <Compile Include="..\Merq.Async.Tests\AwaitExtensionsSpec.cs">
       <Link>AwaitExtensionsSpec.cs</Link>
     </Compile>
@@ -72,9 +75,6 @@
     </Compile>
     <Compile Include="..\Merq.Async.Tests\TaskSchedulerAsyncManagerSpec.cs">
       <Link>TaskSchedulerAsyncManagerSpec.cs</Link>
-    </Compile>
-    <Compile Include="..\Merq.Async.Tests\ThreadingAsyncManagerSpec.cs">
-      <Link>ThreadingAsyncManagerSpec.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

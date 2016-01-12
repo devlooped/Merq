@@ -40,6 +40,8 @@ namespace Merq
 		/// <see cref="SwitchToMainThread"/> is invoked.</param>
 		public TaskSchedulerAsyncManager (TaskScheduler mainThreadScheduler)
 		{
+			if (mainThreadScheduler == null) throw new ArgumentNullException (nameof (mainThreadScheduler));
+
 			mainScheduler = mainThreadScheduler;
 		}
 

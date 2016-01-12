@@ -58,7 +58,7 @@
     <Compile Include="AwaitExtensionsSpec.cs" />
     <Compile Include="BaseAsyncManagerSpec.cs" />
     <Compile Include="TaskSchedulerAsyncManagerSpec.cs" />
-    <Compile Include="ThreadingAsyncManagerSpec.cs" />
+    <Compile Include="AsyncManagerSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

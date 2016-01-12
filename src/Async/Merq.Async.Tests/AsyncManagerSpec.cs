@@ -15,7 +15,12 @@ namespace Merq
 		{
 		}
 
-		protected override IAsyncManager CreateAsyncManager () => new AsyncManager ();
+
+		[Fact]
+		public void when_context_is_null_then_throws ()
+		{
+			Assert.Throws<ArgumentNullException> (() => new AsyncManager (null));
+		}
 
 		[StaFact]
 		public async void when_initializing_context_then_succeeds ()
@@ -26,5 +31,7 @@ namespace Merq
 			await TaskScheduler.Default.SwitchTo ();
 			await context.Factory.SwitchToMainThreadAsync ();
 		}
+
+		protected override IAsyncManager CreateAsyncManager () => new AsyncManager ();
 	}
 }

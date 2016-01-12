@@ -67,7 +67,6 @@
   <ItemGroup>
     <Compile Include="EventStreamSamples.cs" />
     <Compile Include="EventStreamSpec.cs" />
-    <Compile Include="GuardSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Merq.Events\Merq.Events.csproj">

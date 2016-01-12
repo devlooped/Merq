@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventStream.cs" />
-    <Compile Include="Guard.cs" />
     <Compile Include="IEventStream.cs" />
     <Compile Include="IFluentInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

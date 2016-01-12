@@ -23,7 +23,7 @@ namespace Merq
 		/// </summary>
 		public virtual void Push<TEvent>(TEvent @event)
 		{
-			Guard.NotNull ("@event", @event);
+			if (@event == null) throw new ArgumentNullException (nameof (@event));
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.PublishedEventNotPublic);
 
