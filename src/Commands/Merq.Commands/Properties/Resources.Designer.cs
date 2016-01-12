@@ -80,15 +80,6 @@ namespace Merq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The command handler &apos;{0}&apos; does not implement the required interface ICommandHandler&lt;{1}, {2}&gt; or IAsyncCommandHandler&lt;{1}, {2}&gt; to return the value expected by the command execution..
-        /// </summary>
-        internal static string CommandBus_MissingReturnHandler {
-            get {
-                return ResourceManager.GetString("CommandBus_MissingReturnHandler", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No command handler is registered for command type {0}..
         /// </summary>
         internal static string CommandBus_NoHandler {

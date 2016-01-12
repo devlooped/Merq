@@ -13,9 +13,6 @@
 		<summary>Command Bus pattern</summary>
 		<description>Command Bus pattern</description>
 		<copyright>2015 © MobileEssentials</copyright>
-		<dependencies>
-			<dependency id="Merq.Async" version="[$version$,)" />
-		</dependencies>
 	</metadata>
 	<files>
 		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />

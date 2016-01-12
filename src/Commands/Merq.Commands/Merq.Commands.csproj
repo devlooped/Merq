@@ -25,12 +25,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandBus.cs" />
-    <Compile Include="Guard.cs" />
     <Compile Include="IAsyncCommandHandler.cs" />
     <Compile Include="ICanExecute.cs" />
+    <Compile Include="IAsyncCommand.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandBus.cs" />
     <Compile Include="ICommandHandler.cs" />
+    <Compile Include="IExecutable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

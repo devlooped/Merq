@@ -123,9 +123,6 @@
   <data name="CommandBus_InvalidHandler" xml:space="preserve">
     <value>Command handler '{0}' does not implement ICommandHandler or IAsyncCommandHandler generic interfaces.</value>
   </data>
-  <data name="CommandBus_MissingReturnHandler" xml:space="preserve">
-    <value>The command handler '{0}' does not implement the required interface ICommandHandler&lt;{1}, {2}&gt; or IAsyncCommandHandler&lt;{1}, {2}&gt; to return the value expected by the command execution.</value>
-  </data>
   <data name="CommandBus_NoHandler" xml:space="preserve">
     <value>No command handler is registered for command type {0}.</value>
   </data>

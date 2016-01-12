@@ -14,23 +14,24 @@ namespace Merq
 	/// </summary>
 	public class CommandBus : ICommandBus
 	{
-		IAsyncManager asyncManager;
 		Dictionary<Type, ICommandHandler> handlerMap;
 
 		/// <summary>
 		/// Initializes the command bus with the given list of handlers.
 		/// </summary>
-		public CommandBus (IAsyncManager asyncManager, IEnumerable<ICommandHandler> handlers)
+		public CommandBus (IEnumerable<ICommandHandler> handlers)
 		{
-			this.asyncManager = asyncManager;
+			if (handlers == null) throw new ArgumentNullException (nameof (handlers));
+
+
 			AddHandlers (handlers);
 		}
 
 		/// <summary>
 		/// Initializes the command bus with the given list of handlers.
 		/// </summary>
-		public CommandBus (IAsyncManager asyncManager, params ICommandHandler[] handlers)
-			: this (asyncManager, (IEnumerable<ICommandHandler>)handlers)
+		public CommandBus (params ICommandHandler[] handlers)
+			: this ((IEnumerable<ICommandHandler>)handlers)
 		{
 		}
 
@@ -39,16 +40,16 @@ namespace Merq
 		/// </summary>
 		/// <typeparam name="TCommand">The type of command to query.</typeparam>
 		/// <returns><see langword="true"/> if the command has a registered handler. <see langword="false"/> otherwise.</returns>
-		public virtual bool CanHandle<TCommand> () where TCommand : ICommand => handlerMap.ContainsKey (typeof (TCommand));
+		public virtual bool CanHandle<TCommand> () where TCommand : IExecutable => handlerMap.ContainsKey (typeof (TCommand));
 
 		/// <summary>
 		/// Determines whether the given command has a registered handler.
 		/// </summary>
 		/// <param name="command">The command to query.</param>
 		/// <returns><see langword="true"/> if the command has a registered handler. <see langword="false"/> otherwise.</returns>
-		public virtual bool CanHandle (ICommand command)
+		public virtual bool CanHandle (IExecutable command)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			return handlerMap.ContainsKey (command.GetType ());
 		}
@@ -59,9 +60,9 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the query.</param>
 		/// <returns><see langword="true"/> if the command can be executed. <see langword="false"/> otherwise.</returns>
-		public virtual bool CanExecute (ICommand command)
+		public virtual bool CanExecute (IExecutable command)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			var handler = GetCommandHandler(command);
 
@@ -74,15 +75,11 @@ namespace Merq
 		/// <param name="command">The command parameters for the execution.</param>
 		public virtual void Execute (ICommand command)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			var handler = GetCommandHandler(command);
 
-			if (handler is IAsyncCommandHandler)
-				asyncManager.Run (async () => await 
-					(Task)(handler.ExecuteAsync ((dynamic)command, CancellationToken.None)));
-			else
-				handler.Execute ((dynamic)command);
+			handler.Execute ((dynamic)command);
 		}
 
 		/// <summary>
@@ -91,34 +88,27 @@ namespace Merq
 		/// <typeparam name="TResult">The return type of the command execution.</typeparam>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		public virtual TResult Execute<TResult>(ICommand<TResult> command)
+		public virtual TResult Execute<TResult> (ICommand<TResult> command)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			var handler = GetCommandHandler(command);
 
-			if (handler is IAsyncCommandHandler)
-				return asyncManager.Run(async () => await
-					(Task<TResult>)(handler.ExecuteAsync ((dynamic)command, CancellationToken.None)));
-			else
-				return handler.Execute ((dynamic)command);
+			return handler.Execute ((dynamic)command);
 		}
 
 		/// <summary>
-		/// Executes the given command asynchronously.
+		/// Executes the given asynchronous command.
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
-		public virtual Task ExecuteAsync (ICommand command, CancellationToken cancellation)
+		public virtual Task ExecuteAsync (IAsyncCommand command, CancellationToken cancellation)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			var handler = GetCommandHandler(command);
 
-			if (handler is IAsyncCommandHandler)
-				return handler.ExecuteAsync ((dynamic)command, cancellation);
-			else
-				return Task.Run ((Action)(() => handler.Execute ((dynamic)command)), cancellation);
+			return handler.ExecuteAsync ((dynamic)command, cancellation);
 		}
 
 		/// <summary>
@@ -128,102 +118,71 @@ namespace Merq
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		public virtual Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken cancellation)
+		public virtual Task<TResult> ExecuteAsync<TResult> (IAsyncCommand<TResult> command, CancellationToken cancellation)
 		{
-			Guard.NotNull ("command", command);
+			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			var handler = GetCommandHandler(command);
 
-			if (handler is IAsyncCommandHandler)
-				return handler.ExecuteAsync ((dynamic)command, cancellation);
-			else
-				return Task.Run (() => (TResult)handler.Execute ((dynamic)command), cancellation);
+			return handler.ExecuteAsync ((dynamic)command, cancellation);
 		}
 
 		void AddHandlers (IEnumerable<ICommandHandler> handlers)
 		{
 			handlerMap = new Dictionary<Type, ICommandHandler> ();
 			var nonGenericHandlers = new List<ICommandHandler>();
-			var noReturnsHandlers = new List<Tuple<Type, Type, ICommandHandler>>();
 			var duplicateHandlers = new List<Tuple<Type, ICommandHandler>>();
 
-			ProcessHandlers (handlers, nonGenericHandlers, noReturnsHandlers, duplicateHandlers);
-			var errors = ProcessErrors (nonGenericHandlers, noReturnsHandlers, duplicateHandlers);
+			ProcessHandlers (handlers, nonGenericHandlers, duplicateHandlers);
+			var errors = ProcessErrors (nonGenericHandlers, duplicateHandlers);
 
 			if (!string.IsNullOrEmpty (errors))
 				throw new ArgumentException (errors);
 		}
 
-		void ProcessHandlers (IEnumerable<ICommandHandler> handlers, List<ICommandHandler> nonGenericHandlers, List<Tuple<Type, Type, ICommandHandler>> noReturnsHandlers, List<Tuple<Type, ICommandHandler>> duplicateHandlers)
+		void ProcessHandlers (IEnumerable<ICommandHandler> handlers, List<ICommandHandler> nonGenericHandlers, List<Tuple<Type, ICommandHandler>> duplicateHandlers)
 		{
 			foreach (var handler in handlers.Where (x => x != null)) {
+				// Extracts the first T in any of the command handler interfaces (sync, async, with/without result)
 				var commandType = GetCommandType (handler.GetType ());
 				if (commandType != null) {
-					Type returnType;
-					if (IsMissingReturnType (commandType, handler, out returnType))
-						noReturnsHandlers.Add (Tuple.Create (commandType, returnType, handler));
-					else if (!handlerMap.ContainsKey (commandType))
+					if (!handlerMap.ContainsKey (commandType))
 						handlerMap.Add (commandType, handler);
 					else
+						// Can't have duplicate handlers either. This is one key 
+						// difference between commands and events.
 						duplicateHandlers.Add (Tuple.Create (commandType, handler));
 				} else {
+					// ICommandHandler without any T is not valid since it can't handle 
+					// anything.
 					nonGenericHandlers.Add (handler);
 				}
 			}
 		}
 
-		static string ProcessErrors (List<ICommandHandler> nonGenericHandlers, List<Tuple<Type, Type, ICommandHandler>> noReturnsHandlers, List<Tuple<Type, ICommandHandler>> duplicateHandlers)
+		static string ProcessErrors (List<ICommandHandler> nonGenericHandlers, List<Tuple<Type, ICommandHandler>> duplicateHandlers)
 		{
 			return string.Join (Environment.NewLine, nonGenericHandlers
 				.Select (handler => Strings.CommandBus.InvalidHandler (handler.GetType ().Name))
 				.Concat (duplicateHandlers
-				.Select (handler => Strings.CommandBus.DuplicateHandler (handler.Item2.GetType ().Name, handler.Item1.Name)))
-				.Concat (noReturnsHandlers
-				.Select (handler => Strings.CommandBus.MissingReturnHandler (handler.Item3.GetType ().Name, handler.Item1.Name, handler.Item2.Name))));
+				.Select (handler => Strings.CommandBus.DuplicateHandler (handler.Item2.GetType ().Name, handler.Item1.Name))));
 		}
 
-		dynamic GetCommandHandler (ICommand command)
+		dynamic GetCommandHandler (IExecutable command)
 		{
 			ICommandHandler handler;
-			if (!handlerMap.TryGetValue (command.GetType(), out handler)) {
+			if (!handlerMap.TryGetValue (command.GetType (), out handler)) {
 				throw new NotSupportedException (Strings.CommandBus.NoHandler (command.GetType ()));
 			}
 
 			return handler;
 		}
 
-		static bool IsMissingReturnType (Type commandType, ICommandHandler handler, out Type returnType)
-		{
-			var commandReturns = typeof(ICommand<>);
-			var commandInterface = commandType.GetTypeInfo().ImplementedInterfaces.FirstOrDefault(iface =>
-				iface.IsConstructedGenericType && iface.GetGenericTypeDefinition() == commandReturns);
-
-			if (commandInterface == null) {
-				returnType = null;
-				return false;
-			}
-
-			returnType = commandInterface.GenericTypeArguments.First();
-			var syncReturns = typeof(ICommandHandler<,>);
-			var asyncReturns = typeof(IAsyncCommandHandler<,>);
-
-			var handlerReturns = handler.GetType().GetTypeInfo().ImplementedInterfaces
-				.Where(iface => iface.IsConstructedGenericType)
-			 	.Select(iface => new { Concrete = iface, Generic = iface.GetGenericTypeDefinition() })
-				.Where(iface => iface.Generic == syncReturns || iface.Generic == asyncReturns)
-				.FirstOrDefault();
-
-			if (handlerReturns == null)
-				return true;
-
-			return false;
-        }
-
 		static Type GetCommandType (Type type)
 		{
-			return type.GetTypeInfo().ImplementedInterfaces
+			return type.GetTypeInfo ().ImplementedInterfaces
 				.Where (x => IsHandlerInterface (x))
-				.Select (x => x.GenericTypeArguments.First())
+				.Select (x => x.GenericTypeArguments.First ())
 				.FirstOrDefault ();
 		}
 

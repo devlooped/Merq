@@ -54,7 +54,6 @@
     </Compile>
     <Compile Include="CommandBusSpec.cs" />
     <Compile Include="DispatcherAsyncManagerSpec.cs" />
-    <Compile Include="GuardSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Async\Merq.Async.Portable\Merq.Async.Portable.csproj">

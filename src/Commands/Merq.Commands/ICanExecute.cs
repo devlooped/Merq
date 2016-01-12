@@ -7,7 +7,7 @@ namespace Merq
 	/// to determine if they can execute a given command.
 	/// </summary>
 	[EditorBrowsable (EditorBrowsableState.Never)]
-	public interface ICanExecute<in TCommand> where TCommand : ICommand
+	public interface ICanExecute<in TCommand> where TCommand : IExecutable
 	{
 		/// <summary>
 		/// Determines whether the given command can be executed given the 

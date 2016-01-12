@@ -3,13 +3,14 @@
 namespace Merq
 {
 	/// <summary>
-	/// Marker interface for all command handlers
+	/// Marker interface for all command handlers, whether synchronous or asynchronous, 
+	/// allowing the <see cref="ICommandBus"/> to receive both.
 	/// </summary>
 	[EditorBrowsable (EditorBrowsableState.Never)]
 	public interface ICommandHandler { }
 
 	/// <summary>
-	/// Interface implemented by synchronous commands.
+	/// Interface implemented by synchronous void commands.
 	/// </summary>
 	/// <typeparam name="TCommand">Type of command supported by the handler.</typeparam>
 	public interface ICommandHandler<in TCommand> : ICommandHandler, ICanExecute<TCommand> where TCommand : ICommand
@@ -22,7 +23,7 @@ namespace Merq
 	}
 
 	/// <summary>
-	/// Interface implemented by command handlers that handle commands synchronously and return a result.
+	/// Interface implemented by synchronous command handlers that return a result.
 	/// </summary>
 	/// <typeparam name="TCommand">Type of command supported by the handler.</typeparam>
 	/// <typeparam name="TResult">The type of the returned value from the execution.</typeparam>
