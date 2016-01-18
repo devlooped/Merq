@@ -29,6 +29,7 @@ namespace Merq
 		/// Initializes the event stream.
 		/// </summary>
 		public EventStream ()
+			: this(Enumerable.Empty<object>())
 		{
 		}
 
