@@ -71,6 +71,15 @@ namespace Merq.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pushing events of type &apos;{0}&apos; is not supported because they are produced externally..
+        /// </summary>
+        internal static string EventStream_PushNotSupportedForExternalEvent {
+            get {
+                return ResourceManager.GetString("EventStream_PushNotSupportedForExternalEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Subscribed events must be public types..
         /// </summary>
         internal static string EventStream_SubscribedEventNotPublic {

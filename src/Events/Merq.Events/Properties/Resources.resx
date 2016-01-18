@@ -120,6 +120,9 @@
   <data name="EventStream_PublishedEventNotPublic" xml:space="preserve">
     <value>Published events must be public types.</value>
   </data>
+  <data name="EventStream_PushNotSupportedForExternalEvent" xml:space="preserve">
+    <value>Pushing events of type '{0}' is not supported because they are produced externally.</value>
+  </data>
   <data name="EventStream_SubscribedEventNotPublic" xml:space="preserve">
     <value>Subscribed events must be public types.</value>
   </data>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Moq;
 using Xunit;
 
 namespace Merq
@@ -94,6 +96,60 @@ namespace Merq
 			}
 
 			Assert.True (called);
+		}
+
+		[Fact]
+		public void given_an_observable_when_subscribing_event_then_subscribes_to_observable ()
+		{
+			var subject = new Subject<ConcreteEvent>();
+			var stream = new EventStream(subject);
+			var called = false;
+
+			using (var subscription = stream.Of<ConcreteEvent> ().Subscribe (c => called = true)) {
+				subject.OnNext(new ConcreteEvent ());
+			}
+
+			Assert.True (called);
+		}
+
+		[Fact]
+		public void given_two_observables_when_subscribing_base_event_then_receives_both ()
+		{
+			var subject1 = new Subject<ConcreteEvent>();
+			var subject2 = new Subject<AnotherEvent>();
+			var stream = new EventStream(subject1, subject2);
+			var called = 0;
+
+			using (var subscription = stream.Of<BaseEvent> ().Subscribe (c => called++)) {
+				subject1.OnNext (new ConcreteEvent ());
+				subject2.OnNext (new AnotherEvent ());
+			}
+
+			Assert.Equal (2, called);
+		}
+
+		[Fact]
+		public void given_an_observable_when_pushing_compatible_event_then_subscriber_base_type_receives_both ()
+		{
+			var subject = new Subject<ConcreteEvent>();
+			var stream = new EventStream(subject);
+			var called = 0;
+
+			using (var subscription = stream.Of<BaseEvent> ().Subscribe (c => called++)) {
+				subject.OnNext (new ConcreteEvent ());
+				stream.Push (new AnotherEvent ());
+			}
+
+			Assert.Equal (2, called);
+		}
+
+		[Fact]
+		public void given_an_observable_when_pushing_event_of_same_type_then_throws_unsupported ()
+		{
+			var subject = new Subject<ConcreteEvent>();
+			var stream = new EventStream(subject);
+
+			Assert.Throws<NotSupportedException> (() => stream.Push (new ConcreteEvent ()));
 		}
 
 		public class NestedPublicEvent { }
