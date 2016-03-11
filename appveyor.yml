@@ -7,7 +7,7 @@ build_script:
   - cmd: >-
       build.cmd /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
       
-      .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
+      .nuget\packages\coveralls.io\tools\coveralls.net.exe --debug --opencover out\coverage.xml
 
 # we run the tests ourselves in build.cmd for coverage
 test: off
