@@ -106,6 +106,8 @@
 		</PropertyGroup>
         
         <!-- Update AppVeyor build # to match the actual one being used -->
-        <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(APPVEYOR)' == 'true' " />        
+        <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(APPVEYOR)' == 'true' "
+              ConsoleToMSBuild="true"
+              ContinueOnError="ErrorAndContinue" />   
 	</Target>
 </Project>
