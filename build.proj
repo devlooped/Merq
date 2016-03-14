@@ -24,8 +24,9 @@
 
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 	
-	<Target Name="Build">
+	<Target Name="Build" DependsOnTargets="GitVersion">
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
+		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('\'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
 	</Target>
 
 	<Target Name="Test" DependsOnTargets="TestWin;TestMac" />
