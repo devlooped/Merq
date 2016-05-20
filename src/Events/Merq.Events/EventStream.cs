@@ -18,10 +18,10 @@ namespace Merq
 	public class EventStream : IEventStream
 	{
 		// All subjects active in the event stream.
-		readonly ConcurrentDictionary<TypeInfo, object> subjects = new ConcurrentDictionary<TypeInfo, object>();
+		readonly ConcurrentDictionary<TypeInfo, SubjectWrapper> subjects = new ConcurrentDictionary<TypeInfo, SubjectWrapper>();
 		// An cache of subjects indexed by the compatible event types, used to quickly lookup the subjects to 
 		// invoke in a Push. Refreshed whenever a new Of<T> subscription is added.
-		readonly ConcurrentDictionary<TypeInfo, object[]> compatibleSubjects = new ConcurrentDictionary<TypeInfo, object[]>();
+		readonly ConcurrentDictionary<TypeInfo, SubjectWrapper[]> compatibleSubjects = new ConcurrentDictionary<TypeInfo, SubjectWrapper[]>();
 		// Externally-produced events by IObservable<T> implementations.
 		readonly HashSet<object> observables;
 
@@ -80,7 +80,7 @@ namespace Merq
 			var subject = (IObservable<TEvent>)subjects.GetOrAdd (typeof (TEvent).GetTypeInfo(), info => {
 				// If we're creating a new subject, we need to clear the cache of compatible subjects
 				compatibleSubjects.Clear ();
-				return new Subject<TEvent> ();
+				return new SubjectWrapper<TEvent> ();
 			});
 
 			// Merge with any externally-produced observables that are compatible
@@ -100,11 +100,46 @@ namespace Merq
 				.Select(subjectEventType => subjects[subjectEventType])
 				.ToArray());
 
-			foreach (dynamic subject in compatible) {
-				subject.OnNext ((dynamic)@event);
+			foreach (var subject in compatible) {
+				subject.OnNext (@event);
 			}
 		}
 
 		static bool IsValid<TEvent> () => typeof (TEvent).GetTypeInfo().IsPublic || typeof (TEvent).GetTypeInfo().IsNestedPublic;
+
+		abstract class SubjectWrapper
+		{
+			public abstract void OnNext (object value);
+		}
+
+		class SubjectWrapper<T> : SubjectWrapper, ISubject<T>
+		{
+			ISubject<T> subject = new Subject<T>();
+
+			public override void OnNext (object value)
+			{
+				subject.OnNext ((T)value);
+			}
+
+			void IObserver<T>.OnCompleted ()
+			{
+				subject.OnCompleted ();
+			}
+
+			void IObserver<T>.OnError (Exception error)
+			{
+				subject.OnError (error);
+			}
+
+			void IObserver<T>.OnNext (T value)
+			{
+				subject.OnNext (value);
+			}
+
+			IDisposable IObservable<T>.Subscribe (IObserver<T> observer)
+			{
+				return subject.Subscribe (observer);
+			}
+		}
 	}
 }

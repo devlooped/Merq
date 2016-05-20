@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reflection;
 using Microsoft.Reactive.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Merq
 {
@@ -109,18 +113,32 @@ namespace Merq
 
 		public class BaseEvent : EventArgs, IBaseEvent
 		{
+			public override string ToString ()
+			{
+				return "Base event";
+			}
 		}
 
 		public class PatientEnteredHospital : BaseEvent
 		{
 			public int PatientId { get; set; }
 			public DateTimeOffset When { get; set; }
+
+			public override string ToString ()
+			{
+				return string.Format ("Patient {0} entered on {1}.", PatientId, When);
+			}
 		}
 
 		public class PatientLeftHospital : BaseEvent
 		{
 			public int PatientId { get; set; }
 			public DateTimeOffset When { get; set; }
+
+			public override string ToString ()
+			{
+				return string.Format ("Patient {0} left on {1}.", PatientId, When);
+			}
 		}
 
 		public class LoginFailure : BaseEvent
