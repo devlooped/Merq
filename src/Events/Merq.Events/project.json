@@ -1,0 +1,13 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.13",
+    "netfx-System.StringResources": "3.0.7",
+    "Rx-Main": "2.2.5"
+  },
+  "frameworks": {
+    ".NETPortable,Version=v4.5,Profile=Profile111": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

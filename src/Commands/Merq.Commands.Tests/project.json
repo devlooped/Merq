@@ -1,0 +1,13 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.13",
+    "Moq": "4.2.1510.2205",
+    "xunit": "2.1.0"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

@@ -1,0 +1,16 @@
+﻿{
+  "dependencies": {
+    "GitInfo": "1.1.13",
+    "Moq": "4.2.1510.2205",
+    "Newtonsoft.Json": "8.0.3",
+    "Rx-Main": "2.2.5",
+    "Rx-Testing": "2.2.5",
+    "xunit": "2.1.0"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}
