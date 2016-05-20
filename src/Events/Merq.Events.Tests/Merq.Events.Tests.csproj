@@ -28,6 +28,7 @@
     <Compile Include="EventStreamSamples.cs" />
     <Compile Include="EventStreamSpec.cs" />
     <Compile Include="Misc.cs" />
+    <Compile Include="SubjectWrapperSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Merq.Events\Merq.Events.csproj">
