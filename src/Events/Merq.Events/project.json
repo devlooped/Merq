@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
     "GitInfo": "1.1.13",
-    "netfx-System.StringResources": "3.0.7",
-    "IFluentInterface": "2.0.0",
+    "IFluentInterface": "2.0.1",
+    "netfx-System.StringResources": "3.0.12",
     "Rx-Main": "2.2.5"
   },
   "frameworks": {
