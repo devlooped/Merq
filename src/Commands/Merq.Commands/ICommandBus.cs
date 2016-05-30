@@ -14,7 +14,7 @@ namespace Merq
 		/// </summary>
 		/// <typeparam name="TCommand">The type of command to query.</typeparam>
 		/// <returns><see langword="true"/> if the command has a registered handler. <see langword="false"/> otherwise.</returns>
-		bool CanHandle<TCommand>() where TCommand : IExecutable;
+		bool CanHandle<TCommand> () where TCommand : IExecutable;
 
 		/// <summary>
 		/// Determines whether the given command has a registered handler.
@@ -29,7 +29,7 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the query.</param>
 		/// <returns><see langword="true"/> if the command can be executed. <see langword="false"/> otherwise.</returns>
-		bool CanExecute (IExecutable command);
+		bool CanExecute<TCommand> (TCommand command) where TCommand : IExecutable;
 
 		/// <summary>
 		/// Executes the given synchronous command.
@@ -43,7 +43,7 @@ namespace Merq
 		/// <typeparam name="TResult">The return type of the command execution.</typeparam>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		TResult Execute<TResult>(ICommand<TResult> command);
+		TResult Execute<TResult> (ICommand<TResult> command);
 
 		/// <summary>
 		/// Executes the given asynchronous command.
@@ -59,6 +59,6 @@ namespace Merq
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
 		/// <returns>The result of executing the command.</returns>
-		Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
+		Task<TResult> ExecuteAsync<TResult> (IAsyncCommand<TResult> command, CancellationToken cancellation);
 	}
 }

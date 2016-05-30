@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using Moq;
 using Xunit;
 
@@ -147,7 +148,7 @@ namespace Merq
 			handler.Setup (x => x.Execute (command)).Returns (expected);
 			var bus = new CommandBus(handler.Object);
 
-			var result = bus.Execute<Result> (command);
+			var result = bus.Execute (command);
 
 			Assert.Same (expected, result);
 		}
@@ -184,37 +185,37 @@ namespace Merq
 		[Fact]
 		public void when_constructing_with_null_handlers_then_throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new CommandBus (default(IEnumerable<ICommandHandler>)));
+			Assert.Throws<ArgumentNullException> (() => new CommandBus (default (IEnumerable<ICommandHandler>)));
 		}
 
 		[Fact]
 		public void when_can_handle_with_null_command_then_throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new CommandBus ().CanHandle(null));
+			Assert.Throws<ArgumentNullException> (() => new CommandBus ().CanHandle (null));
 		}
 
 		[Fact]
 		public void when_can_execute_with_null_command_then_throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new CommandBus ().CanExecute (null));
+			Assert.Throws<ArgumentNullException> (() => new CommandBus ().CanExecute<Command> (null));
 		}
 
 		[Fact]
 		public void when_execute_with_null_command_then_throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new CommandBus ().Execute (default(Command)));
+			Assert.Throws<ArgumentNullException> (() => new CommandBus ().Execute (default (Command)));
 		}
 
 		[Fact]
 		public void when_execute_result_with_null_command_then_throws ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new CommandBus ().Execute (default(CommandWithResult)));
+			Assert.Throws<ArgumentNullException> (() => new CommandBus ().Execute (default (CommandWithResult)));
 		}
 
 		[Fact]
 		public async Task when_executeasync_with_null_command_then_throws ()
 		{
-			await Assert.ThrowsAsync<ArgumentNullException> (() => new CommandBus ().ExecuteAsync (default(AsyncCommand), CancellationToken.None));
+			await Assert.ThrowsAsync<ArgumentNullException> (() => new CommandBus ().ExecuteAsync (default (AsyncCommand), CancellationToken.None));
 		}
 
 		[Fact]
@@ -223,6 +224,28 @@ namespace Merq
 			await Assert.ThrowsAsync<ArgumentNullException> (() => new CommandBus ().ExecuteAsync (default (AsyncCommandWithResult), CancellationToken.None));
 		}
 
+		[Fact]
+		public void when_executing_non_public_command_handler_then_invokes_handler_with_result ()
+		{
+			var handler = new NonPublicCommandHandlerWithResults (new Result());
+			var bus = new CommandBus(handler);
+
+			var results = bus.Execute (new CommandWithResults());
+
+			Assert.Equal (1, results.Count ());
+		}
+
+		[Fact]
+		public void when_executing_command_as_explicit_ICommand_then_invokes_handler ()
+		{
+			var handler = new Mock<ICommandHandler<Command>>();
+			var command = new Command();
+			var bus = new CommandBus(handler.Object);
+
+			bus.Execute ((ICommand)command);
+
+			handler.Verify (x => x.Execute (command));
+		}
 
 		public class AsyncCommand : IAsyncCommand { }
 
@@ -232,6 +255,28 @@ namespace Merq
 
 		public class CommandWithResult : ICommand<Result> { }
 
+		public class CommandWithResults : ICommand<IEnumerable<Result>> { }
+
 		public class Result { }
+
+		class NonPublicCommandHandlerWithResults : ICommandHandler<CommandWithResults, IEnumerable<Result>>
+		{
+			Result result;
+
+			public NonPublicCommandHandlerWithResults (Result result)
+			{
+				this.result = result;
+			}
+
+			bool ICanExecute<CommandWithResults>.CanExecute (CommandWithResults command)
+			{
+				return true;
+			}
+
+			IEnumerable<Result> ICommandHandler<CommandWithResults, IEnumerable<Result>>.Execute (CommandWithResults command)
+			{
+				yield return result;
+			}
+		}
 	}
 }

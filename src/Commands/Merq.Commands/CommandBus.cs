@@ -59,13 +59,13 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the query.</param>
 		/// <returns><see langword="true"/> if the command can be executed. <see langword="false"/> otherwise.</returns>
-		public virtual bool CanExecute (IExecutable command)
+		public virtual bool CanExecute<TCommand> (TCommand command) where TCommand : IExecutable
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			var handler = GetCommandHandler(command);
+			var handler = GetCommandHandler ((IExecutable) command);
 
-			return handler.CanExecute ((dynamic)command);
+			return ((ICanExecute<TCommand>)handler).CanExecute (command);
 		}
 
 		/// <summary>
@@ -76,9 +76,10 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			var handler = GetCommandHandler(command);
-
-			handler.Execute ((dynamic)command);
+			ExecuteImpl (
+				"ExecuteCommand",
+				new[] { command.GetType () },
+				new[] { command });
 		}
 
 		/// <summary>
@@ -91,9 +92,10 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			var handler = GetCommandHandler(command);
-
-			return handler.Execute ((dynamic)command);
+			return (TResult)ExecuteImpl (
+					"ExecuteCommandWithResult",
+					new[] { command.GetType (), typeof (TResult) },
+					new[] { command });
 		}
 
 		/// <summary>
@@ -105,9 +107,10 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			var handler = GetCommandHandler(command);
-
-			return handler.ExecuteAsync ((dynamic)command, cancellation);
+			return (Task)ExecuteImpl (
+					"ExecuteCommandAsync",
+					new[] { command.GetType () },
+					new object[] { command, cancellation });
 		}
 
 		/// <summary>
@@ -121,7 +124,65 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
+			return (Task<TResult>)ExecuteImpl (
+				"ExecuteCommandWithResultAsync",
+				new[] { command.GetType (), typeof (TResult) },
+				new object[] { command, cancellation });
+		}
+
+		object ExecuteImpl (string methodName, Type[] typeArguments, params object[] parameters)
+		{
+			// Important: We need to do this in order to be able to invoke the Execute or ExecuteAsync
+			// methods without specifying the generic arguments by the caller explicitly
+			// Otherwise it would not be possible to do the following:
+			//
+			// commandBus.Execute (new MyCommand ()) // void command
+			// var result = commandBus.execute (new MyCommandWithResult ()) // command with result
+			
+			try {
+				return this.GetType ()
+					.GetTypeInfo ()
+					.GetDeclaredMethod (methodName)
+					.MakeGenericMethod (typeArguments)
+					.Invoke (this, parameters);
+			} catch (TargetInvocationException ex) {
+				// TODO: replace the usage of throwing the inner exception with rethrow preserving stacktrace
+				throw ex.InnerException;
+			}
+		}
+
+		void ExecuteCommand<TCommand> (TCommand command) where TCommand : ICommand
+		{
+			if (command == null) throw new ArgumentNullException (nameof (command));
+
 			var handler = GetCommandHandler(command);
+
+			handler.Execute (command);
+		}
+
+		TResult ExecuteCommandWithResult<TCommand, TResult> (TCommand command) where TCommand : ICommand<TResult>
+		{
+			if (command == null) throw new ArgumentNullException (nameof (command));
+
+			var handler = GetCommandHandler <TCommand, TResult>(command);
+
+			return handler.Execute (command);
+		}
+
+		Task ExecuteCommandAsync<TCommand> (TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
+		{
+			if (command == null) throw new ArgumentNullException (nameof (command));
+
+			var handler = GetAsyncCommandHandler (command);
+
+			return handler.ExecuteAsync (command, cancellation);
+		}
+
+		Task<TResult> ExecuteCommandWithResultAsync<TCommand, TResult> (TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
+		{
+			if (command == null) throw new ArgumentNullException (nameof (command));
+
+			var handler = GetAsyncCommandHandler <TCommand, TResult> (command);
 
 			return handler.ExecuteAsync ((dynamic)command, cancellation);
 		}
@@ -167,7 +228,7 @@ namespace Merq
 				.Select (handler => Strings.CommandBus.DuplicateHandler (handler.Item2.GetType ().Name, handler.Item1.Name))));
 		}
 
-		dynamic GetCommandHandler (IExecutable command)
+		ICommandHandler GetCommandHandler (IExecutable command)
 		{
 			ICommandHandler handler;
 			if (!handlerMap.TryGetValue (command.GetType (), out handler)) {
@@ -175,6 +236,26 @@ namespace Merq
 			}
 
 			return handler;
+		}
+
+		ICommandHandler<TCommand> GetCommandHandler<TCommand> (TCommand command) where TCommand : ICommand
+		{
+			return (ICommandHandler<TCommand>)GetCommandHandler ((IExecutable)command);
+		}
+
+		ICommandHandler<TCommand, TResult> GetCommandHandler<TCommand, TResult> (IExecutable command) where TCommand : ICommand<TResult>
+		{
+			return (ICommandHandler<TCommand, TResult>)GetCommandHandler (command);
+		}
+
+		IAsyncCommandHandler<TCommand> GetAsyncCommandHandler<TCommand> (TCommand command) where TCommand : IAsyncCommand
+		{
+			return (IAsyncCommandHandler<TCommand>)GetCommandHandler ((IExecutable)command);
+		}
+
+		IAsyncCommandHandler<TCommand, TResult> GetAsyncCommandHandler<TCommand, TResult> (IExecutable command) where TCommand : IAsyncCommand<TResult>
+		{
+			return (IAsyncCommandHandler<TCommand, TResult>)GetCommandHandler (command);
 		}
 
 		static Type GetCommandType (Type type)
