@@ -138,9 +138,9 @@ namespace Merq
 			//
 			// commandBus.Execute (new MyCommand ()) // void command
 			// var result = commandBus.execute (new MyCommandWithResult ()) // command with result
-			
+
 			try {
-				return this.GetType ()
+				return typeof (CommandBus)
 					.GetTypeInfo ()
 					.GetDeclaredMethod (methodName)
 					.MakeGenericMethod (typeArguments)

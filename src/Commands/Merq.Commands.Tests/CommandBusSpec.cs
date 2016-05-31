@@ -278,5 +278,13 @@ namespace Merq
 				yield return result;
 			}
 		}
+
+		// Ensure all test to be run using a derived command bus class
+		class CommandBus : Merq.CommandBus
+		{
+			public CommandBus (IEnumerable<ICommandHandler> handlers) : base (handlers) { }
+
+			public CommandBus (params ICommandHandler[] handlers) : base (handlers) { }
+		}
 	}
 }
