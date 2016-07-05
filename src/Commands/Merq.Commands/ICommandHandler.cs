@@ -13,9 +13,9 @@ namespace Merq
 	/// Interface implemented by synchronous void commands.
 	/// </summary>
 	/// <typeparam name="TCommand">Type of command supported by the handler.</typeparam>
-	public interface ICommandHandler<in TCommand> : ICommandHandler, ICanExecute<TCommand> where TCommand : ICommand
+	public interface ICommandHandler<in TCommand> : IExecutableCommandHandler<TCommand>, ICanExecute<TCommand> where TCommand : ICommand
 	{
-		/// <summary>
+		/// <summary,
 		/// Executes the command synchronously.
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
@@ -27,7 +27,7 @@ namespace Merq
 	/// </summary>
 	/// <typeparam name="TCommand">Type of command supported by the handler.</typeparam>
 	/// <typeparam name="TResult">The type of the returned value from the execution.</typeparam>
-	public interface ICommandHandler<in TCommand, out TResult> : ICommandHandler, IExecuteResult, ICanExecute<TCommand> where TCommand : ICommand<TResult>
+	public interface ICommandHandler<in TCommand, out TResult> : IExecutableCommandHandler<TCommand>, IExecuteResult, ICanExecute<TCommand> where TCommand : ICommand<TResult>
 	{
 		/// <summary>
 		/// Executes the command synchronously.
