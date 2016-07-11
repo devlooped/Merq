@@ -84,11 +84,22 @@ namespace Merq
 			});
 
 			// Merge with any externally-produced observables that are compatible
-			var compatibleObservables = new [] { subject }.Concat(observables.OfType<IObservable<TEvent>>()).ToArray();
+			var compatibleObservables = new [] { subject }.Concat(GetObservables<TEvent>()).ToArray();
 			if (compatibleObservables.Length == 1)
 				return compatibleObservables[0];
 
 			return Observable.Merge (compatibleObservables);
+		}
+
+		/// <summary>
+		/// Derived classes can augment the available external event producers (observables) 
+		/// by overriding this method and concatenating other observables to the ones provided 
+		/// in the constructor (if any).
+		/// </summary>
+		/// <typeparam name="TEvent">Type of event being looked up.</typeparam>
+		protected virtual IEnumerable<IObservable<TEvent>> GetObservables<TEvent>()
+		{
+			return observables.OfType<IObservable<TEvent>>();
 		}
 
 		void InvokeCompatible (TypeInfo info, object @event)
