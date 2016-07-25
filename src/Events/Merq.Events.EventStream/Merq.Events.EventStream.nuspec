@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$id$</title>
+		<authors>MobileEssentials</authors>
+		<owners>mobessen</owners>
+		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
+		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
+		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Default implementation of the Event Stream pattern core interfaces</summary>
+		<description>Default implementation of the Event Stream pattern core interfaces</description>
+		<copyright>2015 © MobileEssentials</copyright>
+		<dependencies>
+			<dependency id="Merq.Events" version="$version$" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.xml" target="lib\portable-net45+win8+wpa81" />
+	</files>
+</package>

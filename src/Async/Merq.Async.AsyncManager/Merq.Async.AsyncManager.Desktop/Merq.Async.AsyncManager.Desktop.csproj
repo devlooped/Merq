@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
-    <AssemblyName>Merq.Async</AssemblyName>
+    <AssemblyName>Merq.Async.AsyncManager</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
@@ -21,28 +21,18 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Merq.Async.Portable\AsyncManager.cs">
+    <Compile Include="..\Merq.Async.AsyncManager.Portable\AsyncManager.cs">
       <Link>AsyncManager.cs</Link>
     </Compile>
-    <Compile Include="..\Merq.Async.Portable\AwaitExtensions.cs">
-      <Link>AwaitExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Merq.Async.Portable\IAsyncManager.cs">
-      <Link>IAsyncManager.cs</Link>
-    </Compile>
-    <Compile Include="..\Merq.Async.Portable\IAwaitable.cs">
-      <Link>IAwaitable.cs</Link>
-    </Compile>
-    <Compile Include="..\Merq.Async.Portable\IAwaiter.cs">
-      <Link>IAwaiter.cs</Link>
-    </Compile>
-    <Compile Include="..\Merq.Async.Portable\TaskSchedulerAsyncManager.cs">
-      <Link>TaskSchedulerAsyncManager.cs</Link>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Merq.Async.Portable\Merq.Async.csproj">
+      <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
+      <Name>Merq.Async</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />

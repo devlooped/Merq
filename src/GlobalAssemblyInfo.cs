@@ -7,6 +7,8 @@
 [assembly: AssemblyConfiguration ("RELEASE")]
 #endif
 
+[assembly: AssemblyTitle(ThisAssembly.AssemblyName)]
+[assembly: AssemblyDescription(ThisAssembly.AssemblyName)]
 [assembly: AssemblyCompany ("MobileEssentials")]
 [assembly: AssemblyProduct ("Merq")]
 [assembly: AssemblyCopyright ("Copyright © MobileEssentials 2016")]

@@ -31,6 +31,10 @@
     <Compile Include="SubjectWrapperSpec.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Merq.Events.EventStream\Merq.Events.EventStream.csproj">
+      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
+      <Name>Merq.Events.EventStream</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Merq.Events\Merq.Events.csproj">
       <Project>{C6B16D17-4F6A-4457-8497-92068E53DE39}</Project>
       <Name>Merq.Events</Name>

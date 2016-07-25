@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 namespace Merq
 {
 	/// <summary>
-	/// Provides a uniform way of executing commands regardless of their 
-	/// providers.
+	/// Provides a uniform way of executing commands (synchronous or 
+	/// asynchronous) regardless of their handler implementations.
 	/// </summary>
 	public interface ICommandBus : IFluentInterface
 	{
@@ -25,10 +25,12 @@ namespace Merq
 
 		/// <summary>
 		/// Determines whether the given command can be executed by a registered 
-		/// handler with the provided command instance values.
+		/// handler with the provided command instance values. If no registered 
+		/// handler exists, returns <see langword="false"/>.
 		/// </summary>
 		/// <param name="command">The command parameters for the query.</param>
-		/// <returns><see langword="true"/> if the command can be executed. <see langword="false"/> otherwise.</returns>
+		/// <returns><see langword="true"/> if a command handler is registered and 
+		/// the command can be executed. <see langword="false"/> otherwise.</returns>
 		bool CanExecute<TCommand> (TCommand command) where TCommand : IExecutable;
 
 		/// <summary>

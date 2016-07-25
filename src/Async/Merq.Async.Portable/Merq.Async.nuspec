@@ -10,13 +10,13 @@
 		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
 		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<summary>Command Bus pattern</summary>
-		<description>Command Bus pattern</description>
+		<summary>IAsyncManager core interfaces for advanced async management</summary>
+		<description>IAsyncManager core interfaces for advanced async management</description>
 		<copyright>2015 © MobileEssentials</copyright>
 	</metadata>
 	<files>
-		<file src="$id$\bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />
-		<file src="$id$\bin\$configuration$\$id$.pdb" target="lib\portable-net45+win8+wpa81" />
-		<file src="$id$\bin\$configuration$\$id$.xml" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.dll" target="lib\portable45-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\portable45-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.xml" target="lib\portable45-net45+win8+wpa81" />
 	</files>
 </package>
