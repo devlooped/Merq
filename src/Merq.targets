@@ -1,14 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Restore.targets))\NuGet.Restore.targets"
+			Condition=" '$(NuGetRestoreImported)' != 'true' " />
+
 	<PropertyGroup>
 		<ThisAssemblyNameFile Condition=" '$(Language)' == 'C#' ">$(IntermediateOutputPath)ThisAssembly.AssemblyName.g$(DefaultLanguageSourceExtension)</ThisAssemblyNameFile>
-		
 		<CompileDependsOn>
 			ThisAssemblyName;
 			$(CompileDependsOn)
 		</CompileDependsOn>
+		<BuildDependsOn Condition=" '$(BuildPackage)' == 'true' ">
+			$(BuildDependsOn);
+			BuildPackage
+		</BuildDependsOn>
 	</PropertyGroup>
-
+	
 	<Target Name="ThisAssemblyName" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyNameFile)' != '' " DependsOnTargets="GenerateThisAssemblyName">
 		<ItemGroup>
 			<Compile Include="$(ThisAssemblyNameFile)" />
@@ -27,6 +33,18 @@
 		<ItemGroup>
 			<FileWrites Include="$(ThisAssemblyNameFile)" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
+		<PropertyGroup>
+			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>
+		</PropertyGroup>
+	</Target>
+	
+	<Target Name="BuildPackage" DependsOnTargets="GetVersion">
+		<Error Condition=" !Exists('$(ProjectNuSpec)') " Text="BuildPackage is True but no $([System.IO.Path]::GetFileName($(ProjectNuSpec))) found alongside project file." />
+		<MakeDir Directories="$(Out)" Condition=" !Exists('$(Out)') " />
+		<Exec Command='"$(NuGet)" Pack "$(ProjectNuSpec)" -Version $(Version) -Properties Id=$(MSBuildProjectName);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
 	</Target>
 	
 </Project>

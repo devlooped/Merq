@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
 	<metadata>
-		<id>$id$</id>
-		<version>$version$</version>
-		<title>$id$</title>
+		<id>Merq</id>
+		<version>1.0.0-pre</version>
+		<title>Merq: Command Bus + Event Stream</title>
 		<authors>MobileEssentials</authors>
 		<owners>mobessen</owners>
 		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
@@ -14,20 +14,11 @@
 		<description>Merq = Command Bus + Event Stream</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Commands" version="$version$" />
-			<dependency id="Merq.Events" version="$version$" />
+			<dependency id="Merq.Commands" version="$events$" />
+			<dependency id="Merq.Events" version="$commands$" />
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\.nuget\GitInfo.txt" target="src" />
-		<file src="*.props" target="src" />
-		<file src="*.targets" target="src" />
-		<file src="*.sln" target="src" />
-		<file src="*.snk" target="src" />
-		<file src="**\*.cs" target="src" exclude="**\bin\**\*.*;**\obj\**\*.*" />
-		<file src="**\*.csproj" target="src" exclude="**\bin\**\*.*;**\obj\**\*.*" />
-		<file src="**\*.nuspec" target="src" exclude="**\bin\**\*.*;**\obj\**\*.*" />
-		<file src="**\*.config" target="src" exclude="**\bin\**\*.*;**\obj\**\*.*" />
-		<file src="**\*.resx" target="src" exclude="**\bin\**\*.*;**\obj\**\*.*" />
+		<file src=".blank" target="_._" />
 	</files>
 </package>

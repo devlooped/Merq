@@ -44,13 +44,13 @@
       <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
       <Name>Merq.Async.AsyncManager.Desktop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merq.Async.Portable\Merq.Async.csproj">
-      <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
-      <Name>Merq.Async</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj">
       <Project>{351e25f9-09d3-4718-b358-2be5ad29a33c}</Project>
       <Name>Merq.Async.TaskScheduler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merq.Async\Merq.Async.csproj">
+      <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
+      <Name>Merq.Async</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

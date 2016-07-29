@@ -89,11 +89,11 @@ namespace Merq
 		}
 
 		[Fact]
-		public void when_can_execute_requested_and_no_handler_registered_then_throws ()
+		public void when_can_execute_requested_and_no_handler_registered_then_returns_false ()
 		{
 			var bus = new CommandBus();
 
-			Assert.Throws<NotSupportedException> (() => bus.CanExecute (new Command ()));
+			Assert.False (bus.CanExecute (new Command ()));
 		}
 
 		[Fact]

@@ -1,16 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>full</DebugType>
 		<DefineConstants>TRACE</DefineConstants>
+		<FileAlignment>512</FileAlignment>
 		<NoWarn>CS1570</NoWarn>
+		<DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Merq.snk</AssemblyOriginatorKeyFile>
+		<BuildPackage Condition=" '$(BuildPackage)' == '' And '$(Configuration)' == 'Release' ">true</BuildPackage>
+		<BuildPackage Condition=" !Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).nuspec') ">false</BuildPackage>
+		<!-- For the NuGet.Restore.targets file imported by Merq.targets -->
+		<RestorePackages>false</RestorePackages>
+		<Out Condition=" '$(Out)' == '' ">$(OutputPath)</Out>
+		<ProjectNuSpec>$([System.IO.Path]::ChangeExtension($(MSBuildProjectFullPath), '.nuspec'))</ProjectNuSpec>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<Optimize>false</Optimize>
@@ -18,7 +29,6 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<Optimize>true</Optimize>
-		<DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />

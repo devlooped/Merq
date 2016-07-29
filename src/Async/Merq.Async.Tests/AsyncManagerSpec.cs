@@ -29,6 +29,8 @@ namespace Merq
 			await context.Factory.SwitchToMainThreadAsync ();
 			await TaskScheduler.Default.SwitchTo ();
 			await context.Factory.SwitchToMainThreadAsync ();
+
+			Assert.True(true);
 		}
 
 		protected override IAsyncManager CreateAsyncManager () => new AsyncManager ();

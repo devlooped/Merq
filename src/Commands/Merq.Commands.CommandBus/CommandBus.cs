@@ -63,9 +63,10 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			var handler = GetCommandHandler ((IExecutable) command);
+			var handler = GetCommandHandler ((IExecutable) command, throwIfMissing: false);
 
-			return ((ICanExecute<TCommand>)handler).CanExecute (command);
+			return handler == null ? false :
+				((ICanExecute<TCommand>)handler).CanExecute (command);
 		}
 
 		/// <summary>
@@ -228,10 +229,10 @@ namespace Merq
 				.Select (handler => Strings.CommandBus.DuplicateHandler (handler.Item2.GetType ().Name, handler.Item1.Name))));
 		}
 
-		ICommandHandler GetCommandHandler (IExecutable command)
+		ICommandHandler GetCommandHandler (IExecutable command, bool throwIfMissing)
 		{
 			ICommandHandler handler;
-			if (!handlerMap.TryGetValue (command.GetType (), out handler)) {
+			if (!handlerMap.TryGetValue (command.GetType (), out handler) && throwIfMissing) {
 				throw new NotSupportedException (Strings.CommandBus.NoHandler (command.GetType ()));
 			}
 
@@ -240,22 +241,22 @@ namespace Merq
 
 		ICommandHandler<TCommand> GetCommandHandler<TCommand> (TCommand command) where TCommand : ICommand
 		{
-			return (ICommandHandler<TCommand>)GetCommandHandler ((IExecutable)command);
+			return (ICommandHandler<TCommand>)GetCommandHandler ((IExecutable)command, true);
 		}
 
 		ICommandHandler<TCommand, TResult> GetCommandHandler<TCommand, TResult> (IExecutable command) where TCommand : ICommand<TResult>
 		{
-			return (ICommandHandler<TCommand, TResult>)GetCommandHandler (command);
+			return (ICommandHandler<TCommand, TResult>)GetCommandHandler (command, true);
 		}
 
 		IAsyncCommandHandler<TCommand> GetAsyncCommandHandler<TCommand> (TCommand command) where TCommand : IAsyncCommand
 		{
-			return (IAsyncCommandHandler<TCommand>)GetCommandHandler ((IExecutable)command);
+			return (IAsyncCommandHandler<TCommand>)GetCommandHandler ((IExecutable)command, true);
 		}
 
 		IAsyncCommandHandler<TCommand, TResult> GetAsyncCommandHandler<TCommand, TResult> (IExecutable command) where TCommand : IAsyncCommand<TResult>
 		{
-			return (IAsyncCommandHandler<TCommand, TResult>)GetCommandHandler (command);
+			return (IAsyncCommandHandler<TCommand, TResult>)GetCommandHandler (command, true);
 		}
 
 		static Type GetCommandType (Type type)
