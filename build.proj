@@ -16,7 +16,7 @@
 		<TestProject Include="src\**\*Tests.csproj" />
 	</ItemGroup>
 
-	<Target Name="All" DependsOnTargets="Build;Test" />
+	<Target Name="All" DependsOnTargets="Build;Test;Package" />
 
 	<Target Name="Clean">
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" Targets="Clean" />
@@ -28,6 +28,7 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build">
+		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
 
@@ -38,7 +39,9 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="BuildPackages" AfterTargets="Build" Inputs="@(NonProjectNuSpec)" Outputs="%(NonProjectNuSpec.Identity)--BATCH"
+	<Target Name="Package" DependsOnTargets="BuildPackages;FindPackages;DeletePackages;PrepareMetaPackage;BuildMetaPackage" />
+
+	<Target Name="BuildPackages" Inputs="@(NonProjectNuSpec)" Outputs="%(NonProjectNuSpec.Identity)--BATCH"
 			Condition="'@(NonProjectNuSpec)' != ''">
 		<MSBuild Projects='$(PackagesPath)\GitInfo\build\GitInfo.targets'
 				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NonProjectNuSpec.RootDir)%(NonProjectNuSpec.Directory);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)'>
@@ -55,7 +58,7 @@
 		<Exec Command='"$(NuGet)" Pack "@(NonProjectNuSpec)" -Version $(Version) -Properties Id=%(NonProjectNuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
 	</Target>
 
-	<Target Name="FindPackages" AfterTargets="BuildPackages" DependsOnTargets="BuildPackages">
+	<Target Name="FindPackages" DependsOnTargets="BuildPackages">
 		<PropertyGroup>
 			<PackageRegex>^(?&lt;id&gt;.+)\.(?&lt;version&gt;\d+\.\d+\.\d+)(?&lt;pre&gt;-.+)?$</PackageRegex>
 		</PropertyGroup>
@@ -69,7 +72,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="DeletePackages" AfterTargets="FindPackages" DependsOnTargets="FindPackages"
+	<Target Name="DeletePackages" DependsOnTargets="FindPackages"
 			Inputs="@(NuPackage)" Outputs="%(NuPackage.Identity)-BATCH">
 		<PropertyGroup>
 			<PackageId>%(NuPackage.Id)</PackageId>
@@ -79,22 +82,27 @@
 			<PackageUrl>https://api.nuget.org/v3/registration1/$(PackageId)/$(PackageVersion).json</PackageUrl>
 		</PropertyGroup>
 
-		<Exec Command="$(Curl) -s -0 -i -X HEAD $(PackageUrl)" IgnoreExitCode="true">
+		<Exec Command="$(Curl) -s -0 -i -X HEAD $(PackageUrl)" StandardOutputImportance="low" StandardErrorImportance="high" IgnoreExitCode="true">
+			<Output PropertyName="ExitCode" TaskParameter="ExitCode" />
+		</Exec>
+		<Exec Command="$(Curl) -s -0 -i -X HEAD $(PackageUrl)" StandardOutputImportance="low" StandardErrorImportance="high" IgnoreExitCode="true"
+			  Condition=" '$(ExitCode)' == '0' And '$(ExitCode)' == '18' And '$(ExitCode)' == '22' ">
 			<Output PropertyName="ExitCode" TaskParameter="ExitCode" />
 		</Exec>
 
-		<Message Importance="high" Condition=" '$(ExitCode)' == '0' "
+		<!-- 18 == partial file, from the HEAD request -->
+		<Message Importance="high" Condition=" '$(ExitCode)' == '0' Or '$(ExitCode)' == '18' "
 				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has already been published."/>
 		<Message Importance="high" Condition=" '$(ExitCode)' == '22' " 
 				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has not been published before."/>
 
-		<Delete Files="%(NuPackage.FullPath)" Condition=" '$(ExitCode)' == '0' " />
+		<Delete Files="%(NuPackage.FullPath)" Condition=" '$(ExitCode)' == '0'  Or '$(ExitCode)' == '18' " />
 	</Target>
 
 	<Target Name="PrepareMetaPackage" DependsOnTargets="DeletePackages">
 		<ItemGroup>
-			<EventsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Events' " />
-			<CommandsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Commands' " />
+			<EventsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Events' And Exists('%(FullPath)') " />
+			<CommandsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Commands' And Exists('%(FullPath)') " />
 		</ItemGroup>
 		<PropertyGroup>
 			<EventsVersion>@(EventsPackage -> '%(Version)%(ReleaseLabel)')</EventsVersion>
@@ -149,7 +157,6 @@
 	<Import Project='$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props'/>
 	<Import Project='$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets'/>
 	<!--
-	<Import Project='$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props'/>
 	<Import Project='$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets'/>
 	-->
 	
@@ -226,7 +233,7 @@
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
-		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion'
+		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  Condition=" '$(PendingRestore)' == 'true' " />
 
 		<!-- Errors if nuget packages were restored during the build -->

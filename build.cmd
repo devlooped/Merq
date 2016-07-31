@@ -24,7 +24,7 @@ echo Downloading latest version of NuGet.exe...
 :: Build script packages have no version in the path, so we install them to .nuget\packages to avoid conflicts with 
 :: solution/project packages.
 IF NOT EXIST packages.config goto run
-.nuget\nuget.exe install packages.config -OutputDirectory .nuget\packages -ExcludeVersion
+.nuget\nuget.exe install packages.config -OutputDirectory .nuget\packages -ExcludeVersion -Verbosity quiet
 
 :run
 "%msb%" build.proj /v:minimal %1 %2 %3 %4 %5 %6 %7 %8 %9
