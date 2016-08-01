@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4B63DDB9-E254-4149-BB37-34D6C4D58CB3}</ProjectGuid>
+    <ProjectGuid>{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
-    <AssemblyName>Merq.Commands.Tests</AssemblyName>
+    <AssemblyName>Merq.Vsix.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -18,37 +18,43 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\StaFact.cs">
-      <Link>StaFact.cs</Link>
-    </Compile>
-    <Compile Include="CommandBusSpec.cs" />
-    <Compile Include="DispatcherAsyncManagerSpec.cs" />
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Async\Merq.Async.AsyncManager\Merq.Async.AsyncManager.Desktop\Merq.Async.AsyncManager.Desktop.csproj">
+      <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
+      <Name>Merq.Async.AsyncManager.Desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
       <Name>Merq.Async</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merq.Commands.CommandBus\Merq.Commands.CommandBus.csproj">
-      <Project>{9eb66b68-54cd-422b-a6e9-345bdeca4106}</Project>
-      <Name>Merq.Commands.CommandBus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Merq.Commands\Merq.Commands.csproj">
+    <ProjectReference Include="..\..\Commands\Merq.Commands\Merq.Commands.csproj">
       <Project>{2855a474-dffe-4536-8fa7-19b381a240b0}</Project>
       <Name>Merq.Commands</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Events\Merq.Events.EventStream\Merq.Events.EventStream.csproj">
+      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
+      <Name>Merq.Events.EventStream</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Events\Merq.Events\Merq.Events.csproj">
+      <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
+      <Name>Merq.Events</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merq.Vsix\Merq.Vsix.csproj">
+      <Project>{c9a505ca-f826-473a-8290-b36af6be56fb}</Project>
+      <Name>Merq.Vsix</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
+    <Compile Include="AsyncManagerProviderSpec.cs" />
+    <Compile Include="EventStreamComponentSpec.cs" />
+    <Compile Include="CommandBusSpec.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />

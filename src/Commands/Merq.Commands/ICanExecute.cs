@@ -1,12 +1,9 @@
-﻿using System.ComponentModel;
-
-namespace Merq
+﻿namespace Merq
 {
 	/// <summary>
 	/// Interface implemented by all generic command handlers 
 	/// to determine if they can execute a given command.
 	/// </summary>
-	[EditorBrowsable (EditorBrowsableState.Never)]
 	public interface ICanExecute<in TCommand> where TCommand : IExecutable
 	{
 		/// <summary>

@@ -151,6 +151,12 @@ namespace Merq
 			Assert.Throws<NotSupportedException> (() => stream.Push (new ConcreteEvent ()));
 		}
 
+		[Fact]
+		public void given_an_observable_when_pushing_event_of_same_base_hierarchy_succeeds()
+		{
+
+		}
+
 		public class NestedPublicEvent { }
 	}
 

@@ -176,11 +176,11 @@
 
 	<Target Name="TestWin" DependsOnTargets="PrepareTest" Condition=" '$(OS)' == 'Windows_NT' ">
 		<PropertyGroup>
-			<XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.exe</XunitConsole>
+			<XunitConsole>$(PackagesPath)\xunit.runner.console\tools\xunit.console.x86.exe</XunitConsole>
 			<XunitOptions>$(XunitOptions) -html $(Out)\test.html -xml $(Out)\test.xml -parallel all -noshadow</XunitOptions>
 
 			<CoverageConsole>$(PackagesPath)\OpenCover\tools\OpenCover.Console.exe</CoverageConsole>
-			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[Merq.*]* -[xunit*]* -[*.Tests]* -[*]*ThisAssembly* -[*]*IFluentInterface*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
+			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[Merq.*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly* -[*]*IFluentInterface*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
 		</PropertyGroup>
 
 		<Exec Command="$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:&quot;@(TestAssembly, ' ') $(XunitOptions)&quot;"

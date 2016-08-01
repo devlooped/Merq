@@ -7,6 +7,7 @@
 [assembly: AssemblyConfiguration ("RELEASE")]
 #endif
 
+#pragma warning disable 0436
 [assembly: AssemblyTitle(ThisAssembly.AssemblyName)]
 [assembly: AssemblyDescription(ThisAssembly.AssemblyName)]
 [assembly: AssemblyCompany ("MobileEssentials")]

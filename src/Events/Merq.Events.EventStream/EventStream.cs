@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Reflection;
 using Merq.Properties;
 
@@ -61,12 +60,12 @@ namespace Merq
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.PublishedEventNotPublic);
 
-			if (observables.OfType<IObservable<TEvent>> ().Any ())
-				throw new NotSupportedException (Strings.EventStream.PushNotSupportedForExternalEvent (typeof (TEvent).Name));
+			if (GetObservables<TEvent>().Any())
+				throw new NotSupportedException(Strings.EventStream.PushNotSupportedForExternalEvent(typeof(TEvent).Name));
 
 			var eventType = @event.GetType().GetTypeInfo();
 
-			InvokeCompatible (@eventType, @event);
+			InvokeCompatibleSubjects (@eventType, @event);
 		}
 
 		/// <summary>
@@ -102,7 +101,7 @@ namespace Merq
 			return observables.OfType<IObservable<TEvent>>();
 		}
 
-		void InvokeCompatible (TypeInfo info, object @event)
+		void InvokeCompatibleSubjects (TypeInfo info, object @event)
 		{
 			// We will call all subjects that are compatible with
 			// the event type, not just concrete event type subscribers.

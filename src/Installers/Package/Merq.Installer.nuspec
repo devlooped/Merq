@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>Merq.Installer</id>
+		<version>1.0.0</version>
+		<authors>Mobile Essentials</authors>
+		<owners>kzu</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Merq Installer: VSIX, MSI and EXE (chained) installer integration.</description>
+		<copyright>Copyright 2016 Mobile Essentials</copyright>
+	</metadata>
+	<files>
+		<file src="Merq.Installer.txt" target="Readme.txt" />
+		<file src="Merq.Installer.targets" target="build\Merq.Installer.targets" />
+		<file src="..\Merq.Lib\bin\$Configuration$\Merq.wixlib" target="tools" />
+		<file src="..\Merq.Msi\bin\$Configuration$\Merq.msi" target="tools" />
+		<file src="..\..\Vsix\Merq.Vsix\bin\$Configuration$\Merq.vsix" target="tools" />
+	</files>
+</package>
