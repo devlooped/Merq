@@ -1,0 +1,12 @@
+﻿{
+  "dependencies": {
+    "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
+    "Microsoft.VSSDK.BuildTools": "14.3.25420"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}
