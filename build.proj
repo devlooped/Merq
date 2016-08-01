@@ -10,6 +10,18 @@
 		<SkipWriteGitCache Condition=" '$(SkipWriteGitCache)' == '' ">true</SkipWriteGitCache>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)</CommonBuildProperties>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<!-- Properties for the integration tests project -->
+		<!-- When testing the installed version of Merq, it's unnecessary to deploy the built VSIX extension, 
+			 since integration tests will run against the normal hive -->
+		<CommonBuildProperties>$(CommonBuildProperties);DeployExtension=false;RootSuffix=.</CommonBuildProperties>
+		<!-- When running a CI build, either use the explicit VisualStudioVersion or fallback to All -->
+		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</CommonBuildProperties>
+		<!-- AppVeyor doesn't have VS2012 VSSDK installed: see https://www.appveyor.com/docs/installed-software#visual-studio-2012 -->
+		<!--<CommonBuildProperties Condition=" '$(APPVEYOR)' == 'true' ">$(CommonBuildProperties);MinimumVisualStudioVersion=12.0</CommonBuildProperties>-->
+		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
+		<VsixInstaller>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\$(VisualStudioVersion)', 'InstallDir', null, RegistryView.Registry32))VSIXInstaller.exe</VsixInstaller>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Solution Include="src\*.sln"/>
@@ -29,6 +41,7 @@
 
 	<Target Name="Build">
 		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
+		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
 
@@ -160,7 +173,18 @@
 	<Import Project='$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets'/>
 	-->
 	
-	<Target Name="Test" DependsOnTargets="TestWin;TestMac" />
+	<Target Name="Test" DependsOnTargets="Install;PrepareTest;TestWin;TestMac;Uninstall" />
+
+	<Target Name="Install" Condition=" Exists('$(Installer)') ">
+		<Error Condition=" !Exists('$(VsixInstaller)') " Text="No VSIX installer found at expected path $(VsixInstaller). Cannot run installed Merq tests." />
+		<Message Importance="high" Text="Installing $(Installer) using $(VsixInstaller)..." />
+		<Exec Command='"$(VsixInstaller)" /q "$(Installer)"' />
+	</Target>
+
+	<Target Name="Uninstall" Condition=" Exists('$(Installer)') ">
+		<Message Importance="high" Text="Uninstalling $(Installer) using $(VsixInstaller)..." />
+		<Exec Command='"$(VsixInstaller)" /q /u:Merq' />
+	</Target>
 
 	<Target Name="PrepareTest" DependsOnTargets="Build">
 		<MSBuild Projects="@(TestProject)" BuildInParallel="false" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
