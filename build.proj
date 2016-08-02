@@ -11,7 +11,7 @@
 		<SkipWriteGitCache Condition=" '$(SkipWriteGitCache)' == '' ">true</SkipWriteGitCache>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)</CommonBuildProperties>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(IntegrationTest)' == '' == 'true' ">
 		<!-- Properties for the integration tests project -->
 		<!-- When testing the installed version of Merq, it's unnecessary to deploy the built VSIX extension, 
 			 since integration tests will run against the normal hive -->
@@ -177,13 +177,13 @@
 	
 	<Target Name="Test" DependsOnTargets="Install;PrepareTest;TestWin;TestMac;Uninstall" />
 
-	<Target Name="Install" Condition=" Exists('$(Installer)') ">
+	<Target Name="Install" Condition=" Exists('$(Installer)') And '$(IntegrationTest)' == 'true' ">
 		<Error Condition=" !Exists('$(VsixInstaller)') " Text="No VSIX installer found at expected path $(VsixInstaller). Cannot run installed Merq tests." />
 		<Message Importance="high" Text="Installing $(Installer) using $(VsixInstaller)..." />
 		<Exec Command='"$(VsixInstaller)" /q "$(Installer)"' />
 	</Target>
 
-	<Target Name="Uninstall" Condition=" Exists('$(Installer)') ">
+	<Target Name="Uninstall" Condition=" Exists('$(Installer)') And '$(IntegrationTest)' == 'true' ">
 		<Message Importance="high" Text="Uninstalling $(Installer) using $(VsixInstaller)..." />
 		<Exec Command='"$(VsixInstaller)" /q /u:Merq' />
 	</Target>
