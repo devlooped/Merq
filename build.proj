@@ -3,7 +3,6 @@
 
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
@@ -11,16 +10,21 @@
 		<SkipWriteGitCache Condition=" '$(SkipWriteGitCache)' == '' ">true</SkipWriteGitCache>
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)</CommonBuildProperties>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(IntegrationTest)' == 'true' ">
-		<!-- Properties for the integration tests project -->
-		<!-- When testing the installed version of Merq, it's unnecessary to deploy the built VSIX extension, 
-			 since integration tests will run against the normal hive -->
-		<CommonBuildProperties>$(CommonBuildProperties);DeployExtension=false;RootSuffix=.</CommonBuildProperties>
-		<!-- When running a CI build, either use the explicit VisualStudioVersion or fallback to All -->
-		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</CommonBuildProperties>
-		<!-- AppVeyor doesn't have VS2012 VSSDK installed: see https://www.appveyor.com/docs/installed-software#visual-studio-2012 -->
-		<!--<CommonBuildProperties Condition=" '$(APPVEYOR)' == 'true' ">$(CommonBuildProperties);MinimumVisualStudioVersion=12.0</CommonBuildProperties>-->
+	<!-- Integration-test related stuff -->
+	<PropertyGroup>
+		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
 		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
+		<InstallVsix Condition=" '$(InstallVsix)' == '' And '$(IntegrationTest)' == 'true' And '$(Configuration)' == 'Release' ">true</InstallVsix>
+		<!-- If we're not running integration tests, we don't need to deploy the extension -->
+		<CommonBuildProperties Condition=" '$(IntegrationTest)' != 'true' ">$(CommonBuildProperties);DeployExtension=false</CommonBuildProperties>
+		<!-- If we're running integration tests and installing the VSIX, switch to normal hive -->
+		<CommonBuildProperties Condition=" '$(IntegrationTest)' == 'true' And '$(InstallVsix)' == 'true' ">$(CommonBuildProperties);RootSuffix=.</CommonBuildProperties>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(IntegrationTest)' == 'true' ">
+		<!-- When running a release build, either use the explicit VisualStudioVersion or fallback to All -->
+		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</CommonBuildProperties>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(InstallVsix)' == 'true' ">
 		<VsixInstaller>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\$(VisualStudioVersion)', 'InstallDir', null, RegistryView.Registry32))VSIXInstaller.exe</VsixInstaller>
 	</PropertyGroup>
 
@@ -176,13 +180,13 @@
 	
 	<Target Name="Test" DependsOnTargets="Install;PrepareTest;TestWin;TestMac;Uninstall" />
 
-	<Target Name="Install" Condition=" Exists('$(Installer)') And '$(IntegrationTest)' == 'true' ">
-		<Error Condition=" !Exists('$(VsixInstaller)') " Text="No VSIX installer found at expected path $(VsixInstaller). Cannot run installed Merq tests." />
+	<Target Name="Install" Condition=" Exists('$(Installer)') And '$(InstallVsix)' == 'true' ">
+		<Error Condition=" !Exists('$(VsixInstaller)') " Text="No VSIX installer found at expected path $(VsixInstaller). Cannot install Merq extension." />
 		<Message Importance="high" Text="Installing $(Installer) using $(VsixInstaller)..." />
 		<Exec Command='"$(VsixInstaller)" /q "$(Installer)"' />
 	</Target>
 
-	<Target Name="Uninstall" Condition=" Exists('$(Installer)') And '$(IntegrationTest)' == 'true' ">
+	<Target Name="Uninstall" Condition=" Exists('$(Installer)') And '$(InstallVsix)' == 'true' ">
 		<Message Importance="high" Text="Uninstalling $(Installer) using $(VsixInstaller)..." />
 		<Exec Command='"$(VsixInstaller)" /q /u:Merq' />
 	</Target>
