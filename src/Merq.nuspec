@@ -4,7 +4,7 @@
 		<id>Merq</id>
 		<version>1.0.0-pre</version>
 		<title>Merq: Command Bus + Event Stream</title>
-		<authors>MobileEssentials</authors>
+		<authors>Mobile Essentials</authors>
 		<owners>mobessen</owners>
 		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
 		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
@@ -14,8 +14,8 @@
 		<description>Merq = Command Bus + Event Stream</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Commands" version="$events$" />
-			<dependency id="Merq.Events" version="$commands$" />
+			<dependency id="Merq.Commands" version="$commands$" />
+			<dependency id="Merq.Events" version="$events$" />
 		</dependencies>
 	</metadata>
 	<files>

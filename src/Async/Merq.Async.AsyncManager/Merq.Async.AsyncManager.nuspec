@@ -4,7 +4,7 @@
 		<id>$id$</id>
 		<version>$version$</version>
 		<title>$id$</title>
-		<authors>MobileEssentials</authors>
+		<authors>Mobile Essentials</authors>
 		<owners>mobessen</owners>
 		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
 		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
