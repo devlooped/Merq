@@ -3,6 +3,7 @@
 
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
@@ -25,7 +26,8 @@
 
 	<ItemGroup>
 		<Solution Include="src\*.sln"/>
-		<TestProject Include="src\**\*Tests.csproj" />
+		<TestProject Include="src\**\*.Tests.csproj" />
+		<TestProject Include="src\**\*.Tests.csproj" Condition=" '$(IntegrationTest)' == 'true' " />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
