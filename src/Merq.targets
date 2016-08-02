@@ -9,10 +9,6 @@
 			ThisAssemblyName;
 			$(CompileDependsOn)
 		</CompileDependsOn>
-		<BuildDependsOn Condition=" '$(BuildPackage)' == 'true' ">
-			$(BuildDependsOn);
-			BuildPackage
-		</BuildDependsOn>
 	</PropertyGroup>
 	
 	<Target Name="ThisAssemblyName" BeforeTargets="BuildOnlySettings" Condition=" '$(ThisAssemblyNameFile)' != '' " DependsOnTargets="GenerateThisAssemblyName">

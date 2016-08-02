@@ -12,7 +12,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Event Stream pattern core interfaces</summary>
 		<description>Event Stream pattern core interfaces</description>
-		<copyright>2015 © MobileEssentials</copyright>
+		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 	</metadata>
 	<files>
 		<file src="bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />

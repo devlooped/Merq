@@ -12,7 +12,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Default implementation of the Event Stream pattern core interfaces</summary>
 		<description>Default implementation of the Event Stream pattern core interfaces</description>
-		<copyright>2015 © MobileEssentials</copyright>
+		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 		<dependencies>
 			<dependency id="Merq.Events" version="1.0.0-pre" />
 			<dependency id="Rx-Main" version="2.2.5" />

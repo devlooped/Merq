@@ -10,7 +10,7 @@
 		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Merq Installer: VSIX, MSI and EXE (chained) installer integration.</description>
-		<copyright>2015 © MobileEssentials</copyright>
+		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 	</metadata>
 	<files>
 		<file src="Merq.Installer.txt" target="Readme.txt" />

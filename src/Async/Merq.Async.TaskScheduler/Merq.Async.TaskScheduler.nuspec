@@ -12,7 +12,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Provides an implementation of IAsyncManager based on a TaskScheduler.</summary>
 		<description>Provides an implementation of IAsyncManager based on a TaskScheduler.</description>
-		<copyright>2015 © MobileEssentials</copyright>
+		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 		<dependencies>
 			<dependency id="Merq.Async" version="1.0.0-pre" />
 		</dependencies>
