@@ -15,11 +15,11 @@
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
 			<group targetFramework="net45">
-				<dependency id="Merq.Async" version="$version$" />
+				<dependency id="Merq.Async" version="1.0.0-pre" />
 				<dependency id="Microsoft.VisualStudio.Threading" version="12.2.0" />
 			</group>
 			<group targetFramework="portable45-net45+win8+wpa81">
-				<dependency id="Merq.Async" version="$version$" />
+				<dependency id="Merq.Async" version="1.0.0-pre" />
 				<dependency id="Microsoft.VisualStudio.Threading" version="14.1.114" />
 			</group>
 		</dependencies>

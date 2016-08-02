@@ -14,7 +14,8 @@
 		<description>Default implementation of the Event Stream pattern core interfaces</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Events" version="$version$" />
+			<dependency id="Merq.Events" version="1.0.0-pre" />
+			<dependency id="Rx-Main" version="2.2.5" />
 		</dependencies>
 	</metadata>
 	<files>

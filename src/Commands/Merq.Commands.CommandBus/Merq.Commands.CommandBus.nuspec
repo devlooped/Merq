@@ -14,7 +14,7 @@
 		<description>Default implementation of the Command Bus pattern core interfaces</description>
 		<copyright>2015 © MobileEssentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Commands" version="$version$" />
+			<dependency id="Merq.Commands" version="1.0.0-pre" />
 		</dependencies>
 	</metadata>
 	<files>
