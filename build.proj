@@ -57,8 +57,17 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="Package" DependsOnTargets="BuildPackages;FindPackages;DeletePackages;PrepareMetaPackage;BuildMetaPackage" />
+	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages;FindPackages;DeletePackages;PrepareMetaPackage;BuildMetaPackage" />
 
+	<Target Name="BuildInstaller">
+		<MSBuild Projects="src\Installers\Merq.Installer\Merq.Installer.nuproj"
+				 Properties="$(CommonBuildProperties)"
+				 Targets="Build;GetTargetPath">
+			<Output ItemName='InstallerPackage' TaskParameter='TargetOutputs' />
+		</MSBuild>
+		<Copy SourceFiles='%(InstallerPackage.Identity)' DestinationFiles='$(Out)\%(InstallerPackage.Filename)%(InstallerPackage.Extension)' />
+	</Target>
+	
 	<Target Name="BuildPackages" Inputs="@(NuSpec)" Outputs="%(NuSpec.Identity)--BATCH"
 			Condition="'@(NuSpec)' != ''">
 		<MSBuild Projects='$(PackagesPath)\GitInfo\build\GitInfo.targets'

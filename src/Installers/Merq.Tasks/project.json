@@ -1,0 +1,11 @@
+﻿{
+  "dependencies": {
+    "MSBuilder.TaskInliner": "0.2.7"
+  },
+  "frameworks": {
+    "net45": {}
+  },
+  "runtimes": {
+    "win": {}
+  }
+}

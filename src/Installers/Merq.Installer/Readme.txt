@@ -6,13 +6,12 @@ to consume ICommandBus, IEventStream or IAsyncManager from Visual Studio 2012 or
 
 == VSIX Projects ==
 
-If your project's output is a VSIX, installing this NuGet package will add the 
-Merq.vsix file as a Content item with CopyToOutputDirectory=PreserveNewest and 
-IncludeInVsix=true. All that's left to do manually is to reference the payload 
-from your vsixmanifest:
+If your project's output is a VSIX, installing this NuGet package will automatically 
+add the Merq.vsix file as a Content item with CopyToOutputDirectory=PreserveNewest and 
+IncludeInVsix=true, as well as add it as an embedded VSIX dependency, like so:
 
-	<Dependency d:Source="File" DisplayName="Merq" Id="Merq" Version="[0.4.0,)" d:InstallSource="Embed" Location="Merq.vsix" />
-
+  <Dependency d:Source="File" DisplayName="Merq" Id="Merq" Version="[0.4.0,)"
+              d:InstallSource="Embed" Location="Merq.vsix" />
 
 == MSI Projects ==
 

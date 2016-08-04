@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<Content Include="..\Merq.Tasks\bin\$(Configuration)\*.*">
+			<Link>build\%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\Merq.Lib\bin\$(Configuration)\Merq.wixlib">
+			<Link>tools\%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\Merq.Msi\bin\$(Configuration)\Merq.msi">
+			<Link>tools\%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\..\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix">
+			<Link>tools\%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\..\Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest">
+			<Link>tools\%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<VersionDependsOn>GetVersion</VersionDependsOn>
+		<GetTargetPathDependsOn>EstablishNuGetPaths;$(GetTargetPathDependsOn)</GetTargetPathDependsOn>
+	</PropertyGroup>
+	
+	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
+		<PropertyGroup>
+			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Overriden by the GitInfo import if it exists -->
+	<Target Name="GitVersion">
+		<PropertyGroup>
+			<GitSemVerMajor>1</GitSemVerMajor>
+			<GitSemVerMinor>0</GitSemVerMinor>
+			<GitSemVerPatch>0</GitSemVerPatch>
+			<GitSemVerDashLabel></GitSemVerDashLabel>
+		</PropertyGroup>
+	</Target>
+
+	<Import Project="..\..\..\.nuget\packages\GitInfo\build\GitInfo.targets"
+			Condition="Exists('..\..\..\.nuget\packages\GitInfo\build\GitInfo.targets')"/>
+</Project>
