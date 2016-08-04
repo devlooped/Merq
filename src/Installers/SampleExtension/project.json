@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
+    "MSBuilder.VsixInstaller": "0.1.0",
     "Microsoft.VSSDK.BuildTools": "14.3.25420"
   },
   "frameworks": {

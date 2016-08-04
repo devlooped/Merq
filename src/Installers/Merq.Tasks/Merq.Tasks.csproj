@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddVsixDependency.cs" />
+    <!-- By being condition al on Debug builds, we can use the task InstallVsix which comes indirectly 
+         from MSBuilder as a nuget dependency of the Merq.Installer package -->
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

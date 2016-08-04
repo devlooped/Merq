@@ -8,4 +8,13 @@
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
 		</PropertyGroup>
 	</Target>
+
+	<Target Name="GetSystemComponent" Returns="$(IsSystemComponent)">
+		<PropertyGroup>
+			<IsSystemComponent>true</IsSystemComponent>
+			<!-- This make it easier to test out enable/disable/uninstall of the extension during development -->
+			<IsSystemComponent Condition=" '$(Configuration)' == 'Debug' ">false</IsSystemComponent>
+		</PropertyGroup>
+	</Target>
+	
 </Project>

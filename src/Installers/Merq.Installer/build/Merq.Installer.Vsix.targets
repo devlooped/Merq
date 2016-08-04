@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<RootSuffix Condition=" '$(RootSuffix)' == '' ">$(VSSDKTargetPlatformRegRootSuffix)</RootSuffix>
+		<!-- Only change the default hive if the value is not '.', which forces installation to the regular hive. -->
+		<_RootSuffix Condition=" '$(RootSuffix)' != '.' ">$(RootSuffix)</_RootSuffix>
+	</PropertyGroup>
+	
+	<!-- VSIXes will need to reference the payload directly -->
+	<ItemGroup>
+		<Content Include="$(MSBuildThisFileDirectory)..\tools\Merq.vsix">
+			<Link>Merq.vsix</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<IncludeInVsix>true</IncludeInVsix>
+		</Content>
+	</ItemGroup>
+
+	<!-- Add dependency to the VSIX manifest automatically -->
+	<Target Name="AddMerqDependency" 
+			AfterTargets="DetokenizeVsixManifestFile"
+			Inputs="$(IntermediateVsixManifest)" 
+			Outputs="$(IntermediateOutputPath)AddVsixDependency.txt">
+
+		<AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
+						   DependentVsixManifest="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest" />
+		<Touch Files="$(IntermediateOutputPath)AddVsixDependency.txt" AlwaysCreate="true" />
+	</Target>
+
+	<!-- Install only once per VS + Instance, to enable incremental build -->
+	<!-- Also, only install if the extension being built will be deployed -->
+	<Target Name="InstallMerqVsix" 
+			AfterTargets="DeployVsixExtensionFiles"
+			Condition=" '$(DeployExtension)'=='true' "
+			Inputs="$(MSBuildThisFileDirectory)..\tools\Merq.vsix" 
+			Outputs="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt">
+		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
+					 RootSuffix="$(_RootSuffix)" />
+		<Touch Files="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt" AlwaysCreate="true" />
+	</Target>
+	
+	<!-- Allows manual uninstallation of the VSIX -->
+	<Target Name="UninstallMerqVsix">
+		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					   VsixId="Merq"
+					   RootSuffix="$(_RootSuffix)" />
+	</Target>
+		
+	<Import Project="Merq.Tasks.tasks" />
+</Project>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="Merq.Tasks.tasks" />
+
+	<Import Project="Merq.Installer.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
+	<Import Project="Merq.Installer.Vsix.targets" Condition=" '$(VsSDKVersion)' != '' " />
+</Project>

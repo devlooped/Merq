@@ -11,9 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="tools\" />
+    <Dependency Include="MSBuilder.VisualStudio.InstallVsix">
+      <Version>0.1.1</Version>
+    </Dependency>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build\Merq.Installer.WiX.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="build\Merq.Installer.Vsix.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="build\Merq.Installer.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
