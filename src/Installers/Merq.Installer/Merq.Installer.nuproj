@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <Dependency Include="MSBuilder.VisualStudio.InstallVsix">
-      <Version>0.1.1</Version>
+    <Dependency Include="MSBuilder.VsixInstaller">
+      <Version>0.1.9</Version>
     </Dependency>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,7 @@
 			Outputs="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt">
 		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
 					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
+					 MessageImportance="high"
 					 RootSuffix="$(_RootSuffix)" />
 		<Touch Files="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt" AlwaysCreate="true" />
 	</Target>
@@ -44,8 +45,8 @@
 	<Target Name="UninstallMerqVsix">
 		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
 					   VsixId="Merq"
+					   MessageImportance="high"
 					   RootSuffix="$(_RootSuffix)" />
 	</Target>
 		
-	<Import Project="Merq.Tasks.tasks" />
 </Project>

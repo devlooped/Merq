@@ -26,6 +26,7 @@
 	<PropertyGroup>
 		<VersionDependsOn>GetVersion</VersionDependsOn>
 		<GetTargetPathDependsOn>EstablishNuGetPaths;$(GetTargetPathDependsOn)</GetTargetPathDependsOn>
+		<GitInfoBaseDir>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.snk))</GitInfoBaseDir>
 	</PropertyGroup>
 	
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">

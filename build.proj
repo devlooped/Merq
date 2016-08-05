@@ -6,26 +6,29 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
+		<!--
 		<SkipReadGitCache Condition=" '$(SkipReadGitCache)' == '' ">true</SkipReadGitCache>
 		<SkipWriteGitCache Condition=" '$(SkipWriteGitCache)' == '' ">true</SkipWriteGitCache>
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)</CommonBuildProperties>
+		-->
+		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
+			 also because if we run integration tests, we do so by installing the resulting VSIX, 
+			 which makes for a cleaner test too. 	-->
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache);DeployExtension=false</CommonBuildProperties>
+		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">normal</DefaultImportance>
 	</PropertyGroup>
+	
 	<!-- Integration-test related stuff -->
 	<PropertyGroup>
+		<_RootSuffix>$(RootSuffix)</_RootSuffix>
+		<_RootSuffix Condition=" '$(_RootSuffix)' == '' ">Exp</_RootSuffix>
+		<_RootSuffix Condition=" '$(_RootSuffix)' == '.' "></_RootSuffix>
 		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
 		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
-		<InstallVsix Condition=" '$(InstallVsix)' == '' And '$(IntegrationTest)' == 'true' And '$(Configuration)' == 'Release' ">true</InstallVsix>
-		<!-- If we're not running integration tests, we don't need to deploy the extension -->
-		<CommonBuildProperties Condition=" '$(IntegrationTest)' != 'true' ">$(CommonBuildProperties);DeployExtension=false</CommonBuildProperties>
-		<!-- If we're running integration tests and installing the VSIX, switch to normal hive -->
-		<CommonBuildProperties Condition=" '$(IntegrationTest)' == 'true' And '$(InstallVsix)' == 'true' ">$(CommonBuildProperties);RootSuffix=.</CommonBuildProperties>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(IntegrationTest)' == 'true' ">
-		<!-- When running a release build, either use the explicit VisualStudioVersion or fallback to All -->
+	
+	<PropertyGroup Condition=" '$(IntegrationTest)' == 'true' ">
+		<!-- When running integration tests, either use an explicit VisualStudioVersion received or fallback to All -->
 		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</CommonBuildProperties>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(InstallVsix)' == 'true' ">
-		<VsixInstaller>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\$(VisualStudioVersion)', 'InstallDir', null, RegistryView.Registry32))VSIXInstaller.exe</VsixInstaller>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -49,25 +52,34 @@
 		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
 		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
-		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
 
 		<ItemGroup>
 			<CandidateNuSpec Include="src\**\*.nuspec" />
-			<NuSpec Include="@(CandidateNuSpec)" Condition=" '%(Filename)' != 'Merq' " />
+			<NuSpec Include="@(CandidateNuSpec)" Condition=" '%(Filename)' != 'Merq' And '%(Filename)' != 'Merq.Installer' " />
 		</ItemGroup>
 	</Target>
 
 	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages;FindPackages;DeletePackages;PrepareMetaPackage;BuildMetaPackage" />
 
 	<Target Name="BuildInstaller">
+		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
+		<Message Importance="$(DefaultImportance)" Text="Refreshing VSIX with IsSystemComponent=true" />
+		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" />
+		<Exec Command="rmdir src\Vsix\Merq.Vsix\obj\$(Configuration) /S /Q" ContinueOnError="true" />
+
+		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
+		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);IsSystemComponent=true" />
+		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
+
 		<MSBuild Projects="src\Installers\Merq.Installer\Merq.Installer.nuproj"
-				 Properties="$(CommonBuildProperties)"
+				 Properties="$(CommonBuildProperties);IsSystemComponent=true"
 				 Targets="Build;GetTargetPath">
 			<Output ItemName='InstallerPackage' TaskParameter='TargetOutputs' />
 		</MSBuild>
+		
 		<Copy SourceFiles='%(InstallerPackage.Identity)' DestinationFiles='$(Out)\%(InstallerPackage.Filename)%(InstallerPackage.Extension)' />
 	</Target>
-	
+
 	<Target Name="BuildPackages" Inputs="@(NuSpec)" Outputs="%(NuSpec.Identity)--BATCH"
 			Condition="'@(NuSpec)' != ''">
 		<MSBuild Projects='$(PackagesPath)\GitInfo\build\GitInfo.targets'
@@ -120,7 +132,7 @@
 		<!-- 18 == partial file, from the HEAD request -->
 		<Message Importance="high" Condition=" '$(ExitCode)' == '0' Or '$(ExitCode)' == '18' "
 				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has already been published."/>
-		<Message Importance="high" Condition=" '$(ExitCode)' == '22' " 
+		<Message Importance="high" Condition=" '$(ExitCode)' == '22' "
 				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has not been published before."/>
 
 		<Delete Files="%(NuPackage.FullPath)" Condition=" '$(ExitCode)' == '0'  Or '$(ExitCode)' == '18' " />
@@ -175,29 +187,102 @@
 
 		<Message Text="Determined new meta package version $(TargetVersion) with dependencies:
 	Events: $(EventsVersion) (currently published version is $(PublishedEvents))
-	Commands: $(CommandsVersion) (currently published version is $(PublishedCommands))" 
+	Commands: $(CommandsVersion) (currently published version is $(PublishedCommands))"
 				 Importance="high" />
-		
+
 		<Exec Command='"$(NuGet)" Pack src\Merq.nuspec -Version $(TargetVersion) -Properties events=$(EventsVersion);commands=$(CommandsVersion) -OutputDirectory $(Out)' />
 	</Target>
 
-	<Import Project='$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props'/>
-	<Import Project='$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets'/>
-	<!--
-	<Import Project='$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets'/>
-	-->
-	
-	<Target Name="Test" DependsOnTargets="Install;PrepareTest;TestWin;TestMac;Uninstall" />
+	<Import Project="$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"
+			Condition=" Exists('$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props') " />
+	<Import Project="$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets"
+			Condition=" Exists('$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets') "/>
+	<Import Project="$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets" 
+			Condition=" Exists('$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets') "/>
+	<Import Project="$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets"
+			Condition=" Exists('$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets') "/>
+	<Import Project="$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets"
+			Condition=" Exists('$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets') And '$(IntegrationTest)' == 'true' " />
+	<Import Project="$(PackagesPath)\MSBuilder.VsixInstaller\build\MSBuilder.VsixInstaller.targets"
+			Condition=" Exists('$(PackagesPath)\MSBuilder.VsixInstaller\build\MSBuilder.VsixInstaller.targets') And '$(IntegrationTest)' == 'true' " />
 
-	<Target Name="Install" Condition=" Exists('$(Installer)') And '$(InstallVsix)' == 'true' ">
-		<Error Condition=" !Exists('$(VsixInstaller)') " Text="No VSIX installer found at expected path $(VsixInstaller). Cannot install Merq extension." />
-		<Message Importance="high" Text="Installing $(Installer) using $(VsixInstaller)..." />
-		<Exec Command='"$(VsixInstaller)" /q "$(Installer)"' />
+	<PropertyGroup>
+		<TestDependsOn>PrepareTest;TestWin;TestMac</TestDependsOn>
+		<TestDependsOn Condition=" '$(IntegrationTest)' == 'true' ">
+			PrepareInstall;
+			DisableExtensions;
+			Install;
+			$(TestDependsOn);
+			Uninstall;
+			RestoreExtensions
+		</TestDependsOn>
+	</PropertyGroup>
+
+	<Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
+
+	<Target Name="PrepareInstall" DependsOnTargets="IsAdministrator">
+		<ItemGroup>
+			<SupportedVersion Include="11.0;12.0;14.0" />
+			<SupportedVersion>
+				<VsixInstaller>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))VSIXInstaller.exe</VsixInstaller>
+			</SupportedVersion>
+			<InstalledVersion Include="@(SupportedVersion)"
+							  Condition=" Exists('%(VsixInstaller)') " />
+		</ItemGroup>
+		
+		<Message Importance="$(DefaultImportance)" Text="Found installed Visual Studio versions @(InstalledVersion)." />
+		
+		<ListInstalledVsix VisualStudioVersion="%(InstalledVersion.Identity)"  RootSuffix="$(_RootSuffix)">
+			<Output TaskParameter="InstalledExtensions" ItemName="InstalledVsix" />
+		</ListInstalledVsix>
+
+		<ItemGroup>
+			<!-- Filter all already disabled extensionsInstalledPerMachine and already disabled extensions  -->
+			<_EnabledExtension Include="@(InstalledVsix)" Condition=" '%(State)' == 'Enabled' " />
+			<!-- Include all if user is an admin -->
+			<EnabledExtension Include="@(_EnabledExtension)" Condition=" '$(IsAdministrator)' == 'True' " />
+			<!-- Filter out machine-wide extensions otherwise -->
+			<EnabledExtension Include="@(_EnabledExtension)" Condition=" '$(IsAdministrator)' == 'False' And '%(InstalledPerMachine)' == 'False' And '%(SystemComponent)' == 'False' " />
+		</ItemGroup>
+
 	</Target>
 
-	<Target Name="Uninstall" Condition=" Exists('$(Installer)') And '$(InstallVsix)' == 'true' ">
-		<Message Importance="high" Text="Uninstalling $(Installer) using $(VsixInstaller)..." />
-		<Exec Command='"$(VsixInstaller)" /q /u:Merq' />
+	<Target Name="DisableExtensions">
+		<DisableVsix VisualStudioVersion="%(EnabledExtension.VisualStudioVersion)"
+					 VsixId="%(EnabledExtension.Identity)"
+					 RootSuffix="%(EnabledExtension.RootSuffix)"
+					 Condition=" '%(EnabledExtension.Identity)' != '' "
+					 MessageImportance="$(DefaultImportance)" />
+	</Target>
+
+	<Target Name="Install" Inputs="@(InstalledVersion)" Outputs="%(InstalledVersion.Identity)-BATCH"
+			Condition=" Exists('$(Installer)') ">
+
+		<Message Importance="$(DefaultImportance)" Text="Installing Merq to Visual Studio %(InstalledVersion.Identity)$(_RootSuffix)" />
+		<InstallVsix VisualStudioVersion="@(InstalledVersion)"
+					 VsixPath="$(Installer)"
+					 RootSuffix="$(_RootSuffix)"
+					 MessageImportance="$(DefaultImportance)" />
+
+		<Message Importance="$(DefaultImportance)" Text="Flushing MEF cache for Visual Studio %(InstalledVersion.Identity)$(_RootSuffix)." />
+		<Exec Command='rmdir "$(LocalAppData)\Microsoft\VisualStudio\%(InstalledVersion.Identity)$(_RootSuffix)\ComponentModelCache" /S /Q'
+			  Condition=" Exists('$(LocalAppData)\Microsoft\VisualStudio\%(InstalledVersion.Identity)$(_RootSuffix)\ComponentModelCache') "/>
+	</Target>
+
+	<Target Name="Uninstall" Inputs="@(InstalledVersion)" Outputs="%(InstalledVersion.Identity)-BATCH">
+		<Message Importance="$(DefaultImportance)" Text="Uninstalling Merq from Visual Studio %(InstalledVersion.Identity)$(_RootSuffix)" />
+		<UninstallVsix VisualStudioVersion="%(InstalledVersion.Identity)"
+					   VsixId="Merq"
+					   RootSuffix="$(_RootSuffix)" 
+					   MessageImportance="$(DefaultImportance)" />
+	</Target>
+
+	<Target Name="RestoreExtensions">
+		<EnableVsix VisualStudioVersion="%(EnabledExtension.VisualStudioVersion)"
+					VsixId="%(EnabledExtension.Identity)"
+					RootSuffix="%(EnabledExtension.RootSuffix)"
+					Condition=" '%(EnabledExtension.Identity)' != '' "
+					MessageImportance="$(DefaultImportance)" />
 	</Target>
 
 	<Target Name="PrepareTest" DependsOnTargets="Build">
@@ -235,7 +320,7 @@
 			   ContinueOnError="ErrorAndContinue" />
 	</Target>
 
-	<UsingTask TaskName="CalculateMetaVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)">
+	<UsingTask TaskName="CalculateMetaVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition=" '$(CodeTaskAssembly)' != '' ">
 		<ParameterGroup>
 			<BaseVersion Required="true" />
 			<PublishedVersion Required="true" />
@@ -258,7 +343,8 @@
 				{
 					TargetVersion = new Version(publishedVersion.Major, publishedVersion.Minor, publishedVersion.Build + 1).ToString() + label;
 				}
-			]]></Code>
+			]]>
+			</Code>
 		</Task>
 	</UsingTask>
 
