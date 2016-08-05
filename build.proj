@@ -82,8 +82,16 @@
 
 	<Target Name="BuildPackages" Inputs="@(NuSpec)" Outputs="%(NuSpec.Identity)--BATCH"
 			Condition="'@(NuSpec)' != ''">
+
+		<!-- If there is a .csproj, grab the version from the project itself -->
+		<MSBuild Projects='%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj' Condition="Exists('%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj')"
+				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NuSpec.RootDir)%(NuSpec.Directory)'>
+			<Output ItemName='GitVersion' TaskParameter='TargetOutputs'/>
+		</MSBuild>
+
 		<MSBuild Projects='$(PackagesPath)\GitInfo\build\GitInfo.targets'
-				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NuSpec.RootDir)%(NuSpec.Directory);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache)'>
+				 Condition="!Exists('%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj')"
+				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NuSpec.RootDir)%(NuSpec.Directory)'>
 			<Output ItemName='GitVersion' TaskParameter='TargetOutputs'/>
 		</MSBuild>
 
