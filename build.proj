@@ -123,7 +123,7 @@
 				<InstallDir>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))</InstallDir>
 			</SupportedVersion>
 			<SupportedVersion>
-				<SdkDir>$([System.IO.Path]::GetFullPath('%(InstallDir)..\..\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0'))</SdkDir>
+				<SdkDir>$([System.IO.Path]::GetFullPath('%(InstallDir)..\..\VSSDK\VisualStudioIntegration\'))</SdkDir>
 			</SupportedVersion>
 			<InstalledVersion Include="@(SupportedVersion)" Condition=" Exists('%(SdkDir)') " />		
 		</ItemGroup>
@@ -154,6 +154,14 @@
 		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
 			  Condition=" '$(XamarinProductCode)' != '' "
 			  ConsoleToMSBuild="true" />
+
+		<Exec Command='"%(InstalledVersion.SdkDir)Tools\Bin\CreateExpInstance.exe" /Reset /VSInstance=%(InstalledVersion.Identity) /RootSuffix=Exp | more'
+			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' "
+			  ConsoleToMSBuild="true"/>
+
+		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /Setup /RootSuffix=Exp | more'
+			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' "
+			  ConsoleToMSBuild="true"/>		
 	</Target>
 
 	<Target Name="Install" Inputs="@(InstalledVersion)" Outputs="%(InstalledVersion.Identity)-BATCH"
