@@ -178,7 +178,7 @@
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' "
 			  ConsoleToMSBuild="true"/>
 
-		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /Setup /RootSuffix=Exp | more'
+		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /ResetSettings General.vssettings /Embedding /RootSuffix Exp /Command File.Exit | more'
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' "
 			  ConsoleToMSBuild="true"/>
 
