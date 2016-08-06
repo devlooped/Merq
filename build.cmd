@@ -33,6 +33,7 @@ IF "%Verbosity%"=="" (
 
 ECHO ON
 "%msb%" build.proj /v:%Verbosity% /nr:true /m %1 %2 %3 %4 %5 %6 %7 %8 %9
+@ECHO OFF
 
 POPD >NUL
 ENDLOCAL

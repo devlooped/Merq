@@ -33,7 +33,7 @@
     <ProjectGuid>e579dfbe-3b42-4004-971e-d4de2f28c965</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\..\.nuget\</NuProjPath>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\..\.nuget\packages\NuProj\tools\</NuProjPath>
   </PropertyGroup>
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <Import Project="Merq.Installer.targets" />
