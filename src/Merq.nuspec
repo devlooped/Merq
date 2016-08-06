@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>Merq</id>
-		<version>1.0.0-pre</version>
+		<version>$version$</version>
 		<title>Merq: Command Bus + Event Stream</title>
 		<authors>Mobile Essentials</authors>
 		<owners>mobessen</owners>
@@ -14,8 +14,8 @@
 		<description>Merq = Command Bus + Event Stream</description>
 		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 		<dependencies>
-			<dependency id="Merq.Commands" version="$commands$" />
-			<dependency id="Merq.Events" version="$events$" />
+			<dependency id="Merq.Commands" version="$version$" />
+			<dependency id="Merq.Events" version="$version$" />
 		</dependencies>
 	</metadata>
 	<files>

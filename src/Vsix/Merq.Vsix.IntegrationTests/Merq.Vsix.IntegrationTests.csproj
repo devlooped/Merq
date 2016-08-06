@@ -17,8 +17,13 @@
     <DocumentationFile />
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ComponentModel.Composition.Diagnostics">
+      <HintPath>..\..\..\lib\Microsoft.ComponentModel.Composition.Diagnostics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />

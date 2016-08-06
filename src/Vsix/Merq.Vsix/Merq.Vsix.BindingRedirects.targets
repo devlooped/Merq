@@ -50,7 +50,6 @@
 	<Target Name="CollectBindingRedirected" DependsOnTargets="ResolveAssemblyReferences">
 		<ItemGroup>
 			<BindingRedirected Include="@(ReferencePath)" Condition="$([System.String]::new('%(FusionName)').StartsWith('Merq'))" />
-			<BindingRedirected Include="@(ReferencePath)" Condition="$([System.String]::new('%(FusionName)').StartsWith('Merq'))" />
 		</ItemGroup>
 	</Target>
 

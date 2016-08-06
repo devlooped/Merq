@@ -6,15 +6,11 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
-		<!--
-		<SkipReadGitCache Condition=" '$(SkipReadGitCache)' == '' ">true</SkipReadGitCache>
-		<SkipWriteGitCache Condition=" '$(SkipWriteGitCache)' == '' ">true</SkipWriteGitCache>
-		-->
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);SkipReadGitCache=$(SkipReadGitCache);SkipWriteGitCache=$(SkipWriteGitCache);DeployExtension=false</CommonBuildProperties>
-		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">normal</DefaultImportance>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
+		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 	
 	<!-- Integration-test related stuff -->
@@ -27,14 +23,15 @@
 	</PropertyGroup>
 	
 	<PropertyGroup Condition=" '$(IntegrationTest)' == 'true' ">
+		<TestVsVersions>$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</TestVsVersions>
 		<!-- When running integration tests, either use an explicit VisualStudioVersion received or fallback to All -->
-		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</CommonBuildProperties>
+		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$(TestVsVersions)</CommonBuildProperties>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Solution Include="src\*.sln"/>
 		<TestProject Include="src\**\*.Tests.csproj" />
-		<TestProject Include="src\**\*.IntegrationTests.csproj" Condition=" '$(IntegrationTest)' == 'true' " />
+		<IntegrationTestProject Include="src\**\*.IntegrationTests.csproj" />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
@@ -54,12 +51,11 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
-			<CandidateNuSpec Include="src\**\*.nuspec" />
-			<NuSpec Include="@(CandidateNuSpec)" Condition=" '%(Filename)' != 'Merq' And '%(Filename)' != 'Merq.Installer' " />
+			<NuSpec Include="src\**\*.nuspec" />
 		</ItemGroup>
 	</Target>
 
-	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages;FindPackages;DeletePackages;PrepareMetaPackage;BuildMetaPackage" />
+	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages;FindPackages;DeletePackages" />
 
 	<Target Name="BuildInstaller">
 		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
@@ -146,69 +142,12 @@
 		<Delete Files="%(NuPackage.FullPath)" Condition=" '$(ExitCode)' == '0'  Or '$(ExitCode)' == '18' " />
 	</Target>
 
-	<Target Name="PrepareMetaPackage" DependsOnTargets="DeletePackages">
-		<ItemGroup>
-			<EventsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Events' And Exists('%(FullPath)') " />
-			<CommandsPackage Include="@(NuPackage)" Condition=" '%(Id)' == 'Merq.Commands' And Exists('%(FullPath)') " />
-		</ItemGroup>
-		<PropertyGroup>
-			<EventsVersion>@(EventsPackage -> '%(Version)%(ReleaseLabel)')</EventsVersion>
-			<CommandsVersion>@(CommandsPackage -> '%(Version)%(ReleaseLabel)')</CommandsVersion>
-		</PropertyGroup>
-	</Target>
-
-	<Target Name="BuildMetaPackage" DependsOnTargets="PrepareMetaPackage" Condition=" '$(EventsVersion)' != '' Or '$(CommandsVersion)' != '' ">
-		<!-- There is at least a new Events or Commands package -->
-		<Exec Command="$(Curl) -s -0 https://api.nuget.org/v3/registration1/merq.events/index.json" StandardOutputImportance="low" ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="JsonContent" />
-		</Exec>
-		<JsonPeek JsonContent="$(JsonContent)" JPath="items[0].upper">
-			<Output TaskParameter="Result" PropertyName="PublishedEvents" />
-		</JsonPeek>
-
-		<Exec Command="$(Curl) -s -0 https://api.nuget.org/v3/registration1/merq.commands/index.json" StandardOutputImportance="low" ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="JsonContent" />
-		</Exec>
-		<JsonPeek JsonContent="$(JsonContent)" JPath="items[0].upper">
-			<Output TaskParameter="Result" PropertyName="PublishedCommands" />
-		</JsonPeek>
-
-		<XmlPeek XmlInputPath="src\Merq.nuspec" Query="/package/metadata/version/text()">
-			<Output TaskParameter="Result" PropertyName="BaseVersion" />
-		</XmlPeek>
-
-		<Exec Command="$(Curl) -s -0 https://api.nuget.org/v3/registration1/merq/index.json" StandardOutputImportance="low" ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="JsonContent" />
-		</Exec>
-		<JsonPeek JsonContent="$(JsonContent)" JPath="items[0].upper">
-			<Output TaskParameter="Result" PropertyName="PublishedMeta" />
-		</JsonPeek>
-
-		<CalculateMetaVersion BaseVersion="$(BaseVersion)" PublishedVersion="$(PublishedMeta)">
-			<Output TaskParameter="TargetVersion" PropertyName="TargetVersion" />
-		</CalculateMetaVersion>
-
-		<PropertyGroup>
-			<EventsVersion Condition=" '$(EventsVersion)' == '' ">$(PublishedEvents)</EventsVersion>
-			<CommandsVersion Condition=" '$(CommandsVersion)' == '' ">$(PublishedCommands)</CommandsVersion>
-		</PropertyGroup>
-
-		<Message Text="Determined new meta package version $(TargetVersion) with dependencies:
-	Events: $(EventsVersion) (currently published version is $(PublishedEvents))
-	Commands: $(CommandsVersion) (currently published version is $(PublishedCommands))"
-				 Importance="high" />
-
-		<Exec Command='"$(NuGet)" Pack src\Merq.nuspec -Version $(TargetVersion) -Properties events=$(EventsVersion);commands=$(CommandsVersion) -OutputDirectory $(Out)' />
-	</Target>
-
 	<Import Project="$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"
 			Condition=" Exists('$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props') " />
 	<Import Project="$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets"
 			Condition=" Exists('$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets') "/>
 	<Import Project="$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets" 
 			Condition=" Exists('$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets') "/>
-	<Import Project="$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets"
-			Condition=" Exists('$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets') "/>
 	<Import Project="$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets"
 			Condition=" Exists('$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets') And '$(IntegrationTest)' == 'true' " />
 	<Import Project="$(PackagesPath)\MSBuilder.VsixInstaller\build\MSBuilder.VsixInstaller.targets"
@@ -229,13 +168,20 @@
 	<Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
 
 	<Target Name="PrepareInstall" DependsOnTargets="IsAdministrator">
-		<ItemGroup>
+		<ItemGroup Condition=" '$(TestVsVersions)' == 'All' ">
 			<SupportedVersion Include="11.0;12.0;14.0" />
+		</ItemGroup>
+		<ItemGroup Condition=" '$(TestVsVersions)' != 'All' ">
+			<SupportedVersion Include="11.0" Condition=" $(TestVsVersions.Contains('11.0')) == 'true' " />
+			<SupportedVersion Include="12.0" Condition=" $(TestVsVersions.Contains('12.0')) == 'true' " />
+			<SupportedVersion Include="14.0" Condition=" $(TestVsVersions.Contains('14.0')) == 'true' " />
+		</ItemGroup>
+		<ItemGroup>
 			<SupportedVersion>
-				<VsixInstaller>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))VSIXInstaller.exe</VsixInstaller>
+				<DevEnv>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))devenv.exe</DevEnv>
 			</SupportedVersion>
 			<InstalledVersion Include="@(SupportedVersion)"
-							  Condition=" Exists('%(VsixInstaller)') " />
+							  Condition=" Exists('%(DevEnv)') " />		
 		</ItemGroup>
 		
 		<Message Importance="$(DefaultImportance)" Text="Found installed Visual Studio versions @(InstalledVersion)." />
@@ -253,6 +199,25 @@
 			<EnabledExtension Include="@(_EnabledExtension)" Condition=" '$(IsAdministrator)' == 'False' And '%(InstalledPerMachine)' == 'False' And '%(SystemComponent)' == 'False' " />
 		</ItemGroup>
 
+		<PropertyGroup>
+			<PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
+		</PropertyGroup>
+
+		<!-- Existing versions of Xamarin will collide with the provided IAsyncManager export, even from the normal hive -->
+		<!-- NOTE: we could check the product version too if needed: Version is available from the Win32_Product structure -->
+		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { get-wmiobject Win32_Product | Where-Object Name -eq Xamarin  | Select-Object -ExpandProperty IdentifyingNumber }&quot;"
+			  ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="XamarinProductCode" />
+		</Exec>
+
+		<!-- TODO: eventually we will need to do this for the normal hive Merq installation itself instead :(
+		     although if that comes as a VSIX, it may be simpler to achieve?
+		-->
+		<Error Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
+			   Text="Existing Xamarin product installation found, but current user is not Administrator and can't uninstall it." />
+
+		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
+			  Condition=" '$(XamarinProductCode)' != '' " />
 	</Target>
 
 	<Target Name="DisableExtensions">
@@ -297,9 +262,14 @@
 		<MSBuild Projects="@(TestProject)" BuildInParallel="false" Targets="GetTargetPath" Properties="$(CommonBuildProperties)">
 			<Output TaskParameter="TargetOutputs" ItemName="_TestAssembly" />
 		</MSBuild>
+		<MSBuild Projects="@(IntegrationTestProject)" BuildInParallel="false" Targets="GetTargetPath" Properties="$(CommonBuildProperties)"
+				 Condition=" '@(IntegrationTestProject)' != '' ">
+			<Output TaskParameter="TargetOutputs" ItemName="_IntegrationTestAssembly" />
+		</MSBuild>
 
 		<ItemGroup>
 			<TestAssembly Include="@(_TestAssembly)" Condition=" Exists('%(_TestAssembly.FullPath)') " />
+			<IntegrationTestAssembly Include="@(_IntegrationTestAssembly)" Condition=" Exists('%(_IntegrationTestAssembly.FullPath)') " />
 		</ItemGroup>
 
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
@@ -315,6 +285,11 @@
 		</PropertyGroup>
 
 		<Exec Command="$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:&quot;@(TestAssembly, ' ') $(XunitOptions)&quot;"
+			  ConsoleToMSBuild="true"
+			  ContinueOnError="ErrorAndContinue" />
+
+		<Exec Command="$(XunitConsole) @(IntegrationTestAssembly, ' ') $(XunitOptions.Replace('test', 'integrationtest'))"
+			  Condition=" '@(IntegrationTestAssembly)' != '' "
 			  ConsoleToMSBuild="true"
 			  ContinueOnError="ErrorAndContinue" />
 	</Target>
