@@ -140,6 +140,19 @@
 		<Error Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
 			   Text="Existing Xamarin product installation found, but current user is not Administrator and can't uninstall it." />
 
+		<ItemGroup>
+			<SupportedVersion Include="11.0;12.0;14.0;15.0;16.0" />
+			<SupportedVersion>
+				<InstallDir>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))</InstallDir>
+			</SupportedVersion>
+			<SupportedVersion>
+				<SdkDir>$([System.IO.Path]::GetFullPath('%(InstallDir)..\..\VSSDK\VisualStudioIntegration\'))</SdkDir>
+			</SupportedVersion>
+			<InstalledVersion Include="@(SupportedVersion)" Condition=" Exists('%(SdkDir)') " />
+		</ItemGroup>
+
+		<Message Importance="$(DefaultImportance)" Text="Found Visual Studio versions with required VSSDK installed: @(InstalledVersion)." />
+
 		<Message Text="Killing running devenv processes in preparation for install actions..."
 				 Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' "
 				 Importance="high" />
@@ -148,7 +161,6 @@
 		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Get-Process | Where-Object ProcessName -eq devenv | Stop-Process }&quot;"
 				 Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' "
 			  ConsoleToMSBuild="true" />
-
 
 		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
 				 Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
@@ -170,18 +182,6 @@
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' "
 			  ConsoleToMSBuild="true"/>
 
-		<ItemGroup>
-			<SupportedVersion Include="11.0;12.0;14.0;15.0;16.0" />
-			<SupportedVersion>
-				<InstallDir>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))</InstallDir>
-			</SupportedVersion>
-			<SupportedVersion>
-				<SdkDir>$([System.IO.Path]::GetFullPath('%(InstallDir)..\..\VSSDK\VisualStudioIntegration\'))</SdkDir>
-			</SupportedVersion>
-			<InstalledVersion Include="@(SupportedVersion)" Condition=" Exists('%(SdkDir)') " />
-		</ItemGroup>
-
-		<Message Importance="$(DefaultImportance)" Text="Found Visual Studio versions with required VSSDK installed: @(InstalledVersion)." />
 	</Target>
 
 	<Target Name="Install" Inputs="@(InstalledVersion)" Outputs="%(InstalledVersion.Identity)-BATCH"
