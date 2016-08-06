@@ -4,7 +4,7 @@
 
 	<!-- This is the property that causes VS 2012+ to insist on one-way update of the project -->
 	<PropertyGroup Condition=" '$(VisualStudioVersion)' &gt;= '11.0' ">
-		<MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
+		<MinimumVisualStudioVersion Condition=" '$(MinimumVisualStudioVersion)' == '' ">$(VisualStudioVersion)</MinimumVisualStudioVersion>
 	</PropertyGroup>
 	<!-- This is an additional property added by VS 2013 -->
 	<PropertyGroup Condition=" '$(VisualStudioVersion)' &gt;= '12.0' ">

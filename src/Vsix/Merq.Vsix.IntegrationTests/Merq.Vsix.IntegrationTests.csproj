@@ -16,7 +16,7 @@
   <PropertyGroup>
     <DocumentationFile />
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion Condition=" '$(MinimumVisualStudioVersion)' == '' ">11.0</MinimumVisualStudioVersion>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
