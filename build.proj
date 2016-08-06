@@ -22,12 +22,6 @@
 		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition=" '$(IntegrationTest)' == 'true' ">
-		<TestVsVersions>$([MSBuild]::ValueOrDefault('$(VisualStudioVersions)', 'All'))</TestVsVersions>
-		<!-- When running integration tests, either use an explicit VisualStudioVersion received or fallback to All -->
-		<CommonBuildProperties>$(CommonBuildProperties);VisualStudioVersions=$(TestVsVersions)</CommonBuildProperties>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<Solution Include="src\*.sln"/>
 		<TestProject Include="src\**\*.Tests.csproj" />
@@ -114,47 +108,27 @@
 		<TestDependsOn>PrepareTest;TestWin;TestMac</TestDependsOn>
 		<TestDependsOn Condition=" '$(IntegrationTest)' == 'true' ">
 			PrepareInstall;
-			DisableExtensions;
 			Install;
 			$(TestDependsOn);
-			Uninstall;
-			RestoreExtensions
+			Uninstall
 		</TestDependsOn>
 	</PropertyGroup>
 
 	<Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
 
 	<Target Name="PrepareInstall" DependsOnTargets="IsAdministrator">
-		<ItemGroup Condition=" '$(TestVsVersions)' == 'All' ">
-			<SupportedVersion Include="11.0;12.0;14.0" />
-		</ItemGroup>
-		<ItemGroup Condition=" '$(TestVsVersions)' != 'All' ">
-			<SupportedVersion Include="11.0" Condition=" $(TestVsVersions.Contains('11.0')) == 'true' " />
-			<SupportedVersion Include="12.0" Condition=" $(TestVsVersions.Contains('12.0')) == 'true' " />
-			<SupportedVersion Include="14.0" Condition=" $(TestVsVersions.Contains('14.0')) == 'true' " />
-		</ItemGroup>
 		<ItemGroup>
+			<SupportedVersion Include="11.0;12.0;14.0;15.0;16.0" />
 			<SupportedVersion>
-				<DevEnv>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))devenv.exe</DevEnv>
+				<InstallDir>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\%(Identity)', 'InstallDir', null, RegistryView.Registry32))</InstallDir>
 			</SupportedVersion>
-			<InstalledVersion Include="@(SupportedVersion)"
-							  Condition=" Exists('%(DevEnv)') " />		
+			<SupportedVersion>
+				<SdkDir>$([System.IO.Path]::GetFullPath('%(InstallDir)..\..\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0'))</SdkDir>
+			</SupportedVersion>
+			<InstalledVersion Include="@(SupportedVersion)" Condition=" Exists('%(SdkDir)') " />		
 		</ItemGroup>
-		
-		<Message Importance="$(DefaultImportance)" Text="Found installed Visual Studio versions @(InstalledVersion)." />
-		
-		<ListInstalledVsix VisualStudioVersion="%(InstalledVersion.Identity)"  RootSuffix="$(_RootSuffix)">
-			<Output TaskParameter="InstalledExtensions" ItemName="InstalledVsix" />
-		</ListInstalledVsix>
 
-		<ItemGroup>
-			<!-- Filter all already disabled extensionsInstalledPerMachine and already disabled extensions  -->
-			<_EnabledExtension Include="@(InstalledVsix)" Condition=" '%(State)' == 'Enabled' " />
-			<!-- Include all if user is an admin -->
-			<EnabledExtension Include="@(_EnabledExtension)" Condition=" '$(IsAdministrator)' == 'True' " />
-			<!-- Filter out machine-wide extensions otherwise -->
-			<EnabledExtension Include="@(_EnabledExtension)" Condition=" '$(IsAdministrator)' == 'False' And '%(InstalledPerMachine)' == 'False' And '%(SystemComponent)' == 'False' " />
-		</ItemGroup>
+		<Message Importance="$(DefaultImportance)" Text="Found Visual Studio versions with required VSSDK installed: @(InstalledVersion)." />
 
 		<PropertyGroup>
 			<PS>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
@@ -173,16 +147,13 @@
 		<Error Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
 			   Text="Existing Xamarin product installation found, but current user is not Administrator and can't uninstall it." />
 
-		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
-			  Condition=" '$(XamarinProductCode)' != '' " />
-	</Target>
+		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
+				 Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
+				 Importance="$(DefaultImportance)" />
 
-	<Target Name="DisableExtensions">
-		<DisableVsix VisualStudioVersion="%(EnabledExtension.VisualStudioVersion)"
-					 VsixId="%(EnabledExtension.Identity)"
-					 RootSuffix="%(EnabledExtension.RootSuffix)"
-					 Condition=" '%(EnabledExtension.Identity)' != '' "
-					 MessageImportance="$(DefaultImportance)" />
+		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
+			  Condition=" '$(XamarinProductCode)' != '' "
+			  ConsoleToMSBuild="true" />
 	</Target>
 
 	<Target Name="Install" Inputs="@(InstalledVersion)" Outputs="%(InstalledVersion.Identity)-BATCH"
@@ -205,14 +176,6 @@
 					   VsixId="Merq"
 					   RootSuffix="$(_RootSuffix)" 
 					   MessageImportance="$(DefaultImportance)" />
-	</Target>
-
-	<Target Name="RestoreExtensions">
-		<EnableVsix VisualStudioVersion="%(EnabledExtension.VisualStudioVersion)"
-					VsixId="%(EnabledExtension.Identity)"
-					RootSuffix="%(EnabledExtension.RootSuffix)"
-					Condition=" '%(EnabledExtension.Identity)' != '' "
-					MessageImportance="$(DefaultImportance)" />
 	</Target>
 
 	<Target Name="PrepareTest" DependsOnTargets="Build">
