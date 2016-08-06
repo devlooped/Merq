@@ -55,7 +55,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages;FindPackages;DeletePackages" />
+	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages" />
 
 	<Target Name="BuildInstaller">
 		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
@@ -101,55 +101,12 @@
 		<Exec Command='"$(NuGet)" Pack "@(NuSpec)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
 	</Target>
 
-	<Target Name="FindPackages" DependsOnTargets="BuildPackages">
-		<PropertyGroup>
-			<PackageRegex>^(?&lt;id&gt;.+)\.(?&lt;version&gt;\d+\.\d+\.\d+)(?&lt;pre&gt;-.+)?$</PackageRegex>
-		</PropertyGroup>
-		<ItemGroup>
-			<NuPackage Include="$(Out)\*.nupkg" />
-			<NuPackage>
-				<Id>$([System.Text.RegularExpressions.Regex]::Match('%(Filename)', $(PackageRegex)).Groups['id'].Value)</Id>
-				<Version>$([System.Text.RegularExpressions.Regex]::Match('%(Filename)', $(PackageRegex)).Groups['version'].Value)</Version>
-				<ReleaseLabel>$([System.Text.RegularExpressions.Regex]::Match('%(Filename)', $(PackageRegex)).Groups['pre'].Value)</ReleaseLabel>
-			</NuPackage>
-		</ItemGroup>
-	</Target>
-
-	<Target Name="DeletePackages" DependsOnTargets="FindPackages"
-			Inputs="@(NuPackage)" Outputs="%(NuPackage.Identity)-BATCH">
-		<PropertyGroup>
-			<PackageId>%(NuPackage.Id)</PackageId>
-			<PackageId>$(PackageId.ToLowerInvariant())</PackageId>
-			<PackageVersion>%(NuPackage.Version)%(NuPackage.ReleaseLabel)</PackageVersion>
-			<PackageVersion>$(PackageVersion.ToLowerInvariant())</PackageVersion>
-			<PackageUrl>https://api.nuget.org/v3/registration1/$(PackageId)/$(PackageVersion).json</PackageUrl>
-		</PropertyGroup>
-
-		<Exec Command="$(Curl) -s -0 -i -X HEAD $(PackageUrl)" StandardOutputImportance="low" StandardErrorImportance="high" IgnoreExitCode="true">
-			<Output PropertyName="ExitCode" TaskParameter="ExitCode" />
-		</Exec>
-		<Exec Command="$(Curl) -s -0 -i -X HEAD $(PackageUrl)" StandardOutputImportance="low" StandardErrorImportance="high" IgnoreExitCode="true"
-			  Condition=" '$(ExitCode)' == '0' And '$(ExitCode)' == '18' And '$(ExitCode)' == '22' ">
-			<Output PropertyName="ExitCode" TaskParameter="ExitCode" />
-		</Exec>
-
-		<!-- 18 == partial file, from the HEAD request -->
-		<Message Importance="high" Condition=" '$(ExitCode)' == '0' Or '$(ExitCode)' == '18' "
-				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has already been published."/>
-		<Message Importance="high" Condition=" '$(ExitCode)' == '22' "
-				 Text="Package %(NuPackage.Id) version %(NuPackage.Version)%(NuPackage.ReleaseLabel) has not been published before."/>
-
-		<Delete Files="%(NuPackage.FullPath)" Condition=" '$(ExitCode)' == '0'  Or '$(ExitCode)' == '18' " />
-	</Target>
-
 	<Import Project="$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"
 			Condition=" Exists('$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props') " />
 	<Import Project="$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets"
 			Condition=" Exists('$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets') "/>
 	<Import Project="$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets" 
 			Condition=" Exists('$(PackagesPath)\MSBuilder.IsAdministrator\build\MSBuilder.IsAdministrator.targets') "/>
-	<Import Project="$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets"
-			Condition=" Exists('$(PackagesPath)\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets') And '$(IntegrationTest)' == 'true' " />
 	<Import Project="$(PackagesPath)\MSBuilder.VsixInstaller\build\MSBuilder.VsixInstaller.targets"
 			Condition=" Exists('$(PackagesPath)\MSBuilder.VsixInstaller\build\MSBuilder.VsixInstaller.targets') And '$(IntegrationTest)' == 'true' " />
 
