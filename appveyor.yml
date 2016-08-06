@@ -5,7 +5,7 @@ init:
 
 build_script:
   - cmd: >-
-      build.cmd /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" "/v:detailed"
+      build.cmd /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" %BuildArgs%
       
       .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
 
@@ -15,7 +15,6 @@ test: off
 environment:
   COVERALLS_REPO_TOKEN:
     secure: l3O4lbgUscsMKm9M580fsx0rBDal/nTrtRTt3ZE6897ps9Q3USzEIwR254Z4CfKv
-  ResetExperimental: true
 
 deploy:
   - provider: NuGet

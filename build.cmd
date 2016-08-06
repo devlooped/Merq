@@ -27,8 +27,12 @@ IF NOT EXIST packages.config goto run
 .nuget\nuget.exe install packages.config -OutputDirectory .nuget\packages -ExcludeVersion -Verbosity quiet
 
 :run
-"%msb%" build.proj /v:minimal /nr:true /m %1 %2 %3 %4 %5 %6 %7 %8 %9
+IF "%Verbosity%"=="" (
+    set Verbosity=minimal
+)
+
+ECHO ON
+"%msb%" build.proj /v:%Verbosity% /nr:true /m %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 POPD >NUL
 ENDLOCAL
-ECHO ON
