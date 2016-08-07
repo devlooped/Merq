@@ -51,7 +51,7 @@
 
 	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages" />
 
-	<Target Name="BuildInstaller">
+	<Target Name="BuildInstaller" DependsOnTargets="GitInfo">
 		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
 		<Message Importance="$(DefaultImportance)" Text="Refreshing VSIX with IsSystemComponent=true" />
 		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" />
@@ -285,6 +285,7 @@
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
 		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') ">true</PendingRestore>
 	</PropertyGroup>
+	<Import Project="$(GitInfoTargets)" Condition=" Exists('$(GitInfoTargets)') "/>
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
