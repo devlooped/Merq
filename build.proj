@@ -178,7 +178,7 @@
 			  StandardOutputImportance="low"
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' " />
 
-		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /ResetSettings General.vssettings /Embedding /RootSuffix Exp /Command File.Exit | more'
+		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /ResetSettings General.vssettings /Embedding /RootSuffix Exp /Command File.Exit /Out $(Out)\devenv.log | more'
 			  StandardOutputImportance="low"
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' " />
 
