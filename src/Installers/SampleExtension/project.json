@@ -3,7 +3,7 @@
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
     "MSBuilder.CodeTaskAssembly": "0.2.3",
-    "MSBuilder.VsixInstaller": "0.1.9"
+    "MSBuilder.VsixInstaller": "0.1.11"
   },
   "frameworks": {
     "net45": {}

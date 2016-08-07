@@ -8,7 +8,7 @@
     "Rx-Testing": "2.2.5",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "xunit": "2.1.0",
-    "xunit.vsix": "0.2.70"
+    "xunit.vsix": "0.2.72"
   },
   "frameworks": {
     "net45": {}
