@@ -161,16 +161,14 @@
 		<!-- Kill all running devenv processes -->
 		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Get-Process | Where-Object ProcessName -eq devenv | Stop-Process }&quot;"
 			  StandardOutputImportance="low"
-			  Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' "
-			  ConsoleToMSBuild="true" />
+			  Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' " />
 
 		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
 				 Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
 				 Importance="high" />
 
 		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
-			  Condition=" '$(XamarinProductCode)' != '' "
-			  ConsoleToMSBuild="true" />
+			  Condition=" '$(XamarinProductCode)' != '' " />
 
 		<Message Text="Resetting experimental instances..."
 				 Condition=" '$(ResetExperimental)' == 'true' "
@@ -178,13 +176,11 @@
 
 		<Exec Command='"%(InstalledVersion.SdkDir)Tools\Bin\CreateExpInstance.exe" /Reset /VSInstance=%(InstalledVersion.Identity) /RootSuffix=Exp | more'
 			  StandardOutputImportance="low"
-			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' "
-			  ConsoleToMSBuild="true"/>
+			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' " />
 
 		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /ResetSettings General.vssettings /Embedding /RootSuffix Exp /Command File.Exit | more'
 			  StandardOutputImportance="low"
-			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' "
-			  ConsoleToMSBuild="true"/>
+			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' " />
 
 	</Target>
 
@@ -238,12 +234,10 @@
 		</PropertyGroup>
 
 		<Exec Command="$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:&quot;@(TestAssembly, ' ') $(XunitOptions)&quot;"
-			  ConsoleToMSBuild="true"
 			  ContinueOnError="ErrorAndContinue" />
 
 		<Exec Command="$(XunitConsole) @(IntegrationTestAssembly, ' ') $(XunitOptions.Replace('test', 'integrationtest'))"
 			  Condition=" '@(IntegrationTestAssembly)' != '' "
-			  ConsoleToMSBuild="true"
 			  ContinueOnError="ErrorAndContinue" />
 	</Target>
 
