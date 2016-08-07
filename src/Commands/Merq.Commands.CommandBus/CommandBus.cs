@@ -156,8 +156,6 @@ namespace Merq
 
 		void ExecuteCommand<TCommand> (TCommand command) where TCommand : ICommand
 		{
-			if (command == null) throw new ArgumentNullException (nameof (command));
-
 			var handler = GetCommandHandler(command);
 
 			handler.Execute (command);
@@ -165,8 +163,6 @@ namespace Merq
 
 		TResult ExecuteCommandWithResult<TCommand, TResult> (TCommand command) where TCommand : ICommand<TResult>
 		{
-			if (command == null) throw new ArgumentNullException (nameof (command));
-
 			var handler = GetCommandHandler <TCommand, TResult>(command);
 
 			return handler.Execute (command);
@@ -174,8 +170,6 @@ namespace Merq
 
 		Task ExecuteCommandAsync<TCommand> (TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
 		{
-			if (command == null) throw new ArgumentNullException (nameof (command));
-
 			var handler = GetAsyncCommandHandler (command);
 
 			return handler.ExecuteAsync (command, cancellation);
@@ -183,8 +177,6 @@ namespace Merq
 
 		Task<TResult> ExecuteCommandWithResultAsync<TCommand, TResult> (TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
 		{
-			if (command == null) throw new ArgumentNullException (nameof (command));
-
 			var handler = GetAsyncCommandHandler <TCommand, TResult> (command);
 
 			return handler.ExecuteAsync ((dynamic)command, cancellation);
