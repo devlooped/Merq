@@ -40,7 +40,7 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
-		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
+		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 
@@ -54,12 +54,12 @@
 	<Target Name="BuildInstaller" DependsOnTargets="GitInfo">
 		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
 		<Message Importance="$(DefaultImportance)" Text="Refreshing VSIX with IsSystemComponent=true" />
-		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" />
-		<Exec Command="rmdir src\Vsix\Merq.Vsix\obj\$(Configuration) /S /Q" ContinueOnError="true" />
+		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
+		<Exec Command="rmdir src\Vsix\Merq.Vsix\obj\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 
-		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" />
+		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);IsSystemComponent=true" />
-		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" />
+		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
 
 		<MSBuild Projects="src\Installers\Merq.Installer\Merq.Installer.nuproj"
 				 Properties="$(CommonBuildProperties);IsSystemComponent=true"
@@ -130,6 +130,7 @@
 		<!-- Existing versions of Xamarin will collide with the provided IAsyncManager export, even from the normal hive -->
 		<!-- NOTE: we could check the product version too if needed: Version is available from the Win32_Product structure -->
 		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { get-wmiobject Win32_Product | Where-Object Name -eq Xamarin  | Select-Object -ExpandProperty IdentifyingNumber }&quot;"
+			  StandardOutputImportance="low"
 			  ConsoleToMSBuild="true">
 			<Output TaskParameter="ConsoleOutput" PropertyName="XamarinProductCode" />
 		</Exec>
@@ -159,7 +160,8 @@
 
 		<!-- Kill all running devenv processes -->
 		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Get-Process | Where-Object ProcessName -eq devenv | Stop-Process }&quot;"
-				 Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' "
+			  StandardOutputImportance="low"
+			  Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' "
 			  ConsoleToMSBuild="true" />
 
 		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
@@ -175,10 +177,12 @@
 				 Importance="high" />
 
 		<Exec Command='"%(InstalledVersion.SdkDir)Tools\Bin\CreateExpInstance.exe" /Reset /VSInstance=%(InstalledVersion.Identity) /RootSuffix=Exp | more'
+			  StandardOutputImportance="low"
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' != 'true' "
 			  ConsoleToMSBuild="true"/>
 
 		<Exec Command='"%(InstalledVersion.InstallDir)devenv.exe" /ResetSettings General.vssettings /Embedding /RootSuffix Exp /Command File.Exit | more'
+			  StandardOutputImportance="low"
 			  Condition=" '$(ResetExperimental)' == 'true' And '$(IsAdministrator)' == 'true' "
 			  ConsoleToMSBuild="true"/>
 
@@ -195,6 +199,7 @@
 
 		<Message Importance="$(DefaultImportance)" Text="Flushing MEF cache for Visual Studio %(InstalledVersion.Identity)$(_RootSuffix)." />
 		<Exec Command='rmdir "$(LocalAppData)\Microsoft\VisualStudio\%(InstalledVersion.Identity)$(_RootSuffix)\ComponentModelCache" /S /Q'
+			  StandardOutputImportance="low"
 			  Condition=" Exists('$(LocalAppData)\Microsoft\VisualStudio\%(InstalledVersion.Identity)$(_RootSuffix)\ComponentModelCache') "/>
 	</Target>
 
@@ -290,6 +295,7 @@
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
+			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
 
 		<!-- Errors if nuget packages were restored during the build -->
