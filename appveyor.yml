@@ -5,7 +5,7 @@ init:
 
 build_script:
   - cmd: >-
-      build.cmd "/logger:%ProgramFiles%\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll;Verbosity=minimal" %BuildArgs%
+      build.cmd %BuildArgs%
       
       .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
 
