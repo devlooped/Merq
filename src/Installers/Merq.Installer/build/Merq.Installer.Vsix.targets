@@ -20,11 +20,11 @@
 	<Target Name="AddMerqDependency" 
 			AfterTargets="DetokenizeVsixManifestFile"
 			Inputs="$(IntermediateVsixManifest)" 
-			Outputs="$(IntermediateOutputPath)AddVsixDependency.txt">
+			Outputs="$(IntermediateOutputPath)AddVDependency.txt">
 
 		<AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
 						   DependentVsixManifest="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest" />
-		<Touch Files="$(IntermediateOutputPath)AddVsixDependency.txt" AlwaysCreate="true" />
+		<Touch Files="$(IntermediateOutputPath)AddMerqDependency.txt" AlwaysCreate="true" />
 	</Target>
 
 	<!-- Install only once per VS + Instance, to enable incremental build -->
@@ -33,12 +33,12 @@
 			AfterTargets="DeployVsixExtensionFiles"
 			Condition=" '$(DeployExtension)'=='true' "
 			Inputs="$(MSBuildThisFileDirectory)..\tools\Merq.vsix" 
-			Outputs="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt">
+			Outputs="$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(_RootSuffix).txt">
 		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
 					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
 					 MessageImportance="high"
 					 RootSuffix="$(_RootSuffix)" />
-		<Touch Files="$(IntermediateOutputPath)InstallVsix-$(VisualStudioVersion)$(_RootSuffix).txt" AlwaysCreate="true" />
+		<Touch Files="$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(_RootSuffix).txt" AlwaysCreate="true" />
 	</Target>
 	
 	<!-- Allows manual uninstallation of the VSIX -->

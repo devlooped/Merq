@@ -7,7 +7,7 @@
 		<DisplayName>Merq</DisplayName>
 		<Description xml:space="preserve">Merq</Description>
 	</Metadata>
-	<Installation InstalledByMsi="false" SystemComponent="|Merq.Vsix;GetSystemComponent|">
+	<Installation>
 		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,)" />
 	</Installation>
 	<Dependencies>
