@@ -248,6 +248,28 @@ namespace Merq
 			handler.Verify (x => x.Execute (command));
 		}
 
+		[Fact]
+		public void when_execute_command_throws_then_rethrows_original_exception()
+		{
+			var command = new Command();
+			var bus = new CommandBus(Mock.Of<IComponentModel>(x =>
+				x.GetExtensions<ICommandHandler<Command>>() == new[] { new ThrowingCommandHandler() }));
+
+			var ex = Assert.Throws<InvalidOperationException>(() => bus.Execute((ICommand)command));
+
+			Assert.Equal("Invalid", ex.Message);
+		}
+
+		public class ThrowingCommandHandler : ICommandHandler<Command>
+		{
+			public bool CanExecute(Command command) => true;
+
+			public void Execute(Command command)
+			{
+				throw new InvalidOperationException("Invalid");
+			}
+		}
+
 		public class AsyncCommand : IAsyncCommand { }
 
 		public class AsyncCommandWithResult : IAsyncCommand<Result> { }
