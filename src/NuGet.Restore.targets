@@ -5,6 +5,7 @@
     <NuGetUrl Condition=" '$(NuGetUrl)' == '' ">https://dist.nuget.org/win-x86-commandline/latest/nuget.exe</NuGetUrl>
     <NuGet Condition=" '$(NuGet)' == '' ">$(NuGetPath)\nuget.exe</NuGet>
     <Mono Condition=" '$(OS)' != 'Windows_NT' ">mono</Mono>
+    <TEMP Condition=" '$(OS)' != 'Windows_NT' ">$(TMPDIR)</TEMP>
     <BaseUrl Condition=" '$(BaseUrl)' == '' ">https://raw.githubusercontent.com/kzu/NuGet.Restore/master/</BaseUrl>
     <CurlUrl Condition=" '$(CurlUrl)' == '' ">$(BaseUrl)curl.exe</CurlUrl>
     <CurlArgs Condition=" '$(CurlArgs)' == '' ">-k -f -L</CurlArgs>
@@ -19,8 +20,7 @@
   <ItemDefinitionGroup>
     <RestoreSolution>
       <Command>Restore</Command>
-      <Args>
-      </Args>
+      <Args>-verbosity quiet</Args>
     </RestoreSolution>
   </ItemDefinitionGroup>
   <Target Name="RestorePackages" BeforeTargets="Build" DependsOnTargets="DownloadNuGet;EnsureBeforeSolutionImport;RestoreSolutions" Condition=" '$(RestorePackages)' != 'false' " />
@@ -103,6 +103,6 @@
   </Target>
   <PropertyGroup>
     <NuGetRestoreImported>true</NuGetRestoreImported>
-    <NuGetRestoreETag>afd34f7458c82f2384a432a9b681628ccfe54ae4</NuGetRestoreETag>
+    <NuGetRestoreETag>9d67f0c15f481ff2da50c51a8635ac9d27c533c8</NuGetRestoreETag>
   </PropertyGroup>
 </Project>
