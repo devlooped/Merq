@@ -57,7 +57,6 @@
 		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 		<Exec Command="rmdir src\Vsix\Merq.Vsix\obj\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 
-		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);IsSystemComponent=true" />
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
 
