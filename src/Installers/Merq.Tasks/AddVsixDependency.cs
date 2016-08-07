@@ -22,9 +22,9 @@ namespace Merq.Tasks
 		{
 			var xmlns = XNamespace.Get("http://schemas.microsoft.com/developer/vsx-schema/2011");
 			var depDoc = XDocument.Load(DependentVsixManifest);
-			if (depDoc.Root.Name.Namespace == xmlns)
+			if (depDoc.Root.Name.Namespace != xmlns)
 			{
-				Log.LogError("Unsupported document root namespace {0}. Please use a VSIX manifest version 2.0.0 (xmlns='http://schemas.microsoft.com/developer/vsx-schema/2011').", depDoc.Root.Name.NamespaceName);
+				Log.LogError("Unsupported document root namespace {0} in {1}. Please use a VSIX manifest version 2.0.0 (xmlns='http://schemas.microsoft.com/developer/vsx-schema/2011').", depDoc.Root.Name.NamespaceName, DependentVsixManifest);
 				return false;
 			}
 
@@ -73,7 +73,7 @@ namespace Merq.Tasks
 			}
 			else
 			{
-				Log.LogError("Unsupported document root namespace {0}. Please use a VSIX manifest version 2.0.0 (xmlns='http://schemas.microsoft.com/developer/vsx-schema/2011').", doc.Root.Name.NamespaceName);
+				Log.LogError("Unsupported document root namespace {0} in {1}. Please use a VSIX manifest version 2.0.0 (xmlns='http://schemas.microsoft.com/developer/vsx-schema/2011').", doc.Root.Name.NamespaceName, TargetVsixManifest);
 				return false;
 			}
 
