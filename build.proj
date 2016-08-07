@@ -231,10 +231,11 @@
 
 			<CoverageConsole>$(PackagesPath)\OpenCover\tools\OpenCover.Console.exe</CoverageConsole>
 			<CoverageOptions>$(CoverageOptions) -output:$(Out)\coverage.xml -returntargetcode -register:user -filter:"+[Merq.*]* -[xunit*]* -[*Tests]* -[*]*ThisAssembly* -[*]*IFluentInterface*" -excludebyattribute:*ExcludeFromCodeCoverage*;*CompilerGenerated* -skipautoprops -showunvisited -mergebyhash</CoverageOptions>
+			<CoverageCommand>$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:"@(TestAssembly, ' ') $(XunitOptions)"</CoverageCommand>
 		</PropertyGroup>
 
-		<Exec Command="$(CoverageConsole) $(CoverageOptions) -target:$(XunitConsole) -targetargs:&quot;@(TestAssembly, ' ') $(XunitOptions)&quot;"
-			  ContinueOnError="ErrorAndContinue" />
+		<Message Importance="high" Text="Executing: $(CoverageCommand)" />
+		<Exec Command="$(CoverageCommand)" ContinueOnError="ErrorAndContinue" />
 
 		<Exec Command="$(XunitConsole) @(IntegrationTestAssembly, ' ') $(XunitOptions.Replace('test', 'integrationtest'))"
 			  Condition=" '@(IntegrationTestAssembly)' != '' "
