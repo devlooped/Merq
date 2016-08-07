@@ -33,9 +33,6 @@
     <None Include="Merq.Async.nuspec" />
     <None Include="project.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="GitInfo.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
 </Project>

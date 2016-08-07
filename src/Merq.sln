@@ -51,7 +51,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.TaskScheduler", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AsyncManager", "AsyncManager", "{884E7C4D-254B-4B86-8BC8-3B029DB91D0D}"
 	ProjectSection(SolutionItems) = preProject
-		Async\Merq.Async.AsyncManager\GitInfo.txt = Async\Merq.Async.AsyncManager\GitInfo.txt
 		Async\Merq.Async.AsyncManager\Merq.Async.AsyncManager.nuspec = Async\Merq.Async.AsyncManager\Merq.Async.AsyncManager.nuspec
 	EndProjectSection
 EndProject
