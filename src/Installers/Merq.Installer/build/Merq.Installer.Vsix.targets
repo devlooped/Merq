@@ -20,7 +20,7 @@
 	<Target Name="AddMerqDependency" 
 			AfterTargets="DetokenizeVsixManifestFile"
 			Inputs="$(IntermediateVsixManifest)" 
-			Outputs="$(IntermediateOutputPath)AddVDependency.txt">
+			Outputs="$(IntermediateOutputPath)AddMerqDependency.txt">
 
 		<AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
 						   DependentVsixManifest="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest" />
