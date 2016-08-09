@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
+		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
+	</PropertyGroup>
+	
+	<Target Name="Build" DependsOnTargets="DownloadCurl">
+		<Exec Command="$(Curl) -s -0 https://api.nuget.org/v3/registration1/merq.events/index.json" StandardOutputImportance="low" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="JsonContent" />
+		</Exec>
+		<JsonPeek JsonContent="$(JsonContent)" JPath="items[0].upper">
+			<Output TaskParameter="Result" PropertyName="PublishedEvents" />
+		</JsonPeek>
+
+		<Exec Command="$(Curl) -s -0 https://api.nuget.org/v3/registration1/merq.commands/index.json" StandardOutputImportance="low" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="JsonContent" />
+		</Exec>
+		<JsonPeek JsonContent="$(JsonContent)" JPath="items[0].upper">
+			<Output TaskParameter="Result" PropertyName="PublishedCommands" />
+		</JsonPeek>
+
+		<Message Text="Events: $(PublishedEvents)
+Commands: $(PublishedCommands)" Importance="high" />
+
+		<!-- TODO: if events or commands is '', we must fetch the latest published version of each
+				   so we can add the right dependency version into the meta-package, via JsonPeek.
+				   
+https://api.nuget.org/v3/registration1/merq.events/index.json
+https://api.nuget.org/v3/registration1/merq.commands/index.json
+
+JPath = items[0].upper?
+
+		<JsonPeek JsonInputPath="packages.json" JPath="dependencies['%(PackageId.Identity)']">
+			<Output TaskParameter="Result" PropertyName="BaseVersion" />
+		</JsonPeek>				   
+		-->
+	</Target>
+
+	<Import Project='$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props'/>
+	<Import Project='$(PackagesPath)\MSBuilder.DumpItems\build\MSBuilder.DumpItems.targets'/>
+	<Import Project='$(PackagesPath)\JsonPoke.MSBuild\build\JsonPoke.MSBuild.Targets'/>
+	<Import Project="src\NuGet.Restore.targets" />
+</Project>

@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.25",
+    "GitInfo": "1.1.27",
     "IFluentInterface": "2.0.1",
     "netfx-System.StringResources": "3.0.13",
     "Rx-Main": "2.2.5"

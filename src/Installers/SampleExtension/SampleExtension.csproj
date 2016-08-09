@@ -43,4 +43,17 @@
   <Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And '$(VsSDKInstall)' != ''" />
   <Import Project="..\Merq.Installer\bin\$(Configuration)\build\Merq.Installer.targets"
           Condition="Exists('..\Merq.Installer\bin\$(Configuration)\build\Merq.Installer.targets')" />
+  <Target Name="BeforeBuild">
+    <Error Text="Build Merq.Installer project before building this one."
+           Condition="Exists('..\Merq.Installer\bin\$(Configuration)\build\Merq.Installer.targets')" />
+  </Target>
+  <Target Name="SetVsixDeploymentPath"
+			DependsOnTargets="GetVsixDeploymentPath"
+			AfterTargets="GetVsixDeploymentPath"
+			Returns="$(VsixDeploymentPath)"
+			Condition="'$(DeployExtension)'=='true'">
+    <PropertyGroup>
+      <VsixDeploymentPath>$(ExtensionsPath)mobessen\Merq.SampleExtension</VsixDeploymentPath>
+    </PropertyGroup>
+  </Target>
 </Project>

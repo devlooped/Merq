@@ -35,9 +35,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\icon\200.png">
+      <Link>200.png</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\..\icon\Merq.ico">
+      <Link>Merq.ico</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\..\LICENSE">
+      <Link>LICENSE</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Merq.Vsix.BindingRedirects.targets" />
     <None Include="Merq.Vsix.props" />
-    <None Include="Merq.Vsix.targets" />
+    <None Include="Merq.Vsix.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
     <None Include="source.extension.vsixmanifest" />
   </ItemGroup>
@@ -65,6 +79,8 @@
     <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
       <Name>Merq.Async</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\..\Commands\Merq.Commands\Merq.Commands.csproj">
       <Project>{2855a474-dffe-4536-8fa7-19b381a240b0}</Project>

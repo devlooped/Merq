@@ -15,6 +15,7 @@ namespace Merq
 	/// Package providing Merq registration.
 	/// </summary>
 	[Guid("49A95AF4-CB3D-4770-BD67-B0BBB46C6463")]
+	[InstalledProductRegistration(ThisAssembly.Vsix.Name, ThisAssembly.Vsix.Description, ThisAssembly.Vsix.Identifier)]
 	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true)]
 	[ProvideBindingPath]
 	public class MerqPackage : Package
