@@ -6,6 +6,7 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
@@ -69,29 +70,8 @@
 		<Copy SourceFiles='%(InstallerPackage.Identity)' DestinationFiles='$(Out)\%(InstallerPackage.Filename)%(InstallerPackage.Extension)' />
 	</Target>
 
-	<Target Name="BuildPackages" Inputs="@(NuSpec)" Outputs="%(NuSpec.Identity)--BATCH"
-			Condition="'@(NuSpec)' != ''">
-
-		<!-- If there is a .csproj, grab the version from the project itself -->
-		<MSBuild Projects='%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj' Condition="Exists('%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj')"
-				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NuSpec.RootDir)%(NuSpec.Directory)'>
-			<Output ItemName='GitVersion' TaskParameter='TargetOutputs'/>
-		</MSBuild>
-
-		<MSBuild Projects='$(PackagesPath)\GitInfo\build\GitInfo.targets'
-				 Condition="!Exists('%(NuSpec.RootDir)%(NuSpec.Directory)%(Filename).csproj')"
-				 Targets='GitVersion' Properties='GitInfoBaseDir=%(NuSpec.RootDir)%(NuSpec.Directory)'>
-			<Output ItemName='GitVersion' TaskParameter='TargetOutputs'/>
-		</MSBuild>
-
-		<PropertyGroup>
-			<Version>%(GitVersion.GitSemVerMajor).%(GitVersion.GitSemVerMinor).%(GitVersion.GitSemVerPatch)%(GitVersion.GitSemVerDashLabel)</Version>
-			<IncludePreRelease>false</IncludePreRelease>
-			<IncludePreRelease Condition=" '%(GitVersion.GitSemVerLabel)' != '' ">true</IncludePreRelease>
-		</PropertyGroup>
-
-		<Message Text="Determined version $(Version) for @(NuSpec)" Importance="high"/>
-		<Exec Command='"$(NuGet)" Pack "@(NuSpec)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
+	<Target Name="BuildPackages" Condition="'@(NuSpec)' != ''">
+		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Identity)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
 	</Target>
 
 	<Import Project="$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"
@@ -106,14 +86,11 @@
 	<PropertyGroup>
 		<TestDependsOn>PrepareTest;TestWin;TestMac</TestDependsOn>
 		<TestDependsOn Condition=" '$(IntegrationTest)' == 'true' ">
+			PrepareInstall;
 			Install;
 			$(TestDependsOn);
 			Uninstall
 		</TestDependsOn>
-		<BuildDependsOn Condition=" '$(IntegrationTest)' == 'true' ">
-			PrepareInstall;
-			$(BuildDependsOn)
-		</BuildDependsOn>
 	</PropertyGroup>
 
 	<Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
@@ -250,43 +227,17 @@
 			   ContinueOnError="ErrorAndContinue" />
 	</Target>
 
-	<UsingTask TaskName="CalculateMetaVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(CodeTaskAssembly)" Condition=" '$(CodeTaskAssembly)' != '' ">
-		<ParameterGroup>
-			<BaseVersion Required="true" />
-			<PublishedVersion Required="true" />
-			<TargetVersion Output="true"/>
-		</ParameterGroup>
-		<Task>
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
-				var label = BaseVersion.IndexOf("-") == -1 ? 
-					"" : BaseVersion.Substring(BaseVersion.IndexOf("-"));
-				
-				var baseVersion = new Version(BaseVersion.Replace("-pre", ""));
-				var publishedVersion = new Version(PublishedVersion.Replace("-pre", ""));
-				
-				if (baseVersion > publishedVersion) 
-				{
-					TargetVersion = BaseVersion;
-				}
-				else 
-				{
-					TargetVersion = new Version(publishedVersion.Major, publishedVersion.Minor, publishedVersion.Build + 1).ToString() + label;
-				}
-			]]>
-			</Code>
-		</Task>
-	</UsingTask>
-
 	<!-- Configure and restore initial targets and packages -->
 	<Import Project="src\NuGet.Restore.targets" />
 	<PropertyGroup>
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
 		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') ">true</PendingRestore>
 	</PropertyGroup>
+	<!-- Overwritten by the import below if it exists -->
+	<Target Name="GitInfoReport" />
 	<Import Project="$(GitInfoTargets)" Condition=" Exists('$(GitInfoTargets)') "/>
 
-	<Target Name="Configure" DependsOnTargets="DownloadNuGet">
+	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
@@ -295,5 +246,14 @@
 		<!-- Errors if nuget packages were restored during the build -->
 		<Error Text="Required build-time NuGet packages were missing and were just restored. Please run the build again."
 			   Condition=" '$(PendingRestore)' == 'true' And '$(target)' != 'configure' "/>
+	
+		<PropertyGroup Condition=" '$(PendingRestore)' != 'true' ">
+			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>			
+		</PropertyGroup>
+		
+        <!-- Update AppVeyor build # to match the actual one being used -->
+        <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "
+              ConsoleToMSBuild="true"
+              ContinueOnError="WarnAndContinue" />	
 	</Target>
 </Project>
