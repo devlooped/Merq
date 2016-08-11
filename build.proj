@@ -7,6 +7,7 @@
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
 		<GitInfoReportImportance>high</GitInfoReportImportance>
+		<GitInfoBaseDir>$(MSBuildThisFileDirectory)src</GitInfoBaseDir>
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
@@ -250,6 +251,9 @@
 		<PropertyGroup Condition=" '$(PendingRestore)' != 'true' ">
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>			
 		</PropertyGroup>
+		
+		<Message Importance="high"  Condition=" '$(PendingRestore)' != 'true' "
+				 Text="Building version $(Version)" />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->
         <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "
