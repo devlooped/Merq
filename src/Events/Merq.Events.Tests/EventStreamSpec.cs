@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Moq;
 using Xunit;
 
 namespace Merq
@@ -142,20 +144,6 @@ namespace Merq
 			Assert.Equal (2, called);
 		}
 
-		[Fact]
-		public void given_an_observable_when_pushing_event_of_same_type_then_throws_unsupported ()
-		{
-			var subject = new Subject<ConcreteEvent>();
-			var stream = new EventStream(subject);
-
-			Assert.Throws<NotSupportedException> (() => stream.Push (new ConcreteEvent ()));
-		}
-
-		[Fact]
-		public void given_an_observable_when_pushing_event_of_same_base_hierarchy_succeeds()
-		{
-
-		}
 
 		public class NestedPublicEvent { }
 	}

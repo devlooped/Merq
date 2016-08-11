@@ -60,9 +60,6 @@ namespace Merq
 			if (!IsValid<TEvent> ())
 				throw new NotSupportedException (Strings.EventStream.PublishedEventNotPublic);
 
-			if (GetObservables<TEvent>().Any())
-				throw new NotSupportedException(Strings.EventStream.PushNotSupportedForExternalEvent(typeof(TEvent).Name));
-
 			var eventType = @event.GetType().GetTypeInfo();
 
 			InvokeCompatibleSubjects (@eventType, @event);
