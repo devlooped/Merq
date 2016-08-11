@@ -27,6 +27,10 @@
 		<VersionDependsOn>GetVersion</VersionDependsOn>
 		<GetTargetPathDependsOn>EstablishNuGetPaths;$(GetTargetPathDependsOn)</GetTargetPathDependsOn>
 		<GitInfoBaseDir>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.snk))</GitInfoBaseDir>
+		<!-- Prevents the MS common targets from automatically adding the build dependency projects as 
+		     project references to be processed by NuProj, since we're already linking to the right files 
+			 to end up in the right folders. -->
+		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 	</PropertyGroup>
 	
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
