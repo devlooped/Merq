@@ -32,7 +32,5 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
-		<Compile Include="$(MSBuildThisFileDirectory)ImplementationAssemblyInfo.cs" Condition=" '$(IsContractsAssembly)' != 'true' " />
-		<Compile Include="$(MSBuildThisFileDirectory)ContractAssemblyInfo.cs" Condition=" '$(IsContractsAssembly)' == 'true' " />
 	</ItemGroup>
 </Project>
