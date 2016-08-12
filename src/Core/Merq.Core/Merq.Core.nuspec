@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>Merq: Command Bus + Event Stream (Implementations)</title>
+		<authors>Mobile Essentials</authors>
+		<owners>mobessen</owners>
+		<projectUrl>https://github.com/MobileEssentials/Merq</projectUrl>
+		<licenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</licenseUrl>
+		<iconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<summary>Default implementation of core interfaces for ICommandBus and IEventStream</summary>
+		<description>Default implementation of core interfaces for ICommandBus and IEventStream</description>
+		<copyright>Copyright 2016 © Mobile Essentials</copyright>
+		<dependencies>
+			<dependency id="Merq" version="$version$" />
+			<dependency id="Rx-Main" version="2.2.5" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.xml" target="lib\portable-net45+win8+wpa81" />
+	</files>
+</package>

@@ -47,7 +47,7 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
-			<NuSpec Include="src\**\*.nuspec" />
+			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec"   />
 		</ItemGroup>
 	</Target>
 

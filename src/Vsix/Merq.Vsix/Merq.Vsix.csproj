@@ -24,7 +24,7 @@
   <Import Project="Merq.Vsix.props" />
   <ItemGroup>
     <Compile Include="Components\AsyncManagerProvider.cs" />
-    <Compile Include="Components\CommandBus.cs" />
+    <Compile Include="Components\CommandBusComponent.cs" />
     <Compile Include="Components\EventStreamComponent.cs" />
     <Compile Include="MerqPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,9 +72,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\Async\Merq.Async.AsyncManager\Merq.Async.AsyncManager.Desktop\Merq.Async.AsyncManager.Desktop.csproj">
+    <ProjectReference Include="..\..\Async\Merq.Async.Core\Merq.Async.Core.Desktop\Merq.Async.Core.Desktop.csproj">
       <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
-      <Name>Merq.Async.AsyncManager.Desktop</Name>
+      <Name>Merq.Async.Core.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
@@ -82,17 +82,13 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\..\Commands\Merq.Commands\Merq.Commands.csproj">
-      <Project>{2855a474-dffe-4536-8fa7-19b381a240b0}</Project>
-      <Name>Merq.Commands</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Events\Merq.Events.EventStream\Merq.Events.EventStream.csproj">
+    <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
       <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
-      <Name>Merq.Events.EventStream</Name>
+      <Name>Merq.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Events\Merq.Events\Merq.Events.csproj">
+    <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
-      <Name>Merq.Events</Name>
+      <Name>Merq</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

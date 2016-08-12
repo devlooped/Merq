@@ -33,6 +33,7 @@
     </Compile>
     <Compile Include="AwaitExtensionsSpec.cs" />
     <Compile Include="BaseAsyncManagerSpec.cs" />
+    <Compile Include="DispatcherAsyncManagerSpec.cs" />
     <Compile Include="TaskSchedulerAsyncManagerSpec.cs" />
     <Compile Include="AsyncManagerSpec.cs" />
   </ItemGroup>
@@ -40,9 +41,9 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Async.AsyncManager\Merq.Async.AsyncManager.Desktop\Merq.Async.AsyncManager.Desktop.csproj">
+    <ProjectReference Include="..\Merq.Async.Core\Merq.Async.Core.Desktop\Merq.Async.Core.Desktop.csproj">
       <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
-      <Name>Merq.Async.AsyncManager.Desktop</Name>
+      <Name>Merq.Async.Core.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj">
       <Project>{351e25f9-09d3-4718-b358-2be5ad29a33c}</Project>

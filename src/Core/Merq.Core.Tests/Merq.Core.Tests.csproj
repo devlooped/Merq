@@ -4,13 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}</ProjectGuid>
+    <ProjectGuid>{3A395046-3F7B-4907-9D63-48F92174D2E5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
-    <AssemblyName>Merq.Vsix.Tests</AssemblyName>
+    <AssemblyName>Merq.Core.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.props))\Merq.props" />
   <PropertyGroup>
@@ -23,34 +25,24 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandBusSpec.cs" />
+    <Compile Include="EventStreamSamples.cs" />
+    <Compile Include="EventStreamSpec.cs" />
+    <Compile Include="Misc.cs" />
+    <Compile Include="SubjectWrapperSpec.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Async\Merq.Async.Core\Merq.Async.Core.Desktop\Merq.Async.Core.Desktop.csproj">
-      <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
-      <Name>Merq.Async.Core.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
-      <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
-      <Name>Merq.Async</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
+    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj">
       <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
       <Name>Merq.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
+    <ProjectReference Include="..\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
       <Name>Merq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merq.Vsix\Merq.Vsix.csproj">
-      <Project>{c9a505ca-f826-473a-8290-b36af6be56fb}</Project>
-      <Name>Merq.Vsix</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AsyncManagerProviderSpec.cs" />
-    <Compile Include="EventStreamComponentSpec.cs" />
-    <Compile Include="CommandBusComponentSpec.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />

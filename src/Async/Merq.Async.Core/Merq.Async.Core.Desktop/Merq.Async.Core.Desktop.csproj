@@ -4,48 +4,37 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}</ProjectGuid>
+    <ProjectGuid>{31D90692-B7C5-4BE5-9C25-2D2159A157EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
-    <AssemblyName>Merq.Vsix.IntegrationTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AssemblyName>Merq.Async.Core</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DocumentationFile>bin\Release\Merq.Async.Core.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.props))\Merq.props" />
-  <PropertyGroup>
-    <DocumentationFile />
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <MinimumVisualStudioVersion Condition=" '$(MinimumVisualStudioVersion)' == '' ">11.0</MinimumVisualStudioVersion>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ComponentModel.Composition.Diagnostics">
-      <HintPath>..\..\..\lib\Microsoft.ComponentModel.Composition.Diagnostics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentsSpec.cs" />
+    <Compile Include="..\Merq.Async.Core.Portable\AsyncManager.cs">
+      <Link>AsyncManager.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
+    <ProjectReference Include="..\..\Merq.Async\Merq.Async.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
       <Name>Merq.Async</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
-      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
-      <Name>Merq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
-      <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
-      <Name>Merq</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

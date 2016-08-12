@@ -3,11 +3,10 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
 [assembly: ProvideCodeBase]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Commands")]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Events")]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Events.EventStream")]
+[assembly: ProvideCodeBase(AssemblyName = "Merq")]
+[assembly: ProvideCodeBase(AssemblyName = "Merq.Core")]
 [assembly: ProvideCodeBase(AssemblyName = "Merq.Async")]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Async.AsyncManager")]
+[assembly: ProvideCodeBase(AssemblyName = "Merq.Async.Core")]
 
 namespace Merq
 {

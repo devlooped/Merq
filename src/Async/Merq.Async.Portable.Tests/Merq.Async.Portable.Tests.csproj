@@ -28,9 +28,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Async.AsyncManager\Merq.Async.AsyncManager.Portable\Merq.Async.AsyncManager.Portable.csproj">
+    <ProjectReference Include="..\Merq.Async.Core\Merq.Async.Core.Portable\Merq.Async.Core.Portable.csproj">
       <Project>{d7589c3e-1818-4e14-b84d-a275f3218161}</Project>
-      <Name>Merq.Async.AsyncManager.Portable</Name>
+      <Name>Merq.Async.Core.Portable</Name>
     </ProjectReference>
     <ProjectReference Include="..\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj">
       <Project>{351e25f9-09d3-4718-b358-2be5ad29a33c}</Project>
