@@ -4,7 +4,7 @@
 	<Fragment>
 		<Component Id="Merq" Directory="MerqVsixInstallDir">
 			<File Id="Merq.vsix" Source="$(var.Merq.Vsix.TargetDir)Merq.vsix">
-				<vs:VsixPackage	PackageId="Merq" Permanent="no" />
+				<vs:VsixPackage	PackageId="Merq" Vital="no" Permanent="no" />
 			</File>
 		</Component>
 	</Fragment>
