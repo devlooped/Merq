@@ -53,7 +53,7 @@
 			Returns="$(VsixDeploymentPath)"
 			Condition="'$(DeployExtension)'=='true'">
     <PropertyGroup>
-      <VsixDeploymentPath>$(ExtensionsPath)mobessen\Merq.SampleExtension</VsixDeploymentPath>
+      <VsixDeploymentPath>$(ExtensionsPath)mobessen\Merq.SampleExtension\</VsixDeploymentPath>
     </PropertyGroup>
   </Target>
 </Project>

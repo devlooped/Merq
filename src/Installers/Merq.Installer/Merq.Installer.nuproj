@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <Dependency Include="MSBuilder.VsixInstaller">
-      <Version>0.1.13</Version>
+      <Version>0.2.2</Version>
     </Dependency>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@
 			DependsOnTargets="GetVsixDeploymentPath"
 			AfterTargets="GetVsixDeploymentPath" 
 			Returns="$(VsixDeploymentPath)"
-			Condition="'$(DeployExtension)'=='true'">
+			Condition=" '$(DeployExtension)' == 'true' ">
 		<PropertyGroup>
 			<VsixDeploymentPath>$(ExtensionsPath)mobessen\Merq\</VsixDeploymentPath>
 		</PropertyGroup>

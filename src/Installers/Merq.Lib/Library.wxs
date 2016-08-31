@@ -4,6 +4,13 @@
 	<Fragment>
 		<Component Id="Merq" Directory="MerqVsixInstallDir">
 			<File Id="Merq.vsix" Source="$(var.Merq.Vsix.TargetDir)Merq.vsix">
+				<!-- We make the package non-vital since the underlying VSIXInstaller.exe 
+					 installer will fail (?!) if the VSIX being installed is already 
+					 installed, instead of being a no-op. The other cases where it can 
+					 fail is if the existing Merq VSIX has a higher version (in this case 
+					 we also don't want to fail). So this is as designed (given the weird 
+					 constraints we have to deal with).
+				-->
 				<vs:VsixPackage	PackageId="Merq" Vital="no" Permanent="no" />
 			</File>
 		</Component>
