@@ -1,60 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- RootSuffix defaults provided by MSBuilder.VsixInstaller -->
-	
-	<!-- VSIXes will need to reference the payload directly -->
 	<ItemGroup>
-		<Content Include="$(MSBuildThisFileDirectory)..\tools\Merq.vsix">
-			<Link>Merq.vsix</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<IncludeInVsix>true</IncludeInVsix>
-		</Content>
+		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
+			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
+		</VsixDependency>
 	</ItemGroup>
 
-	<!-- Add dependency to the VSIX manifest automatically -->
-	<Target Name="AddMerqDependency" 
-			AfterTargets="DetokenizeVsixManifestFile"
-			Inputs="$(IntermediateVsixManifest)" 
-			Outputs="$(IntermediateOutputPath)AddMerqDependency.txt">
+	<!-- Allows manual (un)installation of the VSIX -->
 
-		<AddVsixDependency TargetVsixManifest="$(IntermediateVsixManifest)"
-						   DependentVsixManifest="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest" />
-		<Touch Files="$(IntermediateOutputPath)AddMerqDependency.txt" AlwaysCreate="true" />
-	</Target>
-
-	<!-- Only auto-install Merq if the extension being built will be deployed too -->
-	<PropertyGroup Condition=" '$(DeployExtension)' == 'true' ">
-		<DeployVsixExtensionFilesDependsOn>
-			CleanInstallMerqVsix;
-			InstallMerqVsix;
-			$(DeployVsixExtensionFilesDependsOn)
-		</DeployVsixExtensionFilesDependsOn>
-	</PropertyGroup>
-
-	<!-- If the entire Extensions folder doesn't exist, most likely the dev deleted the entire Exp directory -->
-	<Target Name="CleanInstallMerqVsix" 
-			Condition=" Exists('$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(RootSuffix).txt') ">
-		<GetExtensionsPath SubPath="$(ExtensionsDeploymentSubPath)" Condition=" '$(ExtensionsPath)' == '' ">
-			<Output TaskParameter="LocalExtensionsPath" PropertyName="ExtensionsPath"/>
-		</GetExtensionsPath>
-		<Delete Files="$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(RootSuffix).txt" 
-				Condition=" !Exists('$(ExtensionsPath)') " />
-	</Target>
-	
-	<!-- Install only once per VS + Instance, to enable incremental build -->
-	<Target Name="InstallMerqVsix" 
-			Inputs="$(MSBuildThisFileDirectory)..\tools\Merq.vsix" 
-			Outputs="$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(RootSuffix).txt">
+	<Target Name="InstallMerq">
 		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
 					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
 					 MessageImportance="high"
 					 RootSuffix="$(RootSuffix)" />
-		<Touch Files="$(IntermediateOutputPath)InstallMerqVsix-$(VisualStudioVersion)$(RootSuffix).txt" AlwaysCreate="true" />
 	</Target>
 	
-	<!-- Allows manual uninstallation of the VSIX -->
-	<Target Name="UninstallMerqVsix">
+	<Target Name="UninstallMerq">
 		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
 					   VsixId="Merq"
 					   MessageImportance="high"

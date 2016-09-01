@@ -4,7 +4,7 @@
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
     "MSBuilder.CodeTaskAssembly": "0.2.3",
     "MSBuilder.DumpItems": "0.1.8",
-    "MSBuilder.VsixInstaller": "0.2.2"
+    "MSBuilder.VsixDependency": "0.1.0"
   },
   "frameworks": {
     "net45": {}

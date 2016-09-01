@@ -11,8 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <Dependency Include="MSBuilder.VsixDependency">
+      <Version>0.1.0</Version>
+    </Dependency>
     <Dependency Include="MSBuilder.VsixInstaller">
-      <Version>0.2.2</Version>
+      <Version>0.2.4</Version>
     </Dependency>
   </ItemGroup>
   <ItemGroup>
