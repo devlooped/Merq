@@ -15,12 +15,12 @@
 		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 		<dependencies>
 			<dependency id="Merq" version="$version$" />
-			<dependency id="Rx-Main" version="2.2.5" />
+			<dependency id="System.Reactive" version="3.0.0" />
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\$configuration$\$id$.dll" target="lib\portable-net45+win8+wpa81" />
-		<file src="bin\$configuration$\$id$.pdb" target="lib\portable-net45+win8+wpa81" />
-		<file src="bin\$configuration$\$id$.xml" target="lib\portable-net45+win8+wpa81" />
+		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.3" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.3" />
+		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.3" />
 	</files>
 </package>

@@ -27,7 +27,7 @@
 	<ItemGroup>
 		<Solution Include="src\*.sln"/>
 		<TestProject Include="src\**\*.Tests.csproj" />
-		<IntegrationTestProject Include="src\**\*.IntegrationTests.csproj" />
+		<IntegrationTestProject Include="src\**\*.IntegrationTests.csproj" Condition=" '$(IntegrationTest)' == 'true' " />
 	</ItemGroup>
 
 	<Target Name="All" DependsOnTargets="Build;Test;Package" />
