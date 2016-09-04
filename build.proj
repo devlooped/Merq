@@ -54,16 +54,10 @@
 	<Target Name="Package" DependsOnTargets="BuildInstaller;BuildPackages" />
 
 	<Target Name="BuildInstaller" DependsOnTargets="GitInfo">
-		<!-- Refresh the VSIX with the SystemComponent flag now for redistribution -->
-		<Message Importance="$(DefaultImportance)" Text="Refreshing VSIX with IsSystemComponent=true" />
-		<Exec Command="rmdir src\Vsix\Merq.Vsix\bin\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
-		<Exec Command="rmdir src\Vsix\Merq.Vsix\obj\$(Configuration) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
-
-		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties);IsSystemComponent=true" />
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
 
 		<MSBuild Projects="src\Installers\Merq.Installer\Merq.Installer.nuproj"
-				 Properties="$(CommonBuildProperties);IsSystemComponent=true"
+				 Properties="$(CommonBuildProperties)"
 				 Targets="Build;GetTargetPath">
 			<Output ItemName='InstallerPackage' TaskParameter='TargetOutputs' />
 		</MSBuild>

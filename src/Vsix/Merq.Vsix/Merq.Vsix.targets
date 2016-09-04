@@ -3,17 +3,11 @@
 	<Import Project="..\..\Merq.targets" />
 	<Import Project="Merq.Vsix.BindingRedirects.targets" />
 
-	<PropertyGroup>
-		<IsSystemComponent Condition=" '$(IsSystemComponent)' == '' ">false</IsSystemComponent>
-	</PropertyGroup>
-
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup>
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
 		</PropertyGroup>
 	</Target>
-
-	<Target Name="GetSystemComponent" Returns="$(IsSystemComponent)" />
 
 	<Target Name="SetVsixDeploymentPath" 
 			DependsOnTargets="GetVsixDeploymentPath"
