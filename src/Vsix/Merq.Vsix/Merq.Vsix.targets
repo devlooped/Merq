@@ -9,14 +9,4 @@
 		</PropertyGroup>
 	</Target>
 
-	<Target Name="SetVsixDeploymentPath" 
-			DependsOnTargets="GetVsixDeploymentPath"
-			AfterTargets="GetVsixDeploymentPath" 
-			Returns="$(VsixDeploymentPath)"
-			Condition=" '$(DeployExtension)' == 'true' ">
-		<PropertyGroup>
-			<VsixDeploymentPath>$(ExtensionsPath)mobessen\Merq\</VsixDeploymentPath>
-		</PropertyGroup>
-	</Target>
-	
 </Project>
