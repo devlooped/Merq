@@ -7,13 +7,17 @@
 		<Media Cabinet="Merq.cab" EmbedCab="yes" Id="1" />
 
 		<Feature Id="ProductFeature" Title="Merq" Level="1">
-			<ComponentRef Id="Merq" />
+			<ComponentGroupRef Id="Merq" />
 		</Feature>
 
 		<Icon Id="Merq.ico" SourceFile="$(var.ProductIcon)" />
 		<Property Id="ARPPRODUCTICON" Value="Merq.ico" />
 		<Property Id="ARPHELPLINK" Value="http://github.com/MobileEssentials/Merq" />
 		<Property Id="ARPCOMMENTS" Value="Merq: Command Bus, Event Stream and Async Manager for Visual Studio Extensions" />
+		
+		<!-- Explicit value passed in by the VS15 installer should prevail, for SxS reasons -->
+		<SetProperty Id="VS15_ROOT_FOLDER" Value="[VS_15_DIR]" Before="CostInitialize"><![CDATA[VS_15_DIR]]></SetProperty>
+		<SetProperty Id="VS_VSIX_INSTALLER_PATH" Value="[VS15_ROOT_FOLDER]Common7\IDE\VSIXInstaller.exe" After="SetVS15_ROOT_FOLDER" />
 	</Product>
 
 	<Fragment>
