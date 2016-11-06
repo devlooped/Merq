@@ -135,7 +135,7 @@
 			  Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' " />
 
 		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
-				 Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
+				 Condition="'$(XamarinProductCode)' != '' "
 				 Importance="high" />
 
 		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
