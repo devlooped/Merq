@@ -1,9 +1,9 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
+    "GitInfo": "1.1.32",
+    "Microsoft.Reactive.Testing": "3.0.0",
     "Moq": "4.5.10",
     "System.Reactive": "3.0.0",
-    "Microsoft.Reactive.Testing": "3.0.0",
     "xunit": "2.1.0"
   },
   "frameworks": {

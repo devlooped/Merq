@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
+    "GitInfo": "1.1.32",
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
     "MSBuilder.ThisAssembly.Project": "0.2.4",

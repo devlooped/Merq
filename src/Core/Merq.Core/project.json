@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "Microsoft.NETCore.Portable.Compatibility":  "1.0.1",
-    "GitInfo": "1.1.27",
-    "IFluentInterface": "2.0.1",
-    "netfx-System.StringResources": "3.0.13",
+    "GitInfo": "1.1.32",
+    "IFluentInterface": "2.0.3",
     "Microsoft.CSharp": "4.0.1",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+    "netfx-System.StringResources": "3.0.13",
+    "NETStandard.Library": "1.6.0",
     "System.Reactive": "3.0.0"
   },
   "frameworks": {

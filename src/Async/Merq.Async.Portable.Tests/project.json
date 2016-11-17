@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
+    "GitInfo": "1.1.32",
     "Microsoft.VisualStudio.Threading": "14.1.114",
     "xunit": "2.1.0"
   },
