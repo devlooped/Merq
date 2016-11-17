@@ -26,7 +26,6 @@ deploy:
 
 nuget:
   project_feed: true
-  disable_publish_on_pr: true
   
 artifacts:
   - path: out\*.nupkg
