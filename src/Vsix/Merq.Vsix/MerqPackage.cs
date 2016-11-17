@@ -14,7 +14,11 @@ namespace Merq
 	/// Package providing Merq registration.
 	/// </summary>
 	[Guid("49A95AF4-CB3D-4770-BD67-B0BBB46C6463")]
-	[InstalledProductRegistration(ThisAssembly.Vsix.Name, ThisAssembly.Vsix.Description, ThisAssembly.Vsix.Identifier)]
+	[InstalledProductRegistration("#100", "#110", 
+		ThisAssembly.Git.SemVer.Major + "." + 
+		ThisAssembly.Git.SemVer.Minor + "." + 
+		ThisAssembly.Git.SemVer.Patch + ThisAssembly.Git.SemVer.DashLabel + " (" + 
+		ThisAssembly.Git.Commit + ")")]
 	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true)]
 	[ProvideBindingPath]
 	public class MerqPackage : Package
