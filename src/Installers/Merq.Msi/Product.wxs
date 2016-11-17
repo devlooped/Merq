@@ -1,23 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Merq" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="765BEB60-BBD3-4E8F-8299-F4CA395ED892">
+	<Product Id="*" Name="Extensibility Message Bus" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="765BEB60-BBD3-4E8F-8299-F4CA395ED892">
 		<Package InstallerVersion="405" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
 
 		<MajorUpgrade AllowDowngrades="yes" MigrateFeatures="no" />
 		<Media Cabinet="Merq.cab" EmbedCab="yes" Id="1" />
 
-		<Feature Id="ProductFeature" Title="Merq" Level="1">
-			<ComponentGroupRef Id="Merq" />
-		</Feature>
+		<FeatureRef Id="Merq" />
 
 		<Icon Id="Merq.ico" SourceFile="$(var.ProductIcon)" />
 		<Property Id="ARPPRODUCTICON" Value="Merq.ico" />
 		<Property Id="ARPHELPLINK" Value="http://github.com/MobileEssentials/Merq" />
-		<Property Id="ARPCOMMENTS" Value="Merq: Command Bus, Event Stream and Async Manager for Visual Studio Extensions" />
+		<Property Id="ARPCOMMENTS" Value="Extensibility Message Bus" />
 		
 		<!-- Explicit value passed in by the VS15 installer should prevail, for SxS reasons -->
 		<SetProperty Id="VS15_ROOT_FOLDER" Value="[VS_15_DIR]" Before="CostInitialize"><![CDATA[VS_15_DIR]]></SetProperty>
-		<SetProperty Id="VS_VSIX_INSTALLER_PATH" Value="[VS15_ROOT_FOLDER]Common7\IDE\VSIXInstaller.exe" After="SetVS15_ROOT_FOLDER" />
+		<SetProperty Id="VS15_VSIX_INSTALLER_PATH" Value="[VS15_ROOT_FOLDER]Common7\IDE\VSIXInstaller.exe" After="SetVS15_ROOT_FOLDER"><![CDATA[VS_15_DIR]]></SetProperty>
+
+		<UI Id="Features">
+			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+			<TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+			<Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+			<Property Id="WixUI_Mode" Value="FeatureTree" />
+
+			<DialogRef Id="ErrorDlg" />
+			<DialogRef Id="FatalError" />
+			<DialogRef Id="FilesInUse" />
+			<DialogRef Id="MsiRMFilesInUse" />
+			<DialogRef Id="PrepareDlg" />
+			<DialogRef Id="ProgressDlg" />
+			<DialogRef Id="ResumeDlg" />
+			<DialogRef Id="UserExit" />
+
+			<Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+			<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">NOT Installed</Publish>
+			<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+			<Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+			<Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">NOT Installed</Publish>
+			<Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">1</Publish>
+
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = "Change"</Publish>
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="3">Installed AND PATCH</Publish>
+
+			<Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+			<Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+			<Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+			<Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+			<Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+		</UI>
+
+		<UIRef Id="WixUI_Common" />
 	</Product>
 
 	<Fragment>

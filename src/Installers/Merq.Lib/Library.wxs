@@ -12,14 +12,42 @@
 		<PropertyRef Id="VS2015_VSIX_INSTALLER_PATH" />
 
 		<PropertyRef Id="VS15_ROOT_FOLDER" />
-		<PropertyRef Id="VS_VSIX_INSTALLER_PATH" />
-		
+		<Property Id="VS15_VSIX_INSTALLER_PATH" Secure="yes">
+			<RegistrySearch Id="VS15RootPathSearch" Root="HKLM" Key="Software\Microsoft\VisualStudio\SxS\VS7" Name="15.0" Type="raw">
+				<DirectorySearch Id="VS15Common7PathSearch" Path="Common7" Depth="1">
+					<DirectorySearch Id="VS15IDEPathSearch" Path="IDE" Depth="1">
+						<FileSearch Id="VS15VsixInstallerPathSearch" Name="VSIXInstaller.exe" />
+					</DirectorySearch>
+				</DirectorySearch>
+			</RegistrySearch>			
+		</Property>
+
+		<Feature Id="Merq" Title="Extensibility Message Bus" Level="1">
+			<Feature Id="Merq11" Title="Extensibility Message Bus for Visual Studio 2012">
+				<Condition Level="2">NOT VS2012_ROOT_FOLDER</Condition>
+				<ComponentRef Id="Merq11" />
+			</Feature>
+			<Feature Id="Merq12" Title="Extensibility Message Bus for Visual Studio 2013">
+				<Condition Level="2">NOT VS2013_ROOT_FOLDER</Condition>
+				<ComponentRef Id="Merq12" />
+			</Feature>
+			<Feature Id="Merq14" Title="Extensibility Message Bus for Visual Studio 2015">
+				<Condition Level="2">NOT VS2015_ROOT_FOLDER</Condition>
+				<ComponentRef Id="Merq14" />
+			</Feature>
+			<Feature Id="Merq15" Title="Extensibility Message Bus for Visual Studio 2017">
+				<Condition Level="2">NOT VS15_ROOT_FOLDER</Condition>
+				<ComponentRef Id="Merq15" />
+			</Feature>
+		</Feature>
+
 		<ComponentGroup Id="Merq">
 			<ComponentRef Id="Merq11"/>
 			<ComponentRef Id="Merq12"/>
 			<ComponentRef Id="Merq14"/>
 			<ComponentRef Id="Merq15"/>
 		</ComponentGroup>
+		
 		<!-- We make the package non-vital since the underlying VSIXInstaller.exe 
 				installer will fail (?!) if the VSIX being installed is already 
 				installed, instead of being a no-op. The other cases where it can 
@@ -55,9 +83,9 @@
 		<Component Id="Merq15" Directory="MerqVsixInstallDir" Guid="{6D500D0D-24A1-475B-90AC-A107882CFC77}">
 			<Condition>VS15_ROOT_FOLDER</Condition>
 			<File Id="Merq15.vsix" Source="$(var.Merq.Vsix.TargetDir)Merq.vsix">
-				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS_VSIX_INSTALLER_PATH" Target="Enterprise" TargetVersion="15.0" Vital="no" Permanent="no" />
-				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS_VSIX_INSTALLER_PATH" Target="Pro" TargetVersion="15.0" Vital="no" Permanent="no" />
-				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS_VSIX_INSTALLER_PATH" Target="Community" TargetVersion="15.0" Vital="no" Permanent="no" />
+				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Enterprise" TargetVersion="15.0" Vital="no" Permanent="no" />
+				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Pro" TargetVersion="15.0" Vital="no" Permanent="no" />
+				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Community" TargetVersion="15.0" Vital="no" Permanent="no" />
 			</File>
 		</Component>
 	</Fragment>
