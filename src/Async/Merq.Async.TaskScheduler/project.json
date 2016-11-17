@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27"
+    "GitInfo": "1.1.32"
   },
   "frameworks": {
     ".NETPortable,Version=v4.5,Profile=Profile111": {}

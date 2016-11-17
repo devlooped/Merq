@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
@@ -14,13 +13,16 @@
 		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
-	
+
+	<Import Project="$(PackagesPath)\MSBuilder.IsCIBuild\build\MSBuilder.IsCIBuild.props"
+			Condition="Exists('$(PackagesPath)\MSBuilder.IsCIBuild\build\MSBuilder.IsCIBuild.props') "/>
+
 	<!-- Integration-test related stuff -->
 	<PropertyGroup>
 		<_RootSuffix>$(RootSuffix)</_RootSuffix>
 		<_RootSuffix Condition=" '$(_RootSuffix)' == '' ">Exp</_RootSuffix>
 		<_RootSuffix Condition=" '$(_RootSuffix)' == '.' "></_RootSuffix>
-		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
+		<IntegrationTest Condition=" '$(IntegrationTest)' == '' And '$(IsCIBuild)' == 'true' ">true</IntegrationTest>
 		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
 	</PropertyGroup>
 	
@@ -135,7 +137,7 @@
 			  Condition=" '$(XamarinProductCode)' != '' Or '$(ResetExperimental)' == 'true' " />
 
 		<Message Text="Found installed Xamarin product, uninstalling to avoid incompatibilities during integration test run..."
-				 Condition=" '$(IsAdministrator)' == 'false' And '$(XamarinProductCode)' != '' "
+				 Condition="'$(XamarinProductCode)' != '' "
 				 Importance="high" />
 
 		<Exec Command='msiexec /x $(XamarinProductCode) /norestart /q | more'
@@ -230,7 +232,7 @@
 	</PropertyGroup>
 	<!-- Overwritten by the import below if it exists -->
 	<Target Name="GitInfoReport" />
-	<Import Project="$(GitInfoTargets)" Condition=" Exists('$(GitInfoTargets)') "/>
+	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->

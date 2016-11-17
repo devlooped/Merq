@@ -5,6 +5,8 @@ init:
 
 build_script:
   - cmd: >-
+      build.cmd /t:configure
+      
       build.cmd %BuildArgs%
       
       .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
@@ -26,7 +28,6 @@ deploy:
 
 nuget:
   project_feed: true
-  disable_publish_on_pr: true
   
 artifacts:
   - path: out\*.nupkg

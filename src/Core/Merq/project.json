@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "GitInfo": "1.1.27",
-    "IFluentInterface": "2.0.1"
+    "GitInfo": "1.1.32",
+    "IFluentInterface": "2.0.3",
+    "NETStandard.Library": "1.6.0"
   },
   "frameworks": {
     "netstandard1.3": {}

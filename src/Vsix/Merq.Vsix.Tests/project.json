@@ -1,17 +1,16 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
+    "GitInfo": "1.1.32",
+    "Microsoft.Reactive.Testing": "3.0.0",
     "Microsoft.VisualStudio.Shell.Interop.12.0": "12.0.30110",
     "Moq": "4.5.10",
     "System.Reactive": "3.0.0",
-    "Microsoft.Reactive.Testing": "3.0.0",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "xunit": "2.1.0"
   },
   "frameworks": {
     "net45": {}
   },
-
   "runtimes": {
     "win": {}
   }

@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
+    "GitInfo": "1.1.32",
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
-    "MSBuilder.ThisAssembly.Project": "0.2.4",
-    "MSBuilder.ThisAssembly.Vsix": "0.1.1",
-    "netfx-System.StringResources": "3.0.13",
+    "MSBuilder.ThisAssembly.Project": "0.3.1",
+    "MSBuilder.ThisAssembly.Vsix": "0.1.3",
+    "netfx-System.StringResources": "3.0.14",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "VSSDK.DTE.10": "10.0.4",
     "VSSDK.IDE.11": "11.0.4",

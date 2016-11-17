@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.27",
-    "IFluentInterface": "2.0.1",
+    "GitInfo": "1.1.32",
+    "IFluentInterface": "2.0.3",
     "Microsoft.VisualStudio.Threading": "14.1.114"
   },
   "frameworks": {
