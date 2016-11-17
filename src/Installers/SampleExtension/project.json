@@ -2,9 +2,9 @@
   "dependencies": {
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.25",
     "Microsoft.VSSDK.BuildTools": "14.3.25420",
-    "MSBuilder.CodeTaskAssembly": "0.2.3",
-    "MSBuilder.DumpItems": "0.1.8",
-    "MSBuilder.VsixDependency": "0.1.0"
+    "MSBuilder.CodeTaskAssembly": "0.2.4",
+    "MSBuilder.DumpItems": "0.2.1",
+    "MSBuilder.VsixDependency": "0.2.0"
   },
   "frameworks": {
     "net45": {}

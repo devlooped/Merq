@@ -4,7 +4,7 @@
     "IFluentInterface": "2.0.3",
     "Microsoft.CSharp": "4.0.1",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
-    "netfx-System.StringResources": "3.0.13",
+    "netfx-System.StringResources": "3.0.14",
     "NETStandard.Library": "1.6.0",
     "System.Reactive": "3.0.0"
   },

@@ -20,7 +20,7 @@
 		<_RootSuffix>$(RootSuffix)</_RootSuffix>
 		<_RootSuffix Condition=" '$(_RootSuffix)' == '' ">Exp</_RootSuffix>
 		<_RootSuffix Condition=" '$(_RootSuffix)' == '.' "></_RootSuffix>
-		<IntegrationTest Condition=" '$(IntegrationTest)' == '' ">true</IntegrationTest>
+		<IntegrationTest Condition=" '$(IntegrationTest)' == '' And '$(IsCIBuild)' == 'true' ">true</IntegrationTest>
 		<Installer>$(MSBuildThisFileDirectory)src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix</Installer>
 	</PropertyGroup>
 	
@@ -230,7 +230,9 @@
 	</PropertyGroup>
 	<!-- Overwritten by the import below if it exists -->
 	<Target Name="GitInfoReport" />
-	<Import Project="$(GitInfoTargets)" Condition=" Exists('$(GitInfoTargets)') "/>
+	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
+	<Import Project="$(PackagesPath)\MSBuilder.IsCIBuild\build\MSBuilder.IsCIBuild.props" 
+			Condition="Exists('$(PackagesPath)\MSBuilder.IsCIBuild\build\MSBuilder.IsCIBuild.props') "/>
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport">
 		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
