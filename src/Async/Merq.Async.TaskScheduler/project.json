@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.32"
+    "GitInfo": "1.1.34",
+    "MSBuilder.ThisAssembly.Project": "0.3.1"
   },
   "frameworks": {
     ".NETPortable,Version=v4.5,Profile=Profile111": {}

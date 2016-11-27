@@ -8,8 +8,8 @@
 #endif
 
 #pragma warning disable 0436
-[assembly: AssemblyTitle(ThisAssembly.AssemblyName)]
-[assembly: AssemblyDescription(ThisAssembly.AssemblyName)]
+[assembly: AssemblyTitle(ThisAssembly.Project.AssemblyName)]
+[assembly: AssemblyDescription(ThisAssembly.Project.AssemblyName)]
 [assembly: AssemblyCompany ("Mobile Essentials")]
 [assembly: AssemblyProduct ("Merq")]
 [assembly: AssemblyCopyright ("Copyright © Mobile Essentials 2016")]

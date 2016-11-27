@@ -3,6 +3,17 @@
 	<ApplicationIdentity version="11.0" />
 	<ToolsOptions>
 		<ToolsOptionsCategory name="TextEditor" RegisteredName="TextEditor">
+			<ToolsOptionsSubCategory name="CSharp" RegisteredName="CSharp" PackageName="Text Management Package">
+				<PropertyValue name="IndentStyle">2</PropertyValue>
+				<PropertyValue name="IndentSize">4</PropertyValue>
+				<PropertyValue name="InsertTabs">true</PropertyValue>
+				<PropertyValue name="TabSize">4</PropertyValue>
+			</ToolsOptionsSubCategory>
+			<ToolsOptionsSubCategory name="XML" RegisteredName="XML" PackageName="Text Management Package">
+				<PropertyValue name="TabSize">4</PropertyValue>
+				<PropertyValue name="IndentSize">4</PropertyValue>
+				<PropertyValue name="InsertTabs">true</PropertyValue>
+			</ToolsOptionsSubCategory>
 			<ToolsOptionsSubCategory name="CSharp-Specific" RegisteredName="CSharp-Specific" PackageName="Visual C# Language Service Package">
 				<PropertyValue name="Formatting_TriggerOnBlockCompletion">1</PropertyValue>
 				<PropertyValue name="Formatting_TriggerOnPaste">1</PropertyValue>
