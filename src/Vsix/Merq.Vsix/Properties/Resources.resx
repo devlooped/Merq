@@ -120,22 +120,7 @@
   <data name="AsyncManagerProvider_NoTaskContext" xml:space="preserve">
     <value>Failed to retrieve the proper task context for initializing the AsyncManager.</value>
   </data>
-  <data name="CommandBus_DuplicateHandler" xml:space="preserve">
-    <value>The command handler '{0}' cannot be used because an existing one is already registered for the command type '{1}'.</value>
-  </data>
-  <data name="CommandBus_InvalidHandler" xml:space="preserve">
-    <value>Command handler '{0}' does not implement ICommandHandler or IAsyncCommandHandler generic interfaces.</value>
-  </data>
   <data name="CommandBus_NoHandler" xml:space="preserve">
     <value>No command handler is registered for command type {0}.</value>
-  </data>
-  <data name="CommandBus_NoHandler1" xml:space="preserve">
-    <value>No command handler is registered for command type {0}.</value>
-  </data>
-  <data name="EventStream_PublishedEventNotPublic" xml:space="preserve">
-    <value>Published events must be public types.</value>
-  </data>
-  <data name="EventStream_SubscribedEventNotPublic" xml:space="preserve">
-    <value>Subscribed events must be public types.</value>
   </data>
 </root>
