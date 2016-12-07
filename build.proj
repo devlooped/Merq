@@ -5,7 +5,6 @@
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
-		<GitInfoReportImportance>high</GitInfoReportImportance>
 		<GitInfoBaseDir>$(MSBuildThisFileDirectory)src</GitInfoBaseDir>
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
@@ -44,12 +43,12 @@
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
 	<Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
-		<Exec Command="rmdir $(Out) /S /Q" ContinueOnError="true" StandardOutputImportance="low" />
+		<Exec Command='rmdir "$(Out)" /S /Q' Condition="Exists('$(Out)')" ContinueOnError="true" StandardOutputImportance="low" />
 		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
-			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec"   />
+			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec" />
 		</ItemGroup>
 	</Target>
 
@@ -68,6 +67,7 @@
 	</Target>
 
 	<Target Name="BuildPackages" Condition="'@(NuSpec)' != ''">
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Identity)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
 	</Target>
 
@@ -90,6 +90,13 @@
 		</TestDependsOn>
 	</PropertyGroup>
 
+	<Target Name="Versions">
+		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" Targets="GetVersions">
+			<Output TaskParameter="TargetOutputs" ItemName="Version" />
+		</MSBuild>
+		<Message Importance="high" Text="$([System.IO.Path]::GetFileName('%(Version.MSBuildSourceProjectFile)').PadRight(36)) -&gt; %(Version.Identity)" />
+	</Target>
+	
 	<Target Name="Test" DependsOnTargets="$(TestDependsOn)" />
 
 	<Target Name="PrepareInstall" DependsOnTargets="IsAdministrator">
@@ -247,9 +254,6 @@
 		<PropertyGroup Condition=" '$(PendingRestore)' != 'true' ">
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>			
 		</PropertyGroup>
-		
-		<Message Importance="high"  Condition=" '$(PendingRestore)' != 'true' "
-				 Text="Building version $(Version)" />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->
         <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "

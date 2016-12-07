@@ -3,4 +3,13 @@
 
 	<Import Project="NuGet.Restore.targets" />
 
+	<Target Name="GetVersions" Returns="@(Version)">
+		<MSBuild Projects="@(ProjectReference)" 
+				 Condition="Exists('%(ProjectReference.FullPath)')"
+				 Targets="GetVersion"
+				 Properties="Configuration=$(Configuration)">
+			<Output TaskParameter="TargetOutputs" ItemName="Version" />
+		</MSBuild>
+	</Target>
+
 </Project>
