@@ -7,6 +7,9 @@
 		<IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
 		<IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+
+		<VSToolsPath Condition="'$(IsAppLocalIde)' != 'true' And Exists('$(ProgramFiles)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)')">$(ProgramFiles)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+		<VSToolsPath Condition="'$(IsAppLocalIde)' == 'true' And Exists('$(VsInstallRoot)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)')">$(VsInstallRoot)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
 	</PropertyGroup>
 
 </Project>

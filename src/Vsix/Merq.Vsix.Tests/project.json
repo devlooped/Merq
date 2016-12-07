@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.34",
+    "GitInfo": "1.1.35",
     "Microsoft.Reactive.Testing": "3.0.0",
     "Microsoft.VisualStudio.Shell.Interop.12.0": "12.0.30110",
     "Moq": "4.5.10",
