@@ -70,11 +70,56 @@ namespace Merq.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The command handler &apos;{0}&apos; cannot be used because an existing one is already registered for the command type &apos;{1}&apos;..
+        /// </summary>
+        internal static string CommandBus_DuplicateHandler {
+            get {
+                return ResourceManager.GetString("CommandBus_DuplicateHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command handler &apos;{0}&apos; does not implement ICommandHandler or IAsyncCommandHandler generic interfaces..
+        /// </summary>
+        internal static string CommandBus_InvalidHandler {
+            get {
+                return ResourceManager.GetString("CommandBus_InvalidHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No command handler is registered for command type {0}..
         /// </summary>
         internal static string CommandBus_NoHandler {
             get {
                 return ResourceManager.GetString("CommandBus_NoHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No command handler is registered for command type {0}..
+        /// </summary>
+        internal static string CommandBus_NoHandler1 {
+            get {
+                return ResourceManager.GetString("CommandBus_NoHandler1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published events must be public types..
+        /// </summary>
+        internal static string EventStream_PublishedEventNotPublic {
+            get {
+                return ResourceManager.GetString("EventStream_PublishedEventNotPublic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscribed events must be public types..
+        /// </summary>
+        internal static string EventStream_SubscribedEventNotPublic {
+            get {
+                return ResourceManager.GetString("EventStream_SubscribedEventNotPublic", resourceCulture);
             }
         }
     }
