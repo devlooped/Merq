@@ -9,10 +9,17 @@
 		</PropertyGroup>
 	</Target>
 	
-	<Target Name="BuildPackage" DependsOnTargets="GetVersion" Inputs="$(TargetPath)" Outputs="$(Out)\$(MSBuildProjectName).$(Version).nupkg">
+	<Target Name="Pack" DependsOnTargets="GetVersion" Inputs="$(TargetPath)" Outputs="$(Out)\$(MSBuildProjectName).$(Version).nupkg">
 		<Error Condition=" !Exists('$(ProjectNuSpec)') " Text="BuildPackage is 'true' but no $([System.IO.Path]::GetFileName($(ProjectNuSpec))) found alongside project file." />
 		<MakeDir Directories="$(Out)" Condition=" !Exists('$(Out)') " />
 		<Exec Command='"$(NuGet)" Pack "$(ProjectNuSpec)" -Version $(Version) -Properties Id=$(MSBuildProjectName);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)' />
+	</Target>
+	
+	<Target Name="SetPrereleaseForTag" AfterTargets="_GitBaseVersionTag" Condition="'$(GitIgnoreTagVersion)' != 'true' And '$(GitBaseTag)' != ''">
+		<!-- Tweak base tag to end in '-pre' if it wasn't a pre-release tag but there are new commits on top of it -->
+		<PropertyGroup Condition="'$(GitCommits)' != '0' And $(GitBaseTag.Contains('-')) == 'false'">
+			<GitBaseTag>$(GitBaseTag)-pre</GitBaseTag>
+		</PropertyGroup>
 	</Target>
 	
 </Project>
