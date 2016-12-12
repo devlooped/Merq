@@ -8,7 +8,7 @@
     <AssemblyName>Merq</AssemblyName>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
+	<IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.props))\Merq.props" />
   <ItemGroup>
@@ -19,7 +19,7 @@
     <Compile Include="ICommandBus.cs" />
     <Compile Include="ICommandHandler.cs" />
     <Compile Include="IEventStream.cs" />
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IExecutable.cs" />
     <Compile Include="IExecutableCommandHandler.cs" />
   </ItemGroup>
@@ -34,12 +34,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Merq.nuspec" />
-    <None Include="Merq.targets" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GitInfo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Project="Merq.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
 </Project>

@@ -13,6 +13,7 @@
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+	<IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -27,14 +28,12 @@
     <Compile Include="IAsyncManager.cs" />
     <Compile Include="IAwaitable.cs" />
     <Compile Include="IAwaiter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Merq.Async.nuspec" />
     <None Include="Merq.Async.targets" />
     <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GitInfo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="Merq.Async.targets" />

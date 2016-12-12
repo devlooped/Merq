@@ -3,6 +3,10 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), NuGet.Restore.targets))\NuGet.Restore.targets"
 			Condition=" '$(NuGetRestoreImported)' != 'true' " />
 
+	<ItemGroup Condition="'$(IncludeGlobalAssemblyInfo)' != 'false'">
+		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
+	</ItemGroup>
+
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup>
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>

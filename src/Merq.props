@@ -31,7 +31,4 @@
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<Optimize>true</Optimize>
 	</PropertyGroup>
-	<ItemGroup>
-		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
-	</ItemGroup>
 </Project>

@@ -48,28 +48,15 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 	</Target>
 
-	<Target Name="Package" DependsOnTargets="BuildInstaller;FindPackages;BuildPackages" />
-
-	<Target Name="BuildInstaller" DependsOnTargets="GitInfo">
-		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
-
-		<MSBuild Projects="src\Installers\Merq.Installer\Merq.Installer.nuproj"
-				 Properties="$(CommonBuildProperties)"
-				 Targets="Build;GetTargetPath">
-			<Output ItemName='InstallerPackage' TaskParameter='TargetOutputs' />
-		</MSBuild>
-		
-		<Copy SourceFiles='%(InstallerPackage.Identity)' DestinationFiles='$(Out)\%(InstallerPackage.Filename)%(InstallerPackage.Extension)' />
-	</Target>
-
-	<Target Name="FindPackages">
+	<Target Name="Package">
 		<ItemGroup>
 			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec" />
 		</ItemGroup>
-	</Target>
-	
-	<Target Name="BuildPackages" Condition="'@(NuSpec)' != ''">
+
+		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
+
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+		
 		<!-- NOTE: we unify the *package* version here and all NuGets will have a single package version
 			 even if individually the locally-specified GitInfo.txt (i.e. in the Async and Merq core interfaces)
 			 specify a different version for their assembly version #. 
@@ -244,7 +231,7 @@
 	<Import Project="src\Merq.targets" />
 	<PropertyGroup>
 		<GitInfoTargets>$(PackagesPath)\GitInfo\build\GitInfo.targets</GitInfoTargets>
-		<PendingRestore Condition=" !Exists('$(GitInfoTargets)') ">true</PendingRestore>
+		<PendingRestore Condition="!Exists('$(GitInfoTargets)')">true</PendingRestore>
 	</PropertyGroup>
 	<!-- Overwritten by the import below if it exists -->
 	<Target Name="GitInfoReport" />
@@ -252,16 +239,15 @@
 	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
 
 	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport;GetVersion">
-		<!-- We always run NuGet Install since it already checks for already-installed packages and skips them -->
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
 
 		<!-- Errors if nuget packages were restored during the build -->
 		<Error Text="Required build-time NuGet packages were missing and were just restored. Please run the build again."
-			   Condition=" '$(PendingRestore)' == 'true' And '$(target)' != 'configure' "/>
+			   Condition="'$(PendingRestore)' == 'true' And '$(target)' != 'configure'"/>
 	
-		<Message Importance="high" Text="Building version $(Version)." />
+		<Message Importance="high" Text="Building version $(Version)" />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->
         <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "
