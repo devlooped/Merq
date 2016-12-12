@@ -18,7 +18,7 @@
 	<Target Name="SetPrereleaseForTag" AfterTargets="_GitBaseVersionTag" Condition="'$(GitIgnoreTagVersion)' != 'true' And '$(GitBaseTag)' != ''">
 		<!-- Tweak base tag to end in '-pre' if it wasn't a pre-release tag but there are new commits on top of it -->
 		<PropertyGroup Condition="'$(GitCommits)' != '0' And $(GitBaseTag.Contains('-')) == 'false'">
-			<GitBaseTag>$(GitBaseTag)-pre</GitBaseTag>
+			<GitBaseVersion>$(GitBaseTag)-pre</GitBaseVersion>
 		</PropertyGroup>
 	</Target>
 	
