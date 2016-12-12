@@ -8,7 +8,9 @@
     "xunit": "2.1.0"
   },
   "frameworks": {
-    "net45": {}
+    "net45": {
+      "imports": "netstandard1.3"
+    }
   },
   "runtimes": {
     "win": {}

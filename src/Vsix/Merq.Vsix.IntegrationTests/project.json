@@ -12,7 +12,9 @@
     "xunit.vsix": "0.2.72"
   },
   "frameworks": {
-    "net45": {}
+    "net45": {
+      "imports": "netstandard1.3"
+    }
   },
   "runtimes": {
     "win": {}
