@@ -18,5 +18,13 @@
 		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.3" />
+		<!-- Installers -->
+		<file src="bin\$configuration$\build\$id$.targets" target="build" />
+		<file src="bin\$configuration$\build\$id$.Vsix.targets" target="build" />
+		<file src="bin\$configuration$\build\$id$.WiX.targets" target="build" />
+		<file src="..\..\Installers\Merq.Lib\bin\$configuration$\Merq.wixlib" target="tools\Merq.wixlib" />
+		<file src="..\..\Installers\Merq.Msi\bin\$configuration$\Merq.msi" target="tools\Merq.msi" />
+		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Merq.vsix" target="tools\Merq.vsix" />
+		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\extension.vsixmanifest" target="tools\extension.vsixmanifest" />
 	</files>
 </package>

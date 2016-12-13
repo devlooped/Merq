@@ -22,6 +22,7 @@
 		<RestorePackages>false</RestorePackages>
 		<Out Condition=" '$(Out)' == '' ">$(OutputPath)</Out>
 		<ProjectNuSpec>$([System.IO.Path]::ChangeExtension($(MSBuildProjectFullPath), '.nuspec'))</ProjectNuSpec>
+		<GitInfoReportImportance>low</GitInfoReportImportance>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<Optimize>false</Optimize>
@@ -30,7 +31,4 @@
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<Optimize>true</Optimize>
 	</PropertyGroup>
-	<ItemGroup>
-		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
-	</ItemGroup>
 </Project>

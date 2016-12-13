@@ -4,8 +4,8 @@
                  xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
 	<Metadata>
 		<Identity Id="Merq" Version="|Merq.Vsix;GetVersion|" Language="en-US" Publisher="Mobile Essentials" />
-		<DisplayName>Command Bus, Event Stream and Async Manager</DisplayName>
-		<Description xml:space="preserve">Provides ICommandBus, IEventStream and IAsyncManager MEF services for loosely coupled Visual Studio extension components communication and integration.</Description>
+		<DisplayName>Extensibility Message Bus</DisplayName>
+		<Description xml:space="preserve">Provides common messaging-based MEF services for loosely coupled Visual Studio extension components communication and integration.</Description>
 		<MoreInfo>https://github.com/MobileEssentials/Merq</MoreInfo>
 		<License>LICENSE</License>
 		<Icon>Merq.ico</Icon>
@@ -13,14 +13,11 @@
 		<Tags>vsix</Tags>
 	</Metadata>
 	<Installation>
-		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,)" />
 		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,12.0]" />
+		<InstallationTarget Version="[14.0,)" Id="Microsoft.VisualStudio.Community" />
 	</Installation>
-	<Dependencies>
-		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.5,)" />
-	</Dependencies>
 	<Prerequisites>
-		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
 	</Prerequisites>
 	<Assets>
 		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />

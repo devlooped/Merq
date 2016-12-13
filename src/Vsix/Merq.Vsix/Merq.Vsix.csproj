@@ -81,13 +81,13 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
-      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
-      <Name>Merq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
       <Name>Merq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merq.Core.Merged\Merq.Core.Merged.csproj">
+      <Project>{da67172b-c15f-4ae3-b34d-2ce7f47811b7}</Project>
+      <Name>Merq.Core.Merged</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

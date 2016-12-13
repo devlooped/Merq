@@ -42,4 +42,5 @@
   <Target Name="BeforeBuild">
     <Error Text="Build Merq.Installer project before building this one." Condition="!Exists('..\Merq.Installer\bin\$(Configuration)\build\Merq.Installer.targets')" />
   </Target>
+  <Target Name="GetVersion" Returns="1.0.0" />
 </Project>
