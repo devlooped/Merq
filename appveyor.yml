@@ -4,12 +4,12 @@ init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 build_script:
-  - cmd: build.cmd /t:configure
-  - cmd: build.cmd %BuildArgs%
-
-after_build:
-  # we only publish code coverage results from master
-  - cmd: IF %APPVEYOR_REPO_BRANCH%==master .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
+  - cmd: >-
+      build.cmd /t:configure
+      
+      build.cmd %BuildArgs%
+      
+      .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
 
 # we run the tests ourselves in build.cmd for coverage
 test: off
