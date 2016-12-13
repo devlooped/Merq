@@ -4,10 +4,13 @@
 @ECHO OFF
 
 :: Ensure MSBuild can be located. Allows for a better error message below.
-where msbuild > %TEMP%\msbuild.txt
-set /p msb=<%TEMP%\msbuild.txt
+set msb="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"
+IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
+IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
+IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\MSBuild\12.0\Bin\MSBuild.exe"
 
-IF "%msb%"=="" (
+IF NOT EXIST %msb% (
     echo Please run %~n0 from a Visual Studio Developer Command Prompt.
     exit /b -1
 )
@@ -32,7 +35,7 @@ IF "%Verbosity%"=="" (
 )
 
 ECHO ON
-"%msb%" build.proj /v:%Verbosity% /nr:false /maxcpucount /m %1 %2 %3 %4 %5 %6 %7 %8 %9
+%msb% build.proj /v:%Verbosity% /nr:false /maxcpucount /m %1 %2 %3 %4 %5 %6 %7 %8 %9
 @ECHO OFF
 
 POPD >NUL

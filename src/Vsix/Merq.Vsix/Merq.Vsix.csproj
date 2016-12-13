@@ -104,7 +104,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Avoid importing twice by checking for the presence of the VsSDKVersion property -->
-  <Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And '$(VsSDKInstall)' != ''" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' And '$(VsSDKVersion)' == ''" />
   <Import Project="Merq.Vsix.targets" />
   <PropertyGroup>
     <StartAction>Program</StartAction>

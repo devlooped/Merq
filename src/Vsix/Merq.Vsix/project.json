@@ -1,9 +1,8 @@
 ﻿{
   "dependencies": {
-    "Clarius.VisualStudio": "2.0.3",
     "GitInfo": "1.1.35",
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.32",
-    "Microsoft.VSSDK.BuildTools": "15.0.25914-RC2",
+    "Microsoft.VSSDK.BuildTools": "15.0.25929-RC2",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
     "MSBuilder.ThisAssembly.Vsix": "0.1.8",
     "netfx-System.StringResources": "3.0.14",
@@ -11,7 +10,8 @@
     "VSSDK.DTE.10": "10.0.4",
     "VSSDK.IDE.11": "11.0.4",
     "VSSDK.Shell.11": "11.0.4",
-    "VSSDK.VSLangProj.11": "11.0.4"
+    "VSSDK.VSLangProj.11": "11.0.4",
+    "Clarius.VisualStudio": "2.0.5"
   },
   "frameworks": {
     "net45": {

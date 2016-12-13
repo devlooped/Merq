@@ -1,15 +1,13 @@
-os: Visual Studio 2015
+os: Visual Studio 2017 RC
 
 init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 build_script:
-  - cmd: >-
-      build.cmd /t:configure
-      
-      build.cmd %BuildArgs%
-      
-      .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
+  - cmd: echo Building on %APPVEYOR_BUILD_WORKER_IMAGE%
+  - cmd: build.cmd /t:configure
+  - cmd: build.cmd %BuildArgs%
+  - cmd: .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
 
 # we run the tests ourselves in build.cmd for coverage
 test: off
@@ -21,6 +19,7 @@ environment:
 # build cache to preserve files/folders between builds
 cache:
   - '%LocalAppData%\NuGet\Cache'
+  - '%USERPROFILE%\.nuget\packages'
 
 deploy:
   - provider: NuGet
