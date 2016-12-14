@@ -65,6 +65,15 @@
 		-->
 		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
+
+		<ItemGroup>
+			<Installer Include="src\**\*.msi" />
+			<Installer Include="src\**\*.vsix" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(Installer)"
+			  DestinationFiles="@(Installer->'$(Out)\%(Filename).$(Version)%(Extension)')"
+			  SkipUnchangedFiles="true" />
 	</Target>
 
 	<Import Project="$(PackagesPath)\MSBuilder.CodeTaskAssembly\build\MSBuilder.CodeTaskAssembly.props"

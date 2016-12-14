@@ -36,3 +36,7 @@ nuget:
 artifacts:
   - path: out\*.nupkg
     name: Package
+  - path: out\*.msi
+    name: Installer
+  - path: out\*.vsix
+    name: Vsix
