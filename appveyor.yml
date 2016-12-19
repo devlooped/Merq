@@ -30,6 +30,17 @@ deploy:
       # we only deploy to public NuGet gallery when tagging the repo
       appveyor_repo_tag: true
 
+  - provider: GitHub
+    auth_token:
+      secure: xD5WjlS/UktBZ4bmN2DtjtoSkP8MxecLiIdn+aYGcPJxFsHuNqshj44VNwD657T8
+    artifact: 'Package,Installer,Vsix'
+    draft: true
+    force_update: true
+    prerelease: false
+    on:
+      # we only deploy to GitHub release when tagging the repo
+      appveyor_repo_tag: true
+
 nuget:
   project_feed: true
   
