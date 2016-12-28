@@ -74,7 +74,6 @@
 		<Component Id="Merq14" Directory="MerqVsixInstallDir" Guid="{34F706EE-20E4-4AA3-BF18-7B24AF0B75E2}">
 			<Condition>VS2015_ROOT_FOLDER</Condition>
 			<File Id="Merq14.vsix" Source="$(var.Merq.Vsix.TargetDir)Merq.vsix">
-				<!-- TODO: check VS2015 SKUs -->
 				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2015_VSIX_INSTALLER_PATH" Target="Enterprise" TargetVersion="14.0" Vital="no" Permanent="no" />
 				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2015_VSIX_INSTALLER_PATH" Target="Pro" TargetVersion="14.0" Vital="no" Permanent="no" />
 				<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2015_VSIX_INSTALLER_PATH" Target="Community" TargetVersion="14.0" Vital="no" Permanent="no" />

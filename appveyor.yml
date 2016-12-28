@@ -4,7 +4,6 @@ init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 build_script:
-  - cmd: echo Building on %APPVEYOR_BUILD_WORKER_IMAGE%
   - cmd: build.cmd /t:configure
   - cmd: build.cmd %BuildArgs%
   - cmd: .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
