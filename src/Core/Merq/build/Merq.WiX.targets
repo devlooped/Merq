@@ -3,8 +3,8 @@
 
 	<PropertyGroup>
 		<DefineConstants>
-			Merq.Msi=$(MSBuildThisFileDirectory)..\tools\Merq.msi
-			Merq.Lib=$(MSBuildThisFileDirectory)..\tools\Merq.wixlib
+			Merq.Msi=$(MSBuildThisFileDirectory)..\tools\Merq.msi;
+			Merq.Lib=$(MSBuildThisFileDirectory)..\tools\Merq.wixlib;
 			$(DefineConstants)
 		</DefineConstants>
 	</PropertyGroup>
