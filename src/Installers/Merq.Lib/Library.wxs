@@ -22,25 +22,6 @@
 			</RegistrySearch>			
 		</Property>
 
-		<Feature Id="Merq" Title="Extensibility Message Bus" Level="1">
-			<Feature Id="Merq11" Title="Extensibility Message Bus for Visual Studio 2012">
-				<Condition Level="2">NOT VS2012_ROOT_FOLDER</Condition>
-				<ComponentRef Id="Merq11" />
-			</Feature>
-			<Feature Id="Merq12" Title="Extensibility Message Bus for Visual Studio 2013">
-				<Condition Level="2">NOT VS2013_ROOT_FOLDER</Condition>
-				<ComponentRef Id="Merq12" />
-			</Feature>
-			<Feature Id="Merq14" Title="Extensibility Message Bus for Visual Studio 2015">
-				<Condition Level="2">NOT VS2015_ROOT_FOLDER</Condition>
-				<ComponentRef Id="Merq14" />
-			</Feature>
-			<Feature Id="Merq15" Title="Extensibility Message Bus for Visual Studio 2017">
-				<Condition Level="2">NOT VS15_ROOT_FOLDER</Condition>
-				<ComponentRef Id="Merq15" />
-			</Feature>
-		</Feature>
-
 		<ComponentGroup Id="Merq">
 			<ComponentRef Id="Merq11"/>
 			<ComponentRef Id="Merq12"/>
