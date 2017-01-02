@@ -18,6 +18,8 @@
 		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.3" />
+		<file src="_._" target="lib\WiX,Version=v3.10" />
+
 		<!-- Installers -->
 		<file src="bin\$configuration$\build\$id$.targets" target="build" />
 		<file src="bin\$configuration$\build\$id$.Vsix.targets" target="build" />

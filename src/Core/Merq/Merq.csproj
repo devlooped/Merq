@@ -8,7 +8,7 @@
     <AssemblyName>Merq</AssemblyName>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-	<IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
+    <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.props))\Merq.props" />
   <ItemGroup>
@@ -35,6 +35,7 @@
     </None>
     <None Include="Merq.nuspec" />
     <None Include="project.json" />
+    <None Include="_._" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GitInfo.txt" />
