@@ -50,3 +50,5 @@ artifacts:
     name: Installer
   - path: out\*.vsix
     name: Vsix
+  - path: out\*.json
+    name: Json
