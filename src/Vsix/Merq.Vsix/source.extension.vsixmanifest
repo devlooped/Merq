@@ -11,6 +11,7 @@
 		<Icon>Merq.ico</Icon>
 		<PreviewImage>200.png</PreviewImage>
 		<Tags>vsix</Tags>
+		<PackageId>Microsoft.VisualStudio.Xamarin.Merq</PackageId>
 	</Metadata>
 	<Installation>
 		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,12.0]" />
