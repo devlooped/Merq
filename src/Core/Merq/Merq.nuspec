@@ -27,7 +27,7 @@
 		<file src="..\..\Installers\Merq.Lib\bin\$configuration$\Merq.wixlib" target="tools\Merq.wixlib" />
 		<file src="..\..\Installers\Merq.Msi\bin\$configuration$\Merq.msi" target="tools\Merq.msi" />
 		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Merq.vsix" target="tools\Merq.vsix" />
-		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Merq.json" target="tools\Merq.json" />
+		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Microsoft.VisualStudio.Xamarin.Merq.json" target="tools\Microsoft.VisualStudio.Xamarin.Merq.json" />
 		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\extension.vsixmanifest" target="tools\extension.vsixmanifest" />
 	</files>
 </package>

@@ -74,7 +74,7 @@
 		<Copy SourceFiles="@(Installer)"
 			  DestinationFiles="@(Installer->'$(Out)\%(Filename).$(Version)%(Extension)')"
 			  SkipUnchangedFiles="true" />
-		<Copy SourceFiles="src\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.json"
+		<Copy SourceFiles="src\Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json"
 			  DestinationFolder="$(Out)"
 			  SkipUnchangedFiles="true" />
 	</Target>
