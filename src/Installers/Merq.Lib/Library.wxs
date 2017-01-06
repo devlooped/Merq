@@ -22,6 +22,16 @@
 			</RegistrySearch>			
 		</Property>
 
+		<Feature Id="WorkaroundToAvoidLGHT0267" Level="0" AllowAdvertise="no">
+			<!-- The referencing MSIs unfortunately would have to reference *all* components 
+				 in order to avoid light.exe error LGHT0267 about unreferenced components.
+				 This workaround, a disabled and non-visible "feature" that references 
+				 everything, silens the build error, while still allowing the given 
+				 components to be properly installed if referenced by product-level features.
+			-->
+			<ComponentGroupRef Id="Merq" />
+		</Feature>
+
 		<ComponentGroup Id="Merq">
 			<ComponentRef Id="Merq11"/>
 			<ComponentRef Id="Merq12"/>
