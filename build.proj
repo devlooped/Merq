@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
@@ -258,6 +258,10 @@
 		<!-- Errors if nuget packages were restored during the build -->
 		<Error Text="Required build-time NuGet packages were missing and were just restored. Please run the build again."
 			   Condition="'$(PendingRestore)' == 'true' And '$(target)' != 'configure'"/>
+
+		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"'
+			  StandardOutputImportance="low"
+			  Condition=" '$(target)' == 'Configure' " />
 	
 		<Message Importance="high" Text="Building version $(Version)" />
 		

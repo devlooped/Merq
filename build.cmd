@@ -11,7 +11,7 @@ IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
 IF NOT EXIST %msb% set msb="%ProgramFiles(x86)%\MSBuild\12.0\Bin\MSBuild.exe"
 
 IF NOT EXIST %msb% (
-    echo Please run %~n0 from a Visual Studio Developer Command Prompt.
+    echo "Please ensure MSBuild (12.0, 14.0 or 15.0) is installed."
     exit /b -1
 )
 
