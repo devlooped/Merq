@@ -35,20 +35,16 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="Merq.wxi" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Lib\Merq.Lib.wixproj">
-      <Name>Merq.Lib</Name>
-      <Project>{859ed305-ee37-48d6-a1b6-f5d7b30317f1}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
+    <Content Include="Merq.Msi.targets" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition="Exists('$(WixTargetsPath)')" />
   <Import Project="..\Merq.Installer.targets" />
+  <Import Project="..\Merq.Lib\bin\$(Configuration)\build\Merq.WiX.targets" Condition="Exists('..\Merq.Lib\bin\$(Configuration)\build\Merq.WiX.targets')" />
+  <Import Project="Merq.Msi.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

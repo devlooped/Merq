@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
+			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
+			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Merq.json</JsonPath>
+		</VsixDependency>
+	</ItemGroup>
+
+	<!-- Allows manual (un)installation of the VSIX -->
+
+	<Target Name="InstallMerq">
+		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
+					 MessageImportance="high"
+					 RootSuffix="$(RootSuffix)" />
+	</Target>
+
+	<Target Name="UninstallMerq">
+		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
+					   VsixId="Merq"
+					   MessageImportance="high"
+					   RootSuffix="$(RootSuffix)" />
+	</Target>
+
 	<Import Project="Merq.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
-	<Import Project="Merq.Vsix.targets" Condition=" '$(VsSDKVersion)' != '' " />
 </Project>

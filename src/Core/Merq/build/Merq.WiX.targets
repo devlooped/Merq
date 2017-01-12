@@ -4,17 +4,15 @@
 	<PropertyGroup>
 		<DefineConstants>
 			Merq.Msi=$(MSBuildThisFileDirectory)..\tools\Merq.msi;
-			Merq.Lib=$(MSBuildThisFileDirectory)..\tools\Merq.wixlib;
+			Merq.Vsix=$(MSBuildThisFileDirectory)..\tools\Merq.vsix;
+			Merq.Include=$(MSBuildThisFileDirectory)..\tools\Merq.wxi;
 			$(DefineConstants)
 		</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Bundles can reference the MSI directly from the Chain -->
 	<ItemGroup Condition=" '$(OutputType)' == 'Package' ">
-		<WixLibrary Include="Merq.Installer">
-			<HintPath>$(MSBuildThisFileDirectory)..\tools\Merq.wixlib</HintPath>
-			<Name>Merq.Installer</Name>
-		</WixLibrary>
+		<Content Include="$(MSBuildThisFileDirectory)..\tools\Merq.wxi" />
 	</ItemGroup>
 
 	<!-- If the WixVSExtension is not added, add it automatically -->

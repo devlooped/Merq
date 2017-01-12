@@ -18,14 +18,15 @@
 		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.3" />
 		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.3" />
+		<file src="_._" target="lib\Unsupported,Version=v0.0" />
 		<file src="_._" target="lib\WiX,Version=v3.10" />
+		<file src="_._" target="lib\WiX,Version=v3.11" />
 
 		<!-- Installers -->
 		<file src="bin\$configuration$\build\$id$.targets" target="build" />
-		<file src="bin\$configuration$\build\$id$.Vsix.targets" target="build" />
 		<file src="bin\$configuration$\build\$id$.WiX.targets" target="build" />
-		<file src="..\..\Installers\Merq.Lib\bin\$configuration$\Merq.wixlib" target="tools\Merq.wixlib" />
 		<file src="..\..\Installers\Merq.Msi\bin\$configuration$\Merq.msi" target="tools\Merq.msi" />
+		<file src="..\..\Installers\Merq.Msi\Merq.wxi" target="tools\Merq.wxi" />
 		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Merq.vsix" target="tools\Merq.vsix" />
 		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\Microsoft.VisualStudio.Xamarin.Merq.json" target="tools\Microsoft.VisualStudio.Xamarin.Merq.json" />
 		<file src="..\..\Vsix\Merq.Vsix\bin\$configuration$\extension.vsixmanifest" target="tools\extension.vsixmanifest" />
