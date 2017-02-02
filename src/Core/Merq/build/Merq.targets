@@ -3,7 +3,7 @@
 	<ItemGroup>
 		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
 			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
-			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Merq.json</JsonPath>
+			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Microsoft.VisualStudio.Xamarin.Merq.json</JsonPath>
 		</VsixDependency>
 	</ItemGroup>
 
