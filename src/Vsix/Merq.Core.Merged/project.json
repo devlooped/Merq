@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.35",
+    "GitInfo": "1.1.45",
     "IFluentInterface": "2.0.3",
     "ilmerge": "2.14.1208",
     "ILRepack": "2.0.12",

@@ -1,0 +1,3 @@
+/consoleloggerparameters:Verbosity=minimal
+/fileLogger 
+/fileloggerparameters:LogFile=msbuild.txt;verbosity=diag

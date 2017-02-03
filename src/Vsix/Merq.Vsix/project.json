@@ -1,17 +1,16 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.35",
+    "GitInfo": "1.1.45",
     "Microsoft.VisualStudio.SDK.VsixSuppression": "14.1.32",
-    "Microsoft.VSSDK.BuildTools": "15.0.25929-RC2",
+    "Microsoft.VSSDK.BuildTools": "15.0.26201",
+    "Clarius.VisualStudio": "2.0.12",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
-    "MSBuilder.ThisAssembly.Vsix": "0.1.8",
     "netfx-System.StringResources": "3.0.14",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "VSSDK.DTE.10": "10.0.4",
     "VSSDK.IDE.11": "11.0.4",
     "VSSDK.Shell.11": "11.0.4",
-    "VSSDK.VSLangProj.11": "11.0.4",
-    "Clarius.VisualStudio": "2.0.5"
+    "VSSDK.VSLangProj.11": "11.0.4"
   },
   "frameworks": {
     "net45": {

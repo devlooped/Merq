@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.35",
+    "GitInfo": "1.1.45",
     "Microsoft.Reactive.Testing": "3.0.0",
     "Moq": "4.5.10",
     "MSBuilder.ThisAssembly.Project": "0.3.1",

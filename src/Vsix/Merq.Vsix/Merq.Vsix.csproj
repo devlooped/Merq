@@ -13,8 +13,10 @@
     <AssemblyName>Merq.Vsix</AssemblyName>
     <ExtensionInstallationFolder>Merq</ExtensionInstallationFolder>
     <TargetVsixContainerName>Merq.vsix</TargetVsixContainerName>
-    <IsProductComponent>true</IsProductComponent>
+    <IsProductComponent Condition="'$(IsProductComponent)' == ''">false</IsProductComponent>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
+    <OldToolsVersion>12.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Prefer32Bit>false</Prefer32Bit>
@@ -105,8 +107,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- Avoid importing twice by checking for the presence of the VsSDKVersion property -->
-  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' And '$(VsSDKVersion)' == ''" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' And '$(VsSDKVersion)' == '' And Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
   <Import Project="Merq.Vsix.targets" />
   <PropertyGroup>
     <StartAction>Program</StartAction>

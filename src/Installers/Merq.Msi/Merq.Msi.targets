@@ -4,9 +4,8 @@
 	<PropertyGroup>
 		<DefineConstants>
 			Merq.Msi=$(MSBuildThisFileDirectory)..\tools\Merq.msi;
-			Merq.Lib=$(MSBuildThisFileDirectory)..\tools\Merq.wixlib;
-			Merq.Vsix=..\..\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix;
-			Merq.Include=Merq.wxi;
+			Merq.Vsix=$(MSBuildThisFileDirectory)..\..\Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix;
+			Merq.Include=$(MSBuildThisFileDirectory)Merq.wxi;
 		</DefineConstants>
 	</PropertyGroup>
 

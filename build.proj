@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
@@ -65,6 +65,8 @@
 		-->
 		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
+
+		<MSBuild Projects="src\Merq.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.msi" />
@@ -260,10 +262,10 @@
 		<Error Text="Required build-time NuGet packages were missing and were just restored. Please run the build again."
 			   Condition="'$(PendingRestore)' == 'true' And '$(target)' != 'configure'"/>
 
-		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"'
-			  StandardOutputImportance="low"
-			  Condition=" '$(target)' == 'Configure' " />
-	
+		<MSBuild Projects="%(Solution.FullPath)" Targets="Restore" Condition=" '$(target)' == 'configure' " />
+		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"' Condition=" '$(target)' == 'configure' " />
+		<MSBuild Projects="src\Merq.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
+
 		<Message Importance="high" Text="Building version $(Version)" />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->

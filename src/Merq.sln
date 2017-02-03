@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26206.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{235AA06D-5767-49D1-88F3-F25383FE1CAA}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,9 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Before.Merq.sln.targets = Before.Merq.sln.targets
 		..\build.cmd = ..\build.cmd
 		..\build.proj = ..\build.proj
-		GitInfo.txt = GitInfo.txt
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
-		Merq.nuspec = Merq.nuspec
+		Merq.proj = Merq.proj
 		Merq.props = Merq.props
 		Merq.targets = Merq.targets
 		Merq.vssettings = Merq.vssettings
@@ -22,11 +21,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D01702F6-0CCA-4107-883D-57092F592644}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Async", "Async", "{B1D1E046-35CF-4785-AC95-5099802F3471}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{884E7C4D-254B-4B86-8BC8-3B029DB91D0D}"
+	ProjectSection(SolutionItems) = preProject
+		Async\Merq.Async.Core\Merq.Async.Core.nuspec = Async\Merq.Async.Core\Merq.Async.Core.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\Merq.Installer.props = Installers\Merq.Installer.props
+		Installers\Merq.Installer.targets = Installers\Merq.Installer.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vsix", "Vsix", "{514F4A5F-3C2E-4137-BD6E-4B3A30A68879}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq", "Core\Merq\Merq.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core.Tests", "Core\Merq.Core.Tests\Merq.Core.Tests.csproj", "{3A395046-3F7B-4907-9D63-48F92174D2E5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Async", "Async", "{B1D1E046-35CF-4785-AC95-5099802F3471}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Tests", "Async\Merq.Async.Tests\Merq.Async.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
 EndProject
@@ -40,18 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Core.Portable", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.TaskScheduler", "Async\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj", "{351E25F9-09D3-4718-B358-2BE5AD29A33C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{884E7C4D-254B-4B86-8BC8-3B029DB91D0D}"
-	ProjectSection(SolutionItems) = preProject
-		Async\Merq.Async.Core\Merq.Async.Core.nuspec = Async\Merq.Async.Core\Merq.Async.Core.nuspec
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async", "Async\Merq.Async\Merq.Async.csproj", "{9805DCD7-DE83-4E6F-9B78-88851AB66568}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}"
-	ProjectSection(SolutionItems) = preProject
-		Installers\Merq.Installer.props = Installers\Merq.Installer.props
-		Installers\Merq.Installer.targets = Installers\Merq.Installer.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix", "Vsix\Merq.Vsix\Merq.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
 EndProject
@@ -59,8 +60,6 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Merq.Msi", "Installers\Merq
 	ProjectSection(ProjectDependencies) = postProject
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB} = {C9A505CA-F826-473A-8290-B36AF6BE56FB}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vsix", "Vsix", "{514F4A5F-3C2E-4137-BD6E-4B3A30A68879}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
 EndProject
@@ -192,6 +191,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{884E7C4D-254B-4B86-8BC8-3B029DB91D0D} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{C6B16D17-4F6A-4457-8497-92068E53DE39} = {D01702F6-0CCA-4107-883D-57092F592644}
 		{3A395046-3F7B-4907-9D63-48F92174D2E5} = {D01702F6-0CCA-4107-883D-57092F592644}
 		{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64} = {B1D1E046-35CF-4785-AC95-5099802F3471}
@@ -200,7 +200,6 @@ Global
 		{31D90692-B7C5-4BE5-9C25-2D2159A157EF} = {884E7C4D-254B-4B86-8BC8-3B029DB91D0D}
 		{D7589C3E-1818-4E14-B84D-A275F3218161} = {884E7C4D-254B-4B86-8BC8-3B029DB91D0D}
 		{351E25F9-09D3-4718-B358-2BE5AD29A33C} = {B1D1E046-35CF-4785-AC95-5099802F3471}
-		{884E7C4D-254B-4B86-8BC8-3B029DB91D0D} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{9805DCD7-DE83-4E6F-9B78-88851AB66568} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B} = {BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}

@@ -31,9 +31,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Merq.nuspec" />
     <None Include="project.json" />
-    <None Include="_._" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GitInfo.txt" />
