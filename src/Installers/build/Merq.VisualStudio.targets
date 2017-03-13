@@ -23,5 +23,5 @@
 					   RootSuffix="$(RootSuffix)" />
 	</Target>
 
-	<Import Project="Merq.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
+	<Import Project="Merq.VisualStudio.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
 </Project>

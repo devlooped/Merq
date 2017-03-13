@@ -24,13 +24,6 @@
     <Compile Include="IExecutableCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="build\Merq.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="build\Merq.WiX.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
