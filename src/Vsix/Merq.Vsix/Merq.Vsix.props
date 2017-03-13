@@ -3,6 +3,7 @@
 	<Import Project="..\..\Merq.props" />
 
 	<PropertyGroup>
+		<VerifyTargetVersion>false</VerifyTargetVersion>
 		<UseCodebase>true</UseCodebase>
 		<IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
 		<IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>

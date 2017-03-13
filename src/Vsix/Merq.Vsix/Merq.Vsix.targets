@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<Import Project="$(VSSDK)\Microsoft.VsSDK.targets" Condition="Exists('$(VSSDK)\Microsoft.VsSDK.targets')" />
-	
+
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup Condition="'$(Version)' == ''">
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
@@ -27,4 +27,12 @@
 			<IsExperimental Condition="'$(IsProductComponent)' == 'true'">false</IsExperimental>
 		</PropertyGroup>
 	</Target>
+
+	<!-- Redefine since the VSSDK one doesn't honor the condition -->
+	<Target Name="VerifyTargetVersion" Condition="'$(VerifyTargetVersion)' == 'true'">
+		<CompareBuildTaskVersion
+		  TargetsAssemblyPath="$(MSBuildThisFileDirectory)$(VsSDKAssemblyFile)">
+		</CompareBuildTaskVersion>
+	</Target>
+
 </Project>
