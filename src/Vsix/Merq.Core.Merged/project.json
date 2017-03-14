@@ -8,7 +8,7 @@
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
     "MSBuilder.ThisAssembly.Project": "0.3.1",
     "netfx-System.StringResources": "3.0.14",
-    "NETStandard.Library": "1.6.0",
+    "NETStandard.Library": "1.6.1",
     "System.Reactive.Core": "3.0.0",
     "System.Reactive.Linq": "3.0.0"
   },

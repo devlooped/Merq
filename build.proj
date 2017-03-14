@@ -9,7 +9,7 @@
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false;PackageOutputPath=$(Out)</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 
@@ -50,7 +50,7 @@
 
 	<Target Name="Package">
 		<ItemGroup>
-			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec" />
+			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec;src\Core\Merq\**\*.nuspec" />
 		</ItemGroup>
 
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
@@ -67,6 +67,7 @@
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
 
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.msi" />
@@ -263,7 +264,6 @@
 			   Condition="'$(PendingRestore)' == 'true' And '$(target)' != 'configure'"/>
 
 		<MSBuild Projects="%(Solution.FullPath)" Targets="Restore" Condition=" '$(target)' == 'configure' " />
-		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"' Condition=" '$(target)' == 'configure' " />
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 
 		<Message Importance="high" Text="Building version $(Version)" />
