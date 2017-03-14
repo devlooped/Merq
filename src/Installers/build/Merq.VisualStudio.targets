@@ -4,6 +4,7 @@
 		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
 			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
 			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Microsoft.VisualStudio.Xamarin.Merq.json</JsonPath>
+			<WatsonPath>$(MSBuildThisFileDirectory)..\tools\watson.zip</WatsonPath>
 		</VsixDependency>
 	</ItemGroup>
 

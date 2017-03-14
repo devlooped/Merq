@@ -66,7 +66,7 @@
 		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
 
-		<MSBuild Projects="src\Merq.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.msi" />

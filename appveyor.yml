@@ -52,3 +52,5 @@ artifacts:
     name: Vsix
   - path: out\*.json
     name: Json
+  - path: out\*.zip
+    name: Zip
