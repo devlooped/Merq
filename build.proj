@@ -264,7 +264,7 @@
 
 		<MSBuild Projects="%(Solution.FullPath)" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"' Condition=" '$(target)' == 'configure' " />
-		<MSBuild Projects="src\Merq.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
+		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 
 		<Message Importance="high" Text="Building version $(Version)" />
 		
