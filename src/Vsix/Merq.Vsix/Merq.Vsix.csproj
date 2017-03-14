@@ -11,9 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
     <AssemblyName>Merq.Vsix</AssemblyName>
-    <ExtensionInstallationFolder>Merq</ExtensionInstallationFolder>
     <TargetVsixContainerName>Merq.vsix</TargetVsixContainerName>
-    <IsProductComponent Condition="'$(IsProductComponent)' == ''">false</IsProductComponent>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
     <OldToolsVersion>12.0</OldToolsVersion>

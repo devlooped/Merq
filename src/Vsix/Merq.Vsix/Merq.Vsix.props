@@ -10,8 +10,7 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 
 		<ExtensionInstallationFolder>Merq</ExtensionInstallationFolder>
-		<VSToolsPath Condition="'$(IsAppLocalIde)' != 'true' And Exists('$(ProgramFiles)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)')">$(ProgramFiles)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-		<VSToolsPath Condition="'$(IsAppLocalIde)' == 'true' And Exists('$(VsInstallRoot)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)')">$(VsInstallRoot)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+		<IsProductComponent>true</IsProductComponent>
 	</PropertyGroup>
 
 </Project>

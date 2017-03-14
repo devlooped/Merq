@@ -63,7 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuilder.VsixInstaller" Version="0.2.10" />
+		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.6" />
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
 		<PackageReference Include="NuGet.Build.Packaging" Version="0.1.227" PrivateAssets="All" />
 	</ItemGroup>
