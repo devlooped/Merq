@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
@@ -243,6 +243,10 @@
 			   ContinueOnError="ErrorAndContinue" />
 	</Target>
 
+	<Target Name="GetVsInstallRoot" Returns="$(VsInstallRoot)">
+		<Message Importance="high" Text="$(VsInstallRoot)" />
+	</Target>
+	
 	<!-- Configure and restore initial targets and packages -->
 	<Import Project="src\Merq.targets" />
 	<PropertyGroup>
@@ -254,7 +258,7 @@
 	<Target Name="GitVersion" />
 	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
 
-	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport;GetVersion">
+	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport;GetVersion" Condition="'$(target)' != 'GetVsInstallRoot'">
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
