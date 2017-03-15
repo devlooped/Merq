@@ -9,7 +9,7 @@
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false;PackageOutputPath=$(Out)</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false;PackageOutputPath=$(Out);NoPackageAnalysis=true</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 
@@ -63,7 +63,7 @@
 			 Implementations assembly versions match the package version, however.
 			 This helps avoid confusion by users.
 		-->
-		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
+		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -NoPackageAnalysis -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
 
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
@@ -271,7 +271,7 @@
 		<Exec Command='"$(NuGet)" Restore "$(MSBuildThisFileDirectory)src\Installers\Merq.Msi\Merq.Msi.wixproj" -SolutionDirectory "$(MSBuildThisFileDirectory)src" -Verbosity quiet' Condition=" '$(target)' == 'configure' " />
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 
-		<Message Importance="high" Text="Building version $(Version)" />
+		<Message Importance="high" Text="Building version $(Version)" Condition=" '$(target)' != 'configure' And '$(GitInfoImported)' == 'true' " />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->
         <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "

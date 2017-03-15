@@ -16,10 +16,8 @@
 		<IncludeContentInPack>false</IncludeContentInPack>
 	</PropertyGroup>
 
-	<Target Name="GetPackageVersion" DependsOnTargets="GitVersion" BeforeTargets="Build" Returns="$(PackageVersion)">
+	<Target Name="GetPackageVersion" DependsOnTargets="GetVersion" BeforeTargets="Build" Returns="$(PackageVersion)">
 		<PropertyGroup>
-			<VersionSuffix Condition="'$(GitBranch)' == 'undefined'">-pr</VersionSuffix>
-			<VersionSuffix Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</VersionSuffix>
 			<PackageVersion>$(PackageVersion)$(VersionSuffix)</PackageVersion>
 		</PropertyGroup>
 	</Target>
