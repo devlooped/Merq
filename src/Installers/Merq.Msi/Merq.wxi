@@ -10,8 +10,8 @@
 	<PropertyRef Id="VS2015_ROOT_FOLDER" />
 	<PropertyRef Id="VS2015_VSIX_INSTALLER_PATH" />
 
-	<PropertyRef Id="VS15_ROOT_FOLDER" />
-	<Property Id="VS15_VSIX_INSTALLER_PATH" Secure="yes">
+	<PropertyRef Id="VS2017_ROOT_FOLDER" />
+	<Property Id="VS2017_VSIX_INSTALLER_PATH" Secure="yes">
 		<RegistrySearch Id="VS15RootPathSearch" Root="HKLM" Key="Software\Microsoft\VisualStudio\SxS\VS7" Name="15.0" Type="raw">
 			<DirectorySearch Id="VS15Common7PathSearch" Path="Common7" Depth="1">
 				<DirectorySearch Id="VS15IDEPathSearch" Path="IDE" Depth="1">
@@ -76,11 +76,11 @@
 		</File>
 	</Component>
 	<Component Id="Merq15" Directory="MerqVsixInstallDir" Guid="{6D500D0D-24A1-475B-90AC-A107882CFC77}">
-		<Condition>VS15_ROOT_FOLDER</Condition>
+		<Condition>VS2017_ROOT_FOLDER</Condition>
 		<File Id="Merq15.vsix" Source="$(var.Merq.Vsix)">
-			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Enterprise" TargetVersion="15.0" Vital="no" Permanent="no" />
-			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Pro" TargetVersion="15.0" Vital="no" Permanent="no" />
-			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS15_VSIX_INSTALLER_PATH" Target="Community" TargetVersion="15.0" Vital="no" Permanent="no" />
+			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2017_VSIX_INSTALLER_PATH" Target="Enterprise" TargetVersion="15.0" Vital="no" Permanent="no" />
+			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2017_VSIX_INSTALLER_PATH" Target="Pro" TargetVersion="15.0" Vital="no" Permanent="no" />
+			<vs:VsixPackage	PackageId="Merq" VsixInstallerPathProperty="VS2017_VSIX_INSTALLER_PATH" Target="Community" TargetVersion="15.0" Vital="no" Permanent="no" />
 		</File>
 	</Component>
 </Include>

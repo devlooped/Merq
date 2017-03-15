@@ -34,8 +34,8 @@
 		<Property Id="ARPCOMMENTS" Value="Extensibility Message Bus" />
 		
 		<!-- Explicit value passed in by the VS15 installer should prevail, for SxS reasons -->
-		<SetProperty Id="VS15_ROOT_FOLDER" Value="[VS_15_DIR]" Before="CostInitialize"><![CDATA[VS_15_DIR]]></SetProperty>
-		<SetProperty Id="VS15_VSIX_INSTALLER_PATH" Value="[VS15_ROOT_FOLDER]Common7\IDE\VSIXInstaller.exe" After="SetVS15_ROOT_FOLDER"><![CDATA[VS_15_DIR]]></SetProperty>
+		<SetProperty Id="VS2017_ROOT_FOLDER" Value="[VS_15_DIR]" Before="CostInitialize"><![CDATA[VS_15_DIR]]></SetProperty>
+		<SetProperty Id="VS2017_VSIX_INSTALLER_PATH" Value="[VS2017_ROOT_FOLDER]Common7\IDE\VSIXInstaller.exe" After="SetVS2017_ROOT_FOLDER"><![CDATA[VS_15_DIR]]></SetProperty>
 
 		<UI Id="Features">
 			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
