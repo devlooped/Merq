@@ -25,7 +25,7 @@
 			<!-- If still no suffix was determined, default it to the optional semver label suffix -->
 			<VersionSuffix Condition="'$(VersionSuffix)' == ''">$(GitSemVerDashLabel)</VersionSuffix>
 			<!-- At this point, if we have a suffix, always append the commits, since it's a pre-release by definition, to avoid duplicate versions -->
-			<VersionSuffix Condition="'$(VersionSuffix)' != ''">$(VersionSuffix).$(GitCommits)</VersionSuffix>
+			<VersionSuffix Condition="'$(VersionSuffix)' != '' And '$(GitCommits)' != '0'">$(VersionSuffix)-build$(GitCommits.PadLeft('3', '0'))</VersionSuffix>
 			
 			<!-- Finally make up the version -->
 			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
