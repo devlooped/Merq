@@ -18,12 +18,12 @@
 		<IncludeOutputsInPackage>false</IncludeOutputsInPackage>
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 
-		<PackageId>Merq</PackageId>
-		<Title>Merq: Command Bus + Event Stream (Interfaces)</Title>
+		<PackageId>Merq.VisualStudio</PackageId>
+		<Title>Merq.VisualStudio: Command Bus + Event Stream + Async Manager VSIX and WiX Installers</Title>
 		<Authors>Mobile Essentials</Authors>
 		<Owners>mobessen</Owners>
-		<Description>Command Bus and Event Stream patterns core interfaces</Description>
-		<Summary>Command Bus and Event Stream patterns core interfaces</Summary>
+		<Description>Command Bus, Event Stream and Async Manager implementation installers for Visual Studio Extensibility.</Description>
+		<Summary>Command Bus, Event Stream and Async Manager implementation installers for Visual Studio Extensibility.</Summary>
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
 		<PackageProjectUrl>https://github.com/MobileEssentials/Merq</PackageProjectUrl>
@@ -38,16 +38,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageFile Include="Core\Merq\bin\$(Configuration)\Merq.dll">
-			<PackagePath>lib\netstandard1.3\Merq.dll</PackagePath>
+		<PackageFile Include="_._">
+			<PackagePath>lib\_._</PackagePath>
 		</PackageFile>
-		<PackageFile Include="Core\Merq\bin\$(Configuration)\Merq.pdb">
-			<PackagePath>lib\netstandard1.3\Merq.pdb</PackagePath>
-		</PackageFile>
-		<PackageFile Include="Core\Merq\bin\$(Configuration)\Merq.xml">
-			<PackagePath>lib\netstandard1.3\Merq.xml</PackagePath>
-		</PackageFile>
-		<PackageFile Include="Core\Merq\bin\$(Configuration)\build\*.*">
+		<PackageFile Include="Installers\build\*.*">
 			<Kind>build</Kind>
 		</PackageFile>
 		<PackageFile Include="Installers\Merq.Msi\bin\$(Configuration)\Merq.msi">
@@ -69,18 +63,43 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NuGet.Build.Packaging" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="GitInfo" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.6" />
+		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="0.1.227" PrivateAssets="All" />
 	</ItemGroup>
 
-	<Target Name="GitVersion" />
-	<Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GitVersion">
+	<Target Name="ZipWatson" BeforeTargets="GetPackageContents">
 		<PropertyGroup>
-			<PackageVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</PackageVersion>
+			<PS Condition="'$(PS)' == ''">%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
+		</PropertyGroup>
+
+		<Exec Command="rmdir temp /S /Q" Condition="Exists('temp')" StandardOutputImportance="low" />
+		<MakeDir Directories="temp" />
+		<ItemGroup>
+			<_CandidateDll Include="Vsix\Merq.Vsix\bin\$(Configuration)\*.dll" />
+			<_CandidatePdb Include="@(_CandidateDll -> '%(RootDir)%(Directory)%(Filename).pdb')" />
+
+			<WatsonFile Include="@(_CandidatePdb -> '%(RootDir)%(Directory)%(Filename).dll')" Condition="Exists('%(_CandidatePdb.FullPath)')" />
+			<WatsonFile Include="@(_CandidatePdb)" Condition="Exists('%(_CandidatePdb.FullPath)')" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WatsonFile)" DestinationFolder="temp" />
+		<Delete Files="$(Out)\watson.zip" Condition="Exists('$(Out)\watson.zip')" />
+		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -Assembly &quot;System.IO.Compression.FileSystem&quot;; [IO.Compression.ZipFile]::CreateFromDirectory('.\temp', '$(Out)\watson.zip') }&quot;"
+			  StandardOutputImportance="low" />
+		<Exec Command="rmdir temp /S /Q" Condition="Exists('temp')" StandardOutputImportance="low" />
+
+		<ItemGroup>
+			<PackageFile Include="$(Out)\watson.zip">
+				<Kind>tools</Kind>
+			</PackageFile>
+		</ItemGroup>
+	</Target>
+	
+	<Target Name="GitVersion" />
+	<Import Project="Merq.targets" />
+	<Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GetVersion">
+		<PropertyGroup>
+			<PackageVersion>$(Version)</PackageVersion>
 		</PropertyGroup>
 	</Target>
 

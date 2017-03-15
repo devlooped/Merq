@@ -11,9 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merq</RootNamespace>
     <AssemblyName>Merq.Vsix</AssemblyName>
-    <ExtensionInstallationFolder>Merq</ExtensionInstallationFolder>
     <TargetVsixContainerName>Merq.vsix</TargetVsixContainerName>
-    <IsProductComponent Condition="'$(IsProductComponent)' == ''">false</IsProductComponent>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
     <OldToolsVersion>12.0</OldToolsVersion>
@@ -78,12 +76,12 @@
     <ProjectReference Include="..\..\Async\Merq.Async.Core\Merq.Async.Core.Desktop\Merq.Async.Core.Desktop.csproj">
       <Project>{31d90692-b7c5-4be5-9c25-2d2159a157ef}</Project>
       <Name>Merq.Async.Core.Desktop</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj">
       <Project>{9805dcd7-de83-4e6f-9b78-88851ab66568}</Project>
       <Name>Merq.Async</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
@@ -92,6 +90,7 @@
     <ProjectReference Include="..\Merq.Core.Merged\Merq.Core.Merged.csproj">
       <Project>{da67172b-c15f-4ae3-b34d-2ce7f47811b7}</Project>
       <Name>Merq.Core.Merged</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,16 +4,24 @@
 		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
 			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
 			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Microsoft.VisualStudio.Xamarin.Merq.json</JsonPath>
+			<WatsonPath>$(MSBuildThisFileDirectory)..\tools\watson.zip</WatsonPath>
 		</VsixDependency>
 	</ItemGroup>
 
 	<!-- Allows manual (un)installation of the VSIX -->
 
-	<Target Name="InstallMerq">
+	<Target Name="InstallMerq" DependsOnTargets="_ExperimentalizeMerq">
 		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
+					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix"
 					 MessageImportance="high"
 					 RootSuffix="$(RootSuffix)" />
+	</Target>
+
+	<Target Name="_ExperimentalizeMerq"
+			Inputs="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
+			Outputs="$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix">
+		<!-- Run the "Experimentalizer" which turns release VSIXes into Experimental ones -->
+		<Exec Command='"$(VsixExp)" "$(MSBuildThisFileDirectory)..\tools\Merq.vsix" "$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix"' />
 	</Target>
 
 	<Target Name="UninstallMerq">
@@ -23,5 +31,5 @@
 					   RootSuffix="$(RootSuffix)" />
 	</Target>
 
-	<Import Project="Merq.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
+	<Import Project="Merq.VisualStudio.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
 </Project>

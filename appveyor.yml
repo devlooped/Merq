@@ -1,11 +1,12 @@
-os: Visual Studio 2017 RC
+os: Visual Studio 2017
 
 init:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 build_script:
-  - cmd: build.cmd "/t:configure" "/p:target=configure"
-  - cmd: build.cmd %BuildArgs%
+  - cmd: build.cmd /configure
+  - cmd: echo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" >> msbuild.rsp
+  - cmd: build.cmd /release
   - cmd: .nuget\packages\coveralls.io\tools\coveralls.net.exe --opencover out\coverage.xml
 
 # we run the tests ourselves in build.cmd for coverage
@@ -13,7 +14,7 @@ test: off
 
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: l3O4lbgUscsMKm9M580fsx0rBDal/nTrtRTt3ZE6897ps9Q3USzEIwR254Z4CfKv
+    secure: fgMBUMO4pwwPrXF6WowqY1s8P1brcCAB/WEhnYv9BoQjUZ/ufyDbI0tJY7O2JL1s
 
 # build cache to preserve files/folders between builds
 cache:
@@ -32,7 +33,7 @@ deploy:
   - provider: GitHub
     auth_token:
       secure: xD5WjlS/UktBZ4bmN2DtjtoSkP8MxecLiIdn+aYGcPJxFsHuNqshj44VNwD657T8
-    artifact: 'Package,Installer,Vsix'
+    artifact: 'Package,Installer,Vsix,Json,Zip'
     draft: true
     force_update: true
     prerelease: false
@@ -52,3 +53,7 @@ artifacts:
     name: Vsix
   - path: out\*.json
     name: Json
+  - path: out\*.zip
+    name: Zip
+  - path: msbuild.log
+    name: Log

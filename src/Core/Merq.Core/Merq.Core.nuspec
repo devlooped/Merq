@@ -19,8 +19,8 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.3" />
-		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.3" />
-		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.3" />
+		<file src="bin\$configuration$\$id$.dll" target="lib\netstandard1.1" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\netstandard1.1" />
+		<file src="bin\$configuration$\$id$.xml" target="lib\netstandard1.1" />
 	</files>
 </package>

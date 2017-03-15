@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
@@ -9,7 +9,7 @@
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
-		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false</CommonBuildProperties>
+		<CommonBuildProperties>WarningLevel=0;NoWarn=1591;RunCodeAnalysis=false;Configuration=$(Configuration);Out=$(Out);DeployExtension=false;PackageOutputPath=$(Out);NoPackageAnalysis=true</CommonBuildProperties>
 		<DefaultImportance Condition=" '$(DefaultImportance)' == '' ">high</DefaultImportance>
 	</PropertyGroup>
 
@@ -50,7 +50,7 @@
 
 	<Target Name="Package">
 		<ItemGroup>
-			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec" />
+			<NuSpec Include="src\**\*.nuspec" Exclude="src\**\obj\*\*.nuspec;src\packages\**\*.nuspec;src\Core\Merq\**\*.nuspec" />
 		</ItemGroup>
 
 		<Exec Command="$(PackagesPath)\gitlink\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
@@ -63,10 +63,11 @@
 			 Implementations assembly versions match the package version, however.
 			 This helps avoid confusion by users.
 		-->
-		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
+		<Exec Command='"$(NuGet)" Pack "%(NuSpec.Filename)%(NuSpec.Extension)" -NoPackageAnalysis -Version $(Version) -Properties Id=%(NuSpec.Filename);Configuration=$(Configuration);Version=$(Version) -OutputDirectory $(Out)'
 			  WorkingDirectory='%(NuSpec.RootDir)%(NuSpec.Directory)'/>
 
-		<MSBuild Projects="src\Merq.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.msi" />
@@ -230,7 +231,7 @@
 
 		<Exec Command="$(XunitConsole) @(IntegrationTestAssembly, ' ') $(XunitOptions.Replace('test', 'integrationtest'))"
 			  Condition=" '@(IntegrationTestAssembly)' != '' "
-			  ContinueOnError="ErrorAndContinue" />
+			  ContinueOnError="WarnAndContinue" />
 	</Target>
 
 	<Target Name="TestMac" DependsOnTargets="PrepareTest" Condition=" '$(OS)' != 'Windows_NT' ">
@@ -242,6 +243,10 @@
 			   ContinueOnError="ErrorAndContinue" />
 	</Target>
 
+	<Target Name="GetVsInstallRoot" Returns="$(VsInstallRoot)">
+		<Message Importance="high" Text="$(VsInstallRoot)" />
+	</Target>
+	
 	<!-- Configure and restore initial targets and packages -->
 	<Import Project="src\Merq.targets" />
 	<PropertyGroup>
@@ -253,7 +258,7 @@
 	<Target Name="GitVersion" />
 	<Import Project="$(GitInfoTargets)" Condition="Exists('$(GitInfoTargets)')"/>
 
-	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport;GetVersion">
+	<Target Name="Configure" DependsOnTargets="DownloadNuGet;GitInfoReport;GetVersion" Condition="'$(target)' != 'GetVsInstallRoot'">
 		<Exec Command='"$(NuGet)" Install "$(MSBuildThisFileDirectory)packages.config" -OutputDirectory "$(PackagesPath)" -ExcludeVersion -Verbosity quiet'
 			  StandardOutputImportance="low"
 			  Condition=" '$(PendingRestore)' == 'true' " />
@@ -263,10 +268,10 @@
 			   Condition="'$(PendingRestore)' == 'true' And '$(target)' != 'configure'"/>
 
 		<MSBuild Projects="%(Solution.FullPath)" Targets="Restore" Condition=" '$(target)' == 'configure' " />
-		<Exec Command='"$(NuGet)" Restore "%(Solution.FullPath)"' Condition=" '$(target)' == 'configure' " />
-		<MSBuild Projects="src\Merq.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
+		<Exec Command='"$(NuGet)" Restore "$(MSBuildThisFileDirectory)src\Installers\Merq.Msi\Merq.Msi.wixproj" -SolutionDirectory "$(MSBuildThisFileDirectory)src" -Verbosity quiet' Condition=" '$(target)' == 'configure' " />
+		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 
-		<Message Importance="high" Text="Building version $(Version)" />
+		<Message Importance="high" Text="Building version $(Version)" Condition=" '$(target)' != 'configure' And '$(GitInfoImported)' == 'true' " />
 		
         <!-- Update AppVeyor build # to match the actual one being used -->
         <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "

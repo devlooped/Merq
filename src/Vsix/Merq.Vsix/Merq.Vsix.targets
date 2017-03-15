@@ -3,28 +3,19 @@
 	<Import Project="..\..\Merq.targets" />
 	<Import Project="Merq.Vsix.BindingRedirects.targets" />
 
-	<!-- MSBuild.exe.config explicitly overrides VSToolsPath, so we need to resort to another prop. in order to locate the nuget-provided one -->
-	<PropertyGroup>
-		<NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+	<Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And Exists('$(VsSDKInstall)\Microsoft.VsSDK.targets')" />
 
-		<VSSDK>$(NuGetPackageRoot)Microsoft.VSSDK.BuildTools\15.0.26201\tools\VSSDK</VSSDK>
-		<VsSDKIncludes>$(VSSDK)\inc</VsSDKIncludes>
-		<VsSDKToolsPath>$(VSSDK)\bin</VsSDKToolsPath>
-		<VsixSchemaPath>$(VSSDK)\schemas\VSIXManifestSchema.xsd</VsixSchemaPath>
-	</PropertyGroup>
-
-	<Import Project="$(VSSDK)\Microsoft.VsSDK.targets" Condition="Exists('$(VSSDK)\Microsoft.VsSDK.targets')" />
-	
 	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup Condition="'$(Version)' == ''">
 			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
 		</PropertyGroup>
 	</Target>
 
-	<Target Name="GetIsExperimental" Returns="$(IsExperimental)">
-		<PropertyGroup>
-			<IsExperimental>true</IsExperimental>
-			<IsExperimental Condition="'$(IsProductComponent)' == 'true'">false</IsExperimental>
-		</PropertyGroup>
+	<!-- Redefine since the VSSDK one doesn't honor the condition -->
+	<Target Name="VerifyTargetVersion" Condition="'$(VerifyTargetVersion)' == 'true'">
+		<CompareBuildTaskVersion
+		  TargetsAssemblyPath="$(MSBuildThisFileDirectory)$(VsSDKAssemblyFile)">
+		</CompareBuildTaskVersion>
 	</Target>
+
 </Project>
