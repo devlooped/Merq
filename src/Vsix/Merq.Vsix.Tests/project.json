@@ -1,10 +1,10 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.45",
+    "GitInfo": "1.1.48",
     "Microsoft.Reactive.Testing": "3.0.0",
     "Microsoft.VisualStudio.Shell.Interop.12.0": "12.0.30110",
     "Moq": "4.5.10",
-    "MSBuilder.ThisAssembly.Project": "0.3.1",
+    "MSBuilder.ThisAssembly.Project": "0.3.3",
     "System.Reactive": "3.0.0",
     "VSSDK.ComponentModelHost.11": "11.0.4",
     "xunit": "2.1.0"

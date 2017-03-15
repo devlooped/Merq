@@ -1,9 +1,9 @@
 ﻿{
   "dependencies": {
-    "GitInfo": "1.1.45",
+    "GitInfo": "1.1.48",
     "IFluentInterface": "2.0.3",
     "Microsoft.VisualStudio.Threading": "12.2.0",
-    "MSBuilder.ThisAssembly.Project": "0.3.1"
+    "MSBuilder.ThisAssembly.Project": "0.3.3"
   },
   "frameworks": {
     "net45": {}

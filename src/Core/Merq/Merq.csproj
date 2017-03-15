@@ -33,10 +33,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Merq.nuspec" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Content Include="GitInfo.txt" />
   </ItemGroup>
   
