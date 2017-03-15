@@ -33,7 +33,7 @@ deploy:
   - provider: GitHub
     auth_token:
       secure: xD5WjlS/UktBZ4bmN2DtjtoSkP8MxecLiIdn+aYGcPJxFsHuNqshj44VNwD657T8
-    artifact: 'Package,Installer,Vsix'
+    artifact: 'Package,Installer,Vsix,Json,Zip'
     draft: true
     force_update: true
     prerelease: false
