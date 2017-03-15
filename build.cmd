@@ -16,6 +16,7 @@ if /I "%1" == "/debug" set BuildConfiguration=Debug&&shift&& goto :ParseArgument
 if /I "%1" == "/release" set BuildConfiguration=Release&&shift&& goto :ParseArguments
 if /I "%1" == "/rebuild" set MSBuildTarget=/t:Rebuild&&shift&& goto :ParseArguments
 if /I "%1" == "/configure" set MSBuildTarget=/t:Configure&&shift&& goto :ParseArguments
+if /I "%1" == "/package" set MSBuildTarget=/t:Package&&shift&& goto :ParseArguments
 if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
 if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments
 set MSBuildAdditionalArguments=%1 %MSBuildAdditionalArguments%&&shift&& goto :ParseArguments
@@ -93,6 +94,7 @@ echo.
 echo   Build targets:
 echo     /rebuild                 Perform a clean, then build
 echo     /configure				  Restores NuGet packages and prepares for build
+echo     /package				  Only build the output NuGet packages
 echo     /update                  Updates corebuild dependencies
 echo.
 echo   Build options:

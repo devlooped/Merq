@@ -83,6 +83,7 @@
 			<WatsonFile Include="@(_CandidatePdb)" Condition="Exists('%(_CandidatePdb.FullPath)')" />
 		</ItemGroup>
 		<Copy SourceFiles="@(WatsonFile)" DestinationFolder="temp" />
+		<Delete Files="$(Out)\watson.zip" Condition="Exists('$(Out)\watson.zip')" />
 		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -Assembly &quot;System.IO.Compression.FileSystem&quot;; [IO.Compression.ZipFile]::CreateFromDirectory('.\temp', '$(Out)\watson.zip') }&quot;"
 			  StandardOutputImportance="low" />
 		<Exec Command="rmdir temp /S /Q" Condition="Exists('temp')" StandardOutputImportance="low" />
