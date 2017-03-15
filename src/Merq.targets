@@ -4,26 +4,32 @@
 			Condition=" '$(NuGetRestoreImported)' != 'true' " />
 
 	<PropertyGroup>
-		<Version Condition="'$(Version)' == '1.0.0.0'"></Version>		
+		<Version Condition="'$(Version)' == '1.0.0.0'"></Version>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(IncludeGlobalAssemblyInfo)' != 'false'">
 		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
 	</ItemGroup>
-
-	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
-		<PropertyGroup Condition="'$(Version)' == ''">
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined'">-pr</GitSemVerDashLabel>
-			<GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)$(GitSemVerDashLabel)</Version>
-		</PropertyGroup>
-	</Target>
 	
-	<Target Name="SetPrereleaseForTag" AfterTargets="_GitBaseVersionTag" Condition="'$(GitIgnoreTagVersion)' != 'true' And '$(GitBaseTag)' != ''">
-		<!-- Tweak base tag to end in '-pre' if it wasn't a pre-release tag but there are new commits on top of it -->
-		<PropertyGroup Condition="'$(GitCommits)' != '0' And $(GitBaseTag.Contains('-')) == 'false'">
-			<GitBaseVersion>$(GitBaseTag)-pre</GitBaseVersion>
-		</PropertyGroup>
+	<Target Name="GetVersion" BeforeTargets="Build" DependsOnTargets="GitVersion" Returns="$(Version)">
+		<PropertyGroup>
+			<!-- Our version is always the base version, with different pre-release labels for non-baseline builds -->
+			<VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
+			
+			<VersionSuffix Condition="'$(GitBranch)' == 'undefined'">-pr</VersionSuffix>
+			<VersionSuffix Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</VersionSuffix>
+			<!-- If neither of the above happened, then it's a non-PR build
+			     If there are commits on top of the base version (i.e. label or branch name), and it wasn't labeled already, 
+				 make it a -pre automatically, since we only publish/push on tags -->
+			<VersionSuffix Condition="'$(VersionSuffix)' == '' And '$(GitCommits)' != '0' And '$(GitSemVerDashLabel)' == ''">-pre</VersionSuffix>
+			<!-- If still no suffix was determined, default it to the optional semver label suffix -->
+			<VersionSuffix Condition="'$(VersionSuffix)' == ''">$(GitSemVerDashLabel)</VersionSuffix>
+			<!-- At this point, if we have a suffix, always append the commits, since it's a pre-release by definition, to avoid duplicate versions -->
+			<VersionSuffix Condition="'$(VersionSuffix)' != ''">$(VersionSuffix).$(GitCommits)</VersionSuffix>
+			
+			<!-- Finally make up the version -->
+			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
+	</PropertyGroup>
 	</Target>
 	
 </Project>
