@@ -13,7 +13,7 @@ test: off
 
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: l3O4lbgUscsMKm9M580fsx0rBDal/nTrtRTt3ZE6897ps9Q3USzEIwR254Z4CfKv
+    secure: fgMBUMO4pwwPrXF6WowqY1s8P1brcCAB/WEhnYv9BoQjUZ/ufyDbI0tJY7O2JL1s
 
 # build cache to preserve files/folders between builds
 cache:
