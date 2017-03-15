@@ -231,7 +231,7 @@
 
 		<Exec Command="$(XunitConsole) @(IntegrationTestAssembly, ' ') $(XunitOptions.Replace('test', 'integrationtest'))"
 			  Condition=" '@(IntegrationTestAssembly)' != '' "
-			  ContinueOnError="ErrorAndContinue" />
+			  ContinueOnError="WarnAndContinue" />
 	</Target>
 
 	<Target Name="TestMac" DependsOnTargets="PrepareTest" Condition=" '$(OS)' != 'Windows_NT' ">
