@@ -54,3 +54,5 @@ artifacts:
     name: Json
   - path: out\*.zip
     name: Zip
+  - path: msbuild.log
+    name: Log
