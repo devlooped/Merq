@@ -56,14 +56,13 @@
 		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest">
 			<Kind>tools</Kind>
 		</PackageFile>
-		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json"
-					 Condition="'$(IsProductComponent)' == 'true'">
+		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json">
 			<Kind>tools</Kind>
 		</PackageFile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.6" />
+		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.7" />
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
 		<PackageReference Include="NuGet.Build.Packaging" Version="0.1.227" PrivateAssets="All" />
 	</ItemGroup>
