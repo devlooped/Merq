@@ -32,7 +32,7 @@
 		</Exec>
 		<Message Importance="high" Text="$(ILMergeOutput)" Condition="'$(ExitCode)' != '0'" />
 		<Error Text="$(ILMergeOutput)" Condition="'$(ExitCode)' != '0'" />
-		<Delete Files="@(ILMergeAssemblies -> '$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
+		<Delete Files="@(MergedAssemblies -> '$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
 	</Target>
 
 </Project>
