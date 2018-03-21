@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Merq
@@ -62,5 +63,15 @@ namespace Merq
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
 		/// <returns>The result of executing the command.</returns>
 		Task<TResult> ExecuteAsync<TResult> (IAsyncCommand<TResult> command, CancellationToken cancellation);
+
+		/// <summary>
+		/// Notifies than a given command execution has been started
+		/// </summary>
+		event EventHandler<IExecutable> CommandStarted;
+
+		/// <summary>
+		/// Notifies than a given command execution has been finished
+		/// </summary>
+		event EventHandler<CommandFinishedEventArgs> CommandFinished;
 	}
 }

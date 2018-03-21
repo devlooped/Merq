@@ -33,6 +33,9 @@ namespace Merq
 			forCommands = new Runner(components);
 		}
 
+		public event EventHandler<IExecutable> CommandStarted;
+		public event EventHandler<CommandFinishedEventArgs> CommandFinished;
+
 		public bool CanExecute<TCommand>(TCommand command) where TCommand : IExecutable
 		{
 			if (command == null) throw new ArgumentNullException(nameof(command));
@@ -69,28 +72,114 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException(nameof(command));
 
-			ForCommand().Execute((dynamic)command);
+			Exception error = null;
+			var time = DateTime.UtcNow;
+			TriggerEventWithShield(CommandStarted, command);
+			try
+			{
+				ForCommand().Execute((dynamic)command);
+			}
+			catch (Exception ex)
+			{
+				error = ex;
+				throw;
+			}
+			finally
+			{
+				TriggerEventWithShield(CommandFinished,
+					new CommandFinishedEventArgs(
+						command,
+						error,
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds));
+			}
 		}
 
 		public TResult Execute<TResult>(ICommand<TResult> command)
 		{
 			if (command == null) throw new ArgumentNullException(nameof(command));
 
-			return ForResult<TResult>().Execute((dynamic)command);
+			Exception error = null;
+			var time = DateTime.UtcNow;
+			TriggerEventWithShield(CommandStarted, command);
+			try
+			{
+				return ForResult<TResult>().Execute((dynamic)command);
+			}
+			catch (Exception ex)
+			{
+				error = ex;
+				throw;
+			}
+			finally
+			{
+				TriggerEventWithShield(CommandFinished,
+					new CommandFinishedEventArgs(
+						command,
+						error,
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds));
+			}
 		}
 
 		public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation)
 		{
 			if (command == null) throw new ArgumentNullException(nameof(command));
 
-			return ForCommand().ExecuteAsync((dynamic)command, cancellation);
+			var time = DateTime.UtcNow;
+
+			TriggerEventWithShield(CommandStarted, command);
+			var task = (Task)ForCommand().ExecuteAsync((dynamic)command, cancellation);
+			task.ContinueWith(t =>
+				TriggerEventWithShield(CommandFinished,
+					new CommandFinishedEventArgs(
+						command,
+						t.Exception,
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds)));
+
+			return task;
 		}
 
 		public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation)
 		{
 			if (command == null) throw new ArgumentNullException(nameof(command));
 
-			return ForResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
+			var time = DateTime.UtcNow;
+
+			TriggerEventWithShield(CommandStarted, command);
+			var task = (Task<TResult>)ForResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
+			task.ContinueWith(t =>
+				TriggerEventWithShield(CommandFinished, 
+					new CommandFinishedEventArgs(
+						command,
+						t.Exception,
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds)));
+
+			return task;
+		}
+
+		void TriggerEventWithShield<T>(EventHandler<T> eventHandler, T args)
+		{
+			if (eventHandler != null)
+			{
+				foreach (var handler in eventHandler.GetInvocationList())
+				{
+					try
+					{
+						handler.DynamicInvoke(this, args);
+					}
+					catch { }
+				}
+			}
+		}
+
+		protected virtual void OnCommandStarted(IExecutable command)
+		{
+			if (CommandStarted != null)
+				foreach (EventHandler handler in CommandStarted.GetInvocationList())
+					try
+					{
+						handler.DynamicInvoke(this, command);
+					}
+					catch { }
 		}
 
 		Runner ForCommand() => forCommands;
