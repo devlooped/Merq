@@ -28,15 +28,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{884E7C4D-2
 		Async\Merq.Async.Core\Merq.Async.Core.nuspec = Async\Merq.Async.Core\Merq.Async.Core.nuspec
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}"
-	ProjectSection(SolutionItems) = preProject
-		Installers\Merq.Installer.props = Installers\Merq.Installer.props
-		Installers\Merq.Installer.targets = Installers\Merq.Installer.targets
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vsix", "Vsix", "{514F4A5F-3C2E-4137-BD6E-4B3A30A68879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq", "Core\Merq\Merq.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq", "Core\Merq\Merq.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core.Tests", "Core\Merq.Core.Tests\Merq.Core.Tests.csproj", "{3A395046-3F7B-4907-9D63-48F92174D2E5}"
 EndProject
@@ -56,23 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async", "Async\Merq.As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix", "Vsix\Merq.Vsix\Merq.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Merq.Msi", "Installers\Merq.Msi\Merq.Msi.wixproj", "{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C9A505CA-F826-473A-8290-B36AF6BE56FB} = {C9A505CA-F826-473A-8290-B36AF6BE56FB}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.IntegrationTests", "Vsix\Merq.Vsix.IntegrationTests\Merq.Vsix.IntegrationTests.csproj", "{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core.Merged", "Vsix\Merq.Core.Merged\Merq.Core.Merged.csproj", "{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D0EFA849-7331-48AC-90B1-B2FC36209DC9}"
-	ProjectSection(SolutionItems) = preProject
-		Installers\build\Merq.VisualStudio.targets = Installers\build\Merq.VisualStudio.targets
-		Installers\build\Merq.VisualStudio.WiX.targets = Installers\build\Merq.VisualStudio.WiX.targets
-		Installers\build\Readme.txt = Installers\build\Readme.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,10 +102,6 @@ Global
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B}.Debug|Any CPU.Build.0 = Debug|x86
-		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B}.Release|Any CPU.ActiveCfg = Release|x86
-		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B}.Release|Any CPU.Build.0 = Release|x86
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -152,10 +130,11 @@ Global
 		{351E25F9-09D3-4718-B358-2BE5AD29A33C} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{9805DCD7-DE83-4E6F-9B78-88851AB66568} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
-		{F4FCA9E5-F9AB-4FB5-B239-F4274C45407B} = {BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
-		{D0EFA849-7331-48AC-90B1-B2FC36209DC9} = {BBDC04E0-3255-4F4C-BD92-009EAF6C7D6A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F401F53-1497-4C3F-BA2B-915F7560AF17}
 	EndGlobalSection
 EndGlobal

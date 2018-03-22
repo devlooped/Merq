@@ -44,12 +44,6 @@
 		<PackageFile Include="Installers\build\*.*">
 			<Kind>build</Kind>
 		</PackageFile>
-		<PackageFile Include="Installers\Merq.Msi\bin\$(Configuration)\Merq.msi">
-			<Kind>tools</Kind>
-		</PackageFile>
-		<PackageFile Include="Installers\Merq.Msi\Merq.wxi">
-			<Kind>tools</Kind>
-		</PackageFile>
 		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix">
 			<Kind>tools</Kind>
 		</PackageFile>
@@ -64,7 +58,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.7" />
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
-		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="*" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="ZipWatson" BeforeTargets="GetPackageContents">
@@ -113,4 +107,6 @@
 
 	<!-- Unfortunately, NuGet restore depends on this target for its _GenerateRestoreProjectReferencePaths target -->
 	<Target Name="_SplitProjectReferencesByFileExistence" />
+	<Target Name="ResolveReferences" />
+	<Target Name="BuildOnlySettings" />
 </Project>

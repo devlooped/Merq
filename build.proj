@@ -70,7 +70,6 @@
 		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
-			<Installer Include="src\**\*.msi" />
 			<Installer Include="src\**\*.vsix" />
 		</ItemGroup>
 
