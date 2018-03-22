@@ -64,7 +64,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSBuilder.VsixDependency" Version="0.2.7" />
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
-		<PackageReference Include="NuGet.Build.Packaging" Version="0.1.227" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Target Name="ZipWatson" BeforeTargets="GetPackageContents">
