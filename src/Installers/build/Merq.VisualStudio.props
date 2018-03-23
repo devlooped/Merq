@@ -1,0 +1,8 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <MerqVsix Include="$(MSBuildThisFileDirectory)..\tools\*.vsix" />
+    <Vsix Include="@(MerqVsix)" />
+  </ItemGroup>
+
+</Project>

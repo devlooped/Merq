@@ -1,35 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<ItemGroup>
-		<VsixDependency Include="$(MSBuildThisFileDirectory)..\tools\extension.vsixmanifest">
-			<VsixPath>$(MSBuildThisFileDirectory)..\tools\Merq.vsix</VsixPath>
-			<JsonPath>$(MSBuildThisFileDirectory)..\tools\Microsoft.VisualStudio.Xamarin.Merq.json</JsonPath>
-			<WatsonPath>$(MSBuildThisFileDirectory)..\tools\watson.zip</WatsonPath>
-		</VsixDependency>
-	</ItemGroup>
+﻿<Project InitialTargets="_SetMerqVsixPath" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- Allows manual (un)installation of the VSIX -->
-
-	<Target Name="InstallMerq" DependsOnTargets="_ExperimentalizeMerq">
-		<InstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-					 VsixPath="$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix"
-					 MessageImportance="high"
-					 RootSuffix="$(RootSuffix)" />
+	<Target Name="_SetMerqVsixPath">
+		<PropertyGroup>
+			<MerqVsixPath>@(MerqVsix -> '%(FullPath)')</MerqVsixPath>
+		</PropertyGroup>
 	</Target>
 
-	<Target Name="_ExperimentalizeMerq"
-			Inputs="$(MSBuildThisFileDirectory)..\tools\Merq.vsix"
-			Outputs="$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix">
-		<!-- Run the "Experimentalizer" which turns release VSIXes into Experimental ones -->
-		<Exec Command='"$(VsixExp)" "$(MSBuildThisFileDirectory)..\tools\Merq.vsix" "$(MSBuildThisFileDirectory)..\tools\Merq-exp.vsix"' />
-	</Target>
+  <Target Name="MerqVsix" Returns="$(MerqVsixPath)" />
 
-	<Target Name="UninstallMerq">
-		<UninstallVsix VisualStudioVersion="$(VisualStudioVersion)"
-					   VsixId="Merq"
-					   MessageImportance="high"
-					   RootSuffix="$(RootSuffix)" />
-	</Target>
-
-	<Import Project="Merq.VisualStudio.WiX.targets" Condition=" '$(WixInstallPath)' != '' " />
 </Project>
