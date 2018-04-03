@@ -5,17 +5,19 @@
 
 	<Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And Exists('$(VsSDKInstall)\Microsoft.VsSDK.targets')" />
 
-	<Target Name="GetVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
-		<PropertyGroup Condition="'$(Version)' == ''">
-			<Version>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</Version>
-		</PropertyGroup>
-	</Target>
+	<Target Name="GetVsixVersion" DependsOnTargets="GetVersion" Returns="$(VersionPrefix)" />
 
 	<!-- Redefine since the VSSDK one doesn't honor the condition -->
 	<Target Name="VerifyTargetVersion" Condition="'$(VerifyTargetVersion)' == 'true'">
 		<CompareBuildTaskVersion
 		  TargetsAssemblyPath="$(MSBuildThisFileDirectory)$(VsSDKAssemblyFile)">
 		</CompareBuildTaskVersion>
+	</Target>
+
+	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="GetVsixVersion">
+		<PropertyGroup>
+			<TargetVsixContainer>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainer)', '$(Version).vsix'))</TargetVsixContainer>
+		</PropertyGroup>
 	</Target>
 
 </Project>

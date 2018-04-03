@@ -3,7 +3,7 @@
                  xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011"
                  xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
 	<Metadata>
-		<Identity Id="Merq" Version="|Merq.Vsix;GetVersion|" Language="en-US" Publisher="Mobile Essentials" />
+		<Identity Id="Merq" Version="|Merq.Vsix;GetVsixVersion|" Language="en-US" Publisher="Mobile Essentials" />
 		<DisplayName>Extensibility Message Bus</DisplayName>
 		<Description xml:space="preserve">Provides common messaging-based MEF services for loosely coupled Visual Studio extension components communication and integration.</Description>
 		<MoreInfo>https://github.com/MobileEssentials/Merq</MoreInfo>

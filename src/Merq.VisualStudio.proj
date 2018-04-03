@@ -44,7 +44,7 @@
 		<PackageFile Include="Installers\build\*.*">
 			<Kind>build</Kind>
 		</PackageFile>
-		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Merq.vsix">
+		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Merq*.vsix">
 			<Kind>tools</Kind>
 		</PackageFile>
 		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest">

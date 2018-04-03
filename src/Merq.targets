@@ -14,18 +14,12 @@
 	<Target Name="GetVersion" BeforeTargets="Build" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup>
 			<!-- Our version is always the base version, with different pre-release labels for non-baseline builds -->
-			<VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
+			<VersionPrefix>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VersionPrefix>
 			
 			<VersionSuffix Condition="'$(GitBranch)' == 'undefined'">-pr</VersionSuffix>
 			<VersionSuffix Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</VersionSuffix>
-			<!-- If neither of the above happened, then it's a non-PR build
-			     If there are commits on top of the base version (i.e. label or branch name), and it wasn't labeled already, 
-				 make it a -pre automatically, since we only publish/push on tags -->
-			<VersionSuffix Condition="'$(VersionSuffix)' == '' And '$(GitCommits)' != '0' And '$(GitSemVerDashLabel)' == ''">-pre</VersionSuffix>
 			<!-- If still no suffix was determined, default it to the optional semver label suffix -->
 			<VersionSuffix Condition="'$(VersionSuffix)' == ''">$(GitSemVerDashLabel)</VersionSuffix>
-			<!-- At this point, if we have a suffix, always append the commits, since it's a pre-release by definition, to avoid duplicate versions -->
-			<VersionSuffix Condition="'$(VersionSuffix)' != '' And '$(GitCommits)' != '0'">$(VersionSuffix)-build$(GitCommits.PadLeft('3', '0'))</VersionSuffix>
 			
 			<!-- Finally make up the version -->
 			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
