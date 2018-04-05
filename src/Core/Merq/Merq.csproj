@@ -2,10 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)..\', 'Merq.props'))\Merq.props" />
