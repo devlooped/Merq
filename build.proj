@@ -280,10 +280,6 @@
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Restore" Condition=" '$(target)' == 'configure' " />
 
 		<Message Importance="high" Text="Building version $(Version)" Condition=" '$(target)' != 'configure' And '$(GitInfoImported)' == 'true' " />
-		
-        <!-- Update AppVeyor build # to match the actual one being used -->
-        <Exec Command="appveyor UpdateBuild -Version $(Version)" Condition=" '$(PendingRestore)' != 'true' And '$(APPVEYOR)' == 'true' "
-              ConsoleToMSBuild="true"
-              ContinueOnError="WarnAndContinue" />	
+		<Message Text="##vso[build.updatebuildnumber]$(Version)" Importance="high" Condition="'$(TF_BUILD)' == 'true' and '$(target)' != 'configure' And '$(GitInfoImported)' == 'true' " />
 	</Target>
 </Project>
