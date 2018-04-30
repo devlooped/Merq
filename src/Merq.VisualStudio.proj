@@ -62,33 +62,6 @@
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
 		<PackageReference Include="NuGet.Build.Packaging" Version="*" PrivateAssets="All" />
 	</ItemGroup>
-
-	<Target Name="ZipWatson" BeforeTargets="GetPackageContents">
-		<PropertyGroup>
-			<PS Condition="'$(PS)' == ''">%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe</PS>
-		</PropertyGroup>
-
-		<Exec Command="rmdir temp /S /Q" Condition="Exists('temp')" StandardOutputImportance="low" />
-		<MakeDir Directories="temp" />
-		<ItemGroup>
-			<_CandidateDll Include="Vsix\Merq.Vsix\bin\$(Configuration)\*.dll" />
-			<_CandidatePdb Include="@(_CandidateDll -> '%(RootDir)%(Directory)%(Filename).pdb')" />
-
-			<WatsonFile Include="@(_CandidatePdb -> '%(RootDir)%(Directory)%(Filename).dll')" Condition="Exists('%(_CandidatePdb.FullPath)')" />
-			<WatsonFile Include="@(_CandidatePdb)" Condition="Exists('%(_CandidatePdb.FullPath)')" />
-		</ItemGroup>
-		<Copy SourceFiles="@(WatsonFile)" DestinationFolder="temp" />
-		<Delete Files="$(Out)\watson.zip" Condition="Exists('$(Out)\watson.zip')" />
-		<Exec Command="&quot;$(PS)&quot; -NoProfile -Command &quot;&amp; { Add-Type -Assembly &quot;System.IO.Compression.FileSystem&quot;; [IO.Compression.ZipFile]::CreateFromDirectory('.\temp', '$(Out)\watson.zip') }&quot;"
-			  StandardOutputImportance="low" />
-		<Exec Command="rmdir temp /S /Q" Condition="Exists('temp')" StandardOutputImportance="low" />
-
-		<ItemGroup>
-			<PackageFile Include="$(Out)\watson.zip">
-				<Kind>tools</Kind>
-			</PackageFile>
-		</ItemGroup>
-	</Target>
 	
 	<Target Name="GitVersion" />
 	<Import Project="Merq.targets" />
