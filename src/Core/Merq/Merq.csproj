@@ -9,11 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="GitInfo">
-      <Version>1.1.48</Version>
+      <Version>2.*</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="IFluentInterface">
-      <Version>2.0.3</Version>
+      <Version>2.*</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MSBuilder.ThisAssembly.Project">

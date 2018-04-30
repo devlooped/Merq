@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="All" InitialTargets="Configure" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<IntermediateOutputPath>.nuget\</IntermediateOutputPath>
 		<PackagesPath>$(IntermediateOutputPath)packages</PackagesPath>
 		<Out Condition=" '$(Out)' == '' ">$(MSBuildThisFileDirectory)out</Out>
 		<GitInfoBaseDir>$(MSBuildThisFileDirectory)src</GitInfoBaseDir>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
+		<GitSkipCache>true</GitSkipCache>
+		<GitIgnoreTagVersion>true</GitIgnoreTagVersion>
+
 		<!-- We always use DeployExtension=false from the build script to ensure a clean build, but 
 			 also because if we run integration tests, we do so by installing the resulting VSIX, 
 			 which makes for a cleaner test too. 	-->
@@ -68,6 +73,7 @@
 
 		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Async\Merq.Async\Merq.Async.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.vsix" />
@@ -102,7 +108,10 @@
 	</PropertyGroup>
 
 	<Target Name="Versions">
-		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" Targets="GetVersions">
+		<ItemGroup>
+			<Project Include="src\**\*.csproj" Exclude="src\**\*Tests.csproj" />
+		</ItemGroup>
+		<MSBuild Projects="@(Project)" Properties="$(CommonBuildProperties)" Targets="GetVersion">
 			<Output TaskParameter="TargetOutputs" ItemName="Version" />
 		</MSBuild>
 		<Message Importance="high" Text="$([System.IO.Path]::GetFileName('%(Version.MSBuildSourceProjectFile)').PadRight(36)) -&gt; %(Version.Identity)" />

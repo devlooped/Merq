@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="Merq.props" />
+
 	<!-- Setup NuGet restore -->
 	<PropertyGroup>
 		<!-- Instruct NuGet to perform a NETCore-like restore -->

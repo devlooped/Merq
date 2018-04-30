@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
@@ -8,9 +8,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Merq</PackageId>
-		<Title>Merq: Command Bus + Event Stream (Interfaces)</Title>
-		<Description>Command Bus and Event Stream patterns core interfaces</Description>
+		<PackageId>Merq.Async</PackageId>
+		<Title>Merq: IAsyncManager</Title>
+		<Description>IAsyncManager core interfaces for advanced async management</Description>
 		<Authors>Mobile Essentials</Authors>
 		<Copyright>Copyright 2017 © Mobile Essentials</Copyright>
 		<PackageProjectUrl>https://github.com/MobileEssentials/Merq</PackageProjectUrl>
