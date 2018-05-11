@@ -15,7 +15,6 @@
 		<copyright>Copyright 2016 © Mobile Essentials</copyright>
 		<dependencies>
 			<dependency id="Merq" version="1.0.0" />
-			<dependency id="System.Reactive" version="3.0.0" />
 		</dependencies>
 	</metadata>
 	<files>

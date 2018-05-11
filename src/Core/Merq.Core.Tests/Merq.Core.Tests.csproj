@@ -1,47 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3A395046-3F7B-4907-9D63-48F92174D2E5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Merq</RootNamespace>
-    <AssemblyName>Merq.Core.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.props))\Merq.props" />
-  <PropertyGroup>
+    <TargetFramework>net47</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DocumentationFile />
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="GitInfo" Version="2.*" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="3.0.0" />
+    <PackageReference Include="MSBuilder" Version="*" PrivateAssets="all" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+    <PackageReference Include="Moq" Version="4.5.10" />
+    <PackageReference Include="xunit" Version="2.1.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.1.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CommandBusSpec.cs" />
-    <Compile Include="EventStreamSamples.cs" />
-    <Compile Include="EventStreamSpec.cs" />
-    <Compile Include="Misc.cs" />
-    <Compile Include="SubjectWrapperSpec.cs" />
+    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj">
-      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
-      <Name>Merq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Merq\Merq.csproj">
-      <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
-      <Name>Merq</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
 </Project>

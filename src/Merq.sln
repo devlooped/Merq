@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Tests", "Async\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Portable.Tests", "Async\Merq.Async.Portable.Tests\Merq.Async.Portable.Tests.csproj", "{28226B72-AC06-45E6-BEC1-A3DF99365CC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core", "Core\Merq.Core\Merq.Core.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core", "Core\Merq.Core\Merq.Core.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Core.Desktop", "Async\Merq.Async.Core\Merq.Async.Core.Desktop\Merq.Async.Core.Desktop.csproj", "{31D90692-B7C5-4BE5-9C25-2D2159A157EF}"
 EndProject
@@ -51,8 +51,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.IntegrationTests", "Vsix\Merq.Vsix.IntegrationTests\Merq.Vsix.IntegrationTests.csproj", "{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core.Merged", "Vsix\Merq.Core.Merged\Merq.Core.Merged.csproj", "{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,10 +106,6 @@ Global
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,7 +124,6 @@ Global
 		{C9A505CA-F826-473A-8290-B36AF6BE56FB} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
-		{DA67172B-C15F-4AE3-B34D-2CE7F47811B7} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F401F53-1497-4C3F-BA2B-915F7560AF17}

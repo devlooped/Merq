@@ -12,7 +12,7 @@
     <RootNamespace>Merq</RootNamespace>
     <AssemblyName>Merq.Vsix</AssemblyName>
     <TargetVsixContainerName>Merq.vsix</TargetVsixContainerName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
     <OldToolsVersion>12.0</OldToolsVersion>
   </PropertyGroup>
@@ -50,10 +50,7 @@
     </Content>
     <None Include="Merq.Vsix.BindingRedirects.targets" />
     <None Include="Merq.Vsix.props" />
-    <None Include="Merq.Vsix.targets">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="project.json" />
+    <None Include="Merq.Vsix.targets" />
     <None Include="source.extension.vsixmanifest" />
   </ItemGroup>
   <ItemGroup>
@@ -83,15 +80,28 @@
       <Name>Merq.Async</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
+      <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
+      <Name>Merq.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
       <Name>Merq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merq.Core.Merged\Merq.Core.Merged.csproj">
-      <Project>{da67172b-c15f-4ae3-b34d-2ce7f47811b7}</Project>
-      <Name>Merq.Core.Merged</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.*" PrivateAssets="all" />
+    <PackageReference Include="MSBuilder" Version="*" PrivateAssets="all" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+    <PackageReference Include="netfx-System.StringResources" Version="3.0.14" />
+    <PackageReference Include="Clarius.VisualStudio" Version="2.0.12" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK.VsixSuppression" Version="14.1.32" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.0.26201" />
+    <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
+    <PackageReference Include="VSSDK.DTE.10" Version="10.0.4" />
+    <PackageReference Include="VSSDK.IDE.11" Version="11.0.4" />
+    <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" />
+    <PackageReference Include="VSSDK.VSLangProj.11" Version="11.0.4" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MerqPackage.resx">
