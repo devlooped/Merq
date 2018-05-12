@@ -23,7 +23,11 @@
 			
 			<!-- Finally make up the version -->
 			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
-	</PropertyGroup>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="Test" DependsOnTargets="Build;GetTargetPath">
+		<xunit Assemblies="$(TargetPath)" />
 	</Target>
 	
 </Project>

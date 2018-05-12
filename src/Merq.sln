@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Merq.targets = Merq.targets
 		Merq.VisualStudio.proj = Merq.VisualStudio.proj
 		Merq.vssettings = Merq.vssettings
+		NuGet.Config = NuGet.Config
 		..\packages.config = ..\packages.config
 		..\README.md = ..\README.md
 	EndProjectSection
@@ -30,11 +31,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vsix", "Vsix", "{514F4A5F-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq", "Core\Merq\Merq.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Core.Tests", "Core\Merq.Core.Tests\Merq.Core.Tests.csproj", "{3A395046-3F7B-4907-9D63-48F92174D2E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core.Tests", "Core\Merq.Core.Tests\Merq.Core.Tests.csproj", "{3A395046-3F7B-4907-9D63-48F92174D2E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Tests", "Async\Merq.Async.Tests\Merq.Async.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async.Tests", "Async\Merq.Async.Tests\Merq.Async.Tests.csproj", "{F33AB381-623B-4FF8-9D18-7F4F5A3D8F64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Portable.Tests", "Async\Merq.Async.Portable.Tests\Merq.Async.Portable.Tests.csproj", "{28226B72-AC06-45E6-BEC1-A3DF99365CC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async.Portable.Tests", "Async\Merq.Async.Portable.Tests\Merq.Async.Portable.Tests.csproj", "{28226B72-AC06-45E6-BEC1-A3DF99365CC0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core", "Core\Merq.Core\Merq.Core.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
 EndProject
@@ -42,15 +43,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Core.Desktop", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.Core.Portable", "Async\Merq.Async.Core\Merq.Async.Core.Portable\Merq.Async.Core.Portable.csproj", "{D7589C3E-1818-4E14-B84D-A275F3218161}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Async.TaskScheduler", "Async\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj", "{351E25F9-09D3-4718-B358-2BE5AD29A33C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async.TaskScheduler", "Async\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj", "{351E25F9-09D3-4718-B358-2BE5AD29A33C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async", "Async\Merq.Async\Merq.Async.csproj", "{9805DCD7-DE83-4E6F-9B78-88851AB66568}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix", "Vsix\Merq.Vsix\Merq.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix.IntegrationTests", "Vsix\Merq.Vsix.IntegrationTests\Merq.Vsix.IntegrationTests.csproj", "{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Vsix.IntegrationTests", "Vsix\Merq.Vsix.IntegrationTests\Merq.Vsix.IntegrationTests.csproj", "{571C5326-8221-4BB0-A5B3-DE0BBEC15F74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

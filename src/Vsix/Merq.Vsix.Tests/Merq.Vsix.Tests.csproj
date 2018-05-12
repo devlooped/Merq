@@ -13,9 +13,11 @@
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" Version="12.0.30110" />
     <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
+    <PackageReference Include="System.Reactive" Version="3.0.0" />
     <PackageReference Include="Moq" Version="4.5.10" />
     <PackageReference Include="xunit" Version="2.1.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.1.0" />
+    <PackageReference Include="xunit.runner.msbuild" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
