@@ -15,12 +15,17 @@
 		<PropertyGroup>
 			<!-- Our version is always the base version, with different pre-release labels for non-baseline builds -->
 			<VersionPrefix>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VersionPrefix>
-			
+			<!-- PR builds are *always* prerelease -->
 			<VersionSuffix Condition="'$(GitBranch)' == 'undefined'">-pr</VersionSuffix>
-			<VersionSuffix Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</VersionSuffix>
+			<VersionSuffix Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''">-pr$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)</VersionSuffix>
 			<!-- If still no suffix was determined, default it to the optional semver label suffix -->
 			<VersionSuffix Condition="'$(VersionSuffix)' == ''">$(GitSemVerDashLabel)</VersionSuffix>
-			
+
+			<!-- Finally, we'll use the branch name as a pre-release label unless it's master -->
+			<VersionSuffix Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' == '' and 
+									  '$(BUILD_SOURCEBRANCHNAME)' != '' and 
+									  '$(BUILD_SOURCEBRANCHNAME)' != 'master'">$(GitSemVerDashLabel)-$(BUILD_SOURCEBRANCHNAME)</VersionSuffix>
+
 			<!-- Finally make up the version -->
 			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
 		</PropertyGroup>
