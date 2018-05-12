@@ -15,6 +15,7 @@
 		<NoWarn>CS1570</NoWarn>
 		<DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
 		<SignAssembly>true</SignAssembly>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Merq.snk</AssemblyOriginatorKeyFile>
 		<BuildPackage Condition=" '$(BuildPackage)' == '' And '$(Configuration)' == 'Release' ">true</BuildPackage>
 		<BuildPackage Condition=" !Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).nuspec') ">false</BuildPackage>
