@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Reflection;
 
 namespace Merq
@@ -16,10 +15,10 @@ namespace Merq
 	public class EventStream : IEventStream
 	{
 		// All subjects active in the event stream.
-		readonly ConcurrentDictionary<TypeInfo, SubjectWrapper> subjects = new ConcurrentDictionary<TypeInfo, SubjectWrapper>();
+		readonly ConcurrentDictionary<TypeInfo, Subject> subjects = new ConcurrentDictionary<TypeInfo, Subject>();
 		// An cache of subjects indexed by the compatible event types, used to quickly lookup the subjects to 
 		// invoke in a Push. Refreshed whenever a new Of<T> subscription is added.
-		readonly ConcurrentDictionary<TypeInfo, SubjectWrapper[]> compatibleSubjects = new ConcurrentDictionary<TypeInfo, SubjectWrapper[]>();
+		readonly ConcurrentDictionary<TypeInfo, Subject[]> compatibleSubjects = new ConcurrentDictionary<TypeInfo, Subject[]>();
 		// Externally-produced events by IObservable<T> implementations.
 		readonly HashSet<object> observables;
 
@@ -75,7 +74,7 @@ namespace Merq
 			var subject = (IObservable<TEvent>)subjects.GetOrAdd (typeof (TEvent).GetTypeInfo(), info => {
 				// If we're creating a new subject, we need to clear the cache of compatible subjects
 				compatibleSubjects.Clear ();
-				return new SubjectWrapper<TEvent> ();
+				return new Subject<TEvent> ();
 			});
 
 			// Merge with any externally-produced observables that are compatible
@@ -83,7 +82,7 @@ namespace Merq
 			if (compatibleObservables.Length == 1)
 				return compatibleObservables[0];
 
-			return Observable.Merge (compatibleObservables);
+			return new CompositeObservable<TEvent>(compatibleObservables);
 		}
 
 		/// <summary>
@@ -112,5 +111,82 @@ namespace Merq
 		}
 
 		static bool IsValid<TEvent> () => typeof (TEvent).GetTypeInfo().IsPublic || typeof (TEvent).GetTypeInfo().IsNestedPublic;
+
+		abstract class Subject
+		{
+			public abstract void OnNext(object value);
+		}
+
+		class Subject<T> : Subject, IObservable<T>
+		{
+			ConcurrentDictionary<IObserver<T>, object> observers = new ConcurrentDictionary<IObserver<T>, object>();
+
+			public override void OnNext(object value)
+			{
+				var next = (T)value;
+
+				foreach (var item in observers.Keys.ToArray())
+				{
+					// Don't let misbehaving subscribers prevent calling the others
+					try
+					{
+						item.OnNext(next);
+					}
+					catch (Exception ex)
+					{
+						// Flag them and remove them to avoid perf. issues from 
+						// constantly throwing subscribers.
+						item.OnError(ex);
+						observers.TryRemove(item, out _);
+					}
+				}
+			}
+
+			IDisposable IObservable<T>.Subscribe(IObserver<T> observer)
+				=> new Subscription(this, observer);
+
+			class Subscription : IDisposable
+			{
+				readonly Subject<T> subject;
+				readonly IObserver<T> observer;
+
+				public Subscription(Subject<T> subject, IObserver<T> observer)
+				{
+					this.subject = subject;
+					this.observer = observer;
+					subject.observers.TryAdd(observer, null);
+				}
+
+				public void Dispose() => subject.observers.TryRemove(observer, out _);
+			}
+		}
+
+		class CompositeObservable<T> : IObservable<T>
+		{
+			IObservable<T>[] observables;
+
+			public CompositeObservable(IObservable<T>[] observables)
+				=> this.observables = observables;
+
+			public IDisposable Subscribe(IObserver<T> observer)
+				=> new CompositeDisposable(observables
+					.Select(observable => observable.Subscribe(observer)).ToArray());
+		}
+
+		class CompositeDisposable : IDisposable
+		{
+			IDisposable[] disposables;
+
+			public CompositeDisposable(IDisposable[] disposables)
+				=> this.disposables = disposables;
+
+			public void Dispose()
+			{
+				foreach (var disposable in disposables)
+				{
+					disposable.Dispose();
+				}
+			}
+		}
 	}
 }
