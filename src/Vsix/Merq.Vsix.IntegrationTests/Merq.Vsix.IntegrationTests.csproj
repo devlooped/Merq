@@ -16,7 +16,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0" Version="12.0.30110" />
     <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.0.26201" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.7.109" />
     <PackageReference Include="System.Reactive" Version="3.0.0" />
   </ItemGroup>
 
