@@ -12,3 +12,4 @@ packages
 .vs
 .*
 log.txt
+*.binlog

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<PropertyGroup>
+		<Authors>Mobile Essentials</Authors>
+		<Owners>mobessen</Owners>
+		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
+
+		<PackageProjectUrl>https://github.com/MobileEssentials/Merq</PackageProjectUrl>
+		<PackageLicenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</PackageLicenseUrl>
+		<PackageIconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</PackageIconUrl>
+	</PropertyGroup>
+</Project>

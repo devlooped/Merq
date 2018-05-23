@@ -19,8 +19,6 @@
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Merq.snk</AssemblyOriginatorKeyFile>
 		<BuildPackage Condition=" '$(BuildPackage)' == '' And '$(Configuration)' == 'Release' ">true</BuildPackage>
 		<BuildPackage Condition=" !Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).nuspec') ">false</BuildPackage>
-		<!-- For the NuGet.Restore.targets file imported by Merq.targets -->
-		<RestorePackages>false</RestorePackages>
 		<Out Condition=" '$(Out)' == '' ">$(OutputPath)</Out>
 		<ProjectNuSpec>$([System.IO.Path]::ChangeExtension($(MSBuildProjectFullPath), '.nuspec'))</ProjectNuSpec>
 

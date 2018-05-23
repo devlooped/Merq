@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>Merq.Core</PackageId>
+    <Title>Merq: Command Bus + Event Stream (Implementations)</Title>
+    <Summary>Default implementation of core interfaces for ICommandBus and IEventStream</Summary>
+    <Description>Default implementation of core interfaces for ICommandBus and IEventStream</Description>
+    <InferPackageContents>false</InferPackageContents>
   </PropertyGroup>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
@@ -11,14 +16,13 @@
     <PackageReference Include="GitInfo" Version="2.*" PrivateAssets="all" />
     <PackageReference Include="IFluentInterface" Version="2.*" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
-    <PackageReference Include="netfx-System.StringResources" Version="3.0.14" />
+    <PackageReference Include="netfx-System.StringResources" Version="3.0.14" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.0.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\Merq\Merq.csproj" Pack="False" />
+    <PackageFile Include="Merq" Version="1.0.0" Kind="Dependency" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +46,18 @@
       <CustomToolNamespace>Merq</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GetVersion">
+    <PropertyGroup>
+      <PackageVersion>$(Version)</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
+    <ItemGroup>
+      <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.json" Kind="Lib" />
+    </ItemGroup>
+  </Target>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
 </Project>
