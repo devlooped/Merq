@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -29,11 +30,20 @@
 		<CI Condition="'$(TF_BUILD)' == 'true' or '$(APPVEYOR)' != ''">true</CI>
 		<Version>0.0.0</Version>
 	</PropertyGroup>
+	
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<Optimize>false</Optimize>
 		<DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
 	</PropertyGroup>
+	
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<Optimize>true</Optimize>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSBuilder" Version="0.2.0" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="All" />
+		<PackageReference Include="GitInfo" Version="2.0.10" PrivateAssets="All" />
+	</ItemGroup>
+
 </Project>

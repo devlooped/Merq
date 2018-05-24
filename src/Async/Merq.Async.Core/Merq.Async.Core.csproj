@@ -15,7 +15,6 @@
 
     <IncludeContentInPackage>false</IncludeContentInPackage>
     <IncludeContentInPack>false</IncludeContentInPack>
-
     <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
 
@@ -32,13 +31,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageFile Include="Merq.Async" Kind="Dependency" Version="1.1.0" />
     <PackageFile Include="Microsoft.VisualStudio.Threading" Kind="Dependency" Version="15.7.18" />
   </ItemGroup>
 
   <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
     <ItemGroup>
       <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg" Kind="Lib" />
+    </ItemGroup>
+  
+    <MSBuild Projects="..\Merq.Async\Merq.Async.csproj" Targets="GetPackageVersion">
+      <Output TaskParameter="TargetOutputs" PropertyName="AsyncVersion" />
+    </MSBuild>
+    
+    <ItemGroup>
+      <PackageFile Include="Merq.Async" Kind="Dependency" Version="$(AsyncVersion)" />      
     </ItemGroup>
   </Target>
 

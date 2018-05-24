@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merq\Merq.csproj" Pack="False" />
-    <PackageFile Include="Merq" Version="1.0.0" Kind="Dependency" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +48,14 @@
   <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
     <ItemGroup>
       <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.json" Kind="Lib" />
+    </ItemGroup>
+    
+    <MSBuild Projects="..\Merq\Merq.csproj" Targets="GetPackageVersion">
+      <Output TaskParameter="TargetOutputs" PropertyName="MerqVersion" />
+    </MSBuild>
+    
+    <ItemGroup>
+      <PackageFile Include="Merq" Kind="Dependency" Version="$(MerqVersion)" />      
     </ItemGroup>
   </Target>
 

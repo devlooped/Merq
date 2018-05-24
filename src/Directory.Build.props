@@ -18,4 +18,6 @@
 	<Target Name="GitInfo" />
 	<!-- Replaced by the .NET SDK -->
 	<Target Name="GetAssemblyVersion" />
+	<!-- Replaced by NuGetizer -->
+	<Target Name="GetPackageVersion" />
 </Project>
