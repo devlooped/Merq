@@ -42,7 +42,7 @@ namespace Merq
 			}
 
 			// We should have an alert for patient 1 who came back before 5 days passed.
-			Assert.Equal (1, readmitted.Count);
+			Assert.Single(readmitted);
 			Assert.Equal (1, readmitted[0]);
 		}
 
@@ -101,8 +101,8 @@ namespace Merq
 			}
 
 			// We should have only user # 2 in the list.
-			Assert.False (blocked.Contains (1));
-			Assert.True (blocked.Contains (2));
+			Assert.DoesNotContain(1, blocked);
+			Assert.Contains(2, blocked);
 		}
 
 		public interface IBaseEvent { }

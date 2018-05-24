@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,21 +11,16 @@
 
     <IncludeContentInPackage>false</IncludeContentInPackage>
     <IncludeContentInPack>false</IncludeContentInPack>
-
     <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)..\', 'Merq.props'))\Merq.props" />
 
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.0.3" />
+    <PackageReference Include="IFluentInterface" Version="2.0.3" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Content Include="GitInfo.txt" />
-  </ItemGroup>
-
   <!-- We keep an invariant version based on GitInfo -->
 	<Target Name="SetVersionPrefix" BeforeTargets="GetVersion" DependsOnTargets="GitInfo">
 		<PropertyGroup>

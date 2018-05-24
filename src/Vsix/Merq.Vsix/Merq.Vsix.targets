@@ -20,4 +20,11 @@
 		</PropertyGroup>
 	</Target>
 
+	<!-- Remove Threading analyzers -->
+	<Target Name="RemoveResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
+		<ItemGroup>
+			<ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
+		</ItemGroup>
+	</Target>
+
 </Project>

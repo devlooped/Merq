@@ -160,10 +160,12 @@ namespace Merq
 
 				public void GetResult ()
 				{
-					awaiter.GetResult ();
-				}
+#pragma warning disable VSTHRD002
+                    awaiter.GetResult ();
+#pragma warning restore VSTHRD002
+                }
 
-				public void OnCompleted (Action continuation)
+                public void OnCompleted (Action continuation)
 				{
 					awaiter.OnCompleted (continuation);
 				}
@@ -192,9 +194,11 @@ namespace Merq
 
 				public bool IsCompleted => awaiter.IsCompleted;
 
+#pragma warning disable VSTHRD002
 				public TResult GetResult () => awaiter.GetResult ();
+#pragma warning restore VSTHRD002
 
-				public void OnCompleted (Action continuation)
+                public void OnCompleted (Action continuation)
 				{
 					awaiter.OnCompleted (continuation);
 				}

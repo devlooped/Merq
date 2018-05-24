@@ -133,7 +133,8 @@ namespace Merq
 					new CommandFinishedEventArgs(
 						command,
 						t.Exception,
-						DateTime.UtcNow.Subtract(time).TotalMilliseconds)));
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds)), 
+				TaskScheduler.Default);
 
 			return task;
 		}
@@ -151,7 +152,8 @@ namespace Merq
 					new CommandFinishedEventArgs(
 						command,
 						t.Exception,
-						DateTime.UtcNow.Subtract(time).TotalMilliseconds)));
+						DateTime.UtcNow.Subtract(time).TotalMilliseconds)),
+				TaskScheduler.Default);
 
 			return task;
 		}

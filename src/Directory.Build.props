@@ -9,5 +9,13 @@
 		<PackageLicenseUrl>https://github.com/MobileEssentials/Merq/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageIconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</PackageIconUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+		<DefaultItemExcludes>$(DefaultItemExcludes);**/*.binlog</DefaultItemExcludes>
 	</PropertyGroup>
+
+	<!-- These are replaced after restore by GitInfo.targets -->
+	<Target Name="GitVersion" />
+	<Target Name="GitInfo" />
+	<!-- Replaced by the .NET SDK -->
+	<Target Name="GetAssemblyVersion" />
 </Project>

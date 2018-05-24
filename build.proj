@@ -47,7 +47,7 @@
 	<Target Name="Configure" DependsOnTargets="Restore" />
 
 	<Target Name="AfterRestore" AfterTargets="Restore" Label="Hidden">
-		<MSBuild Projects="%(Solution.FullPath);src\Merq.VisualStudio.proj;src\Async\Merq.Async.Core\Merq.Async.Core.proj" Targets="Restore"  />
+		<MSBuild Projects="%(Solution.FullPath);src\Merq.VisualStudio.proj" Targets="Restore"  />
 	</Target>
 
 	<Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
@@ -68,7 +68,7 @@
 		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 		<MSBuild Projects="src\Core\Merq.Core\Merq.Core.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 		<MSBuild Projects="src\Async\Merq.Async\Merq.Async.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
-		<MSBuild Projects="src\Async\Merq.Async.Core\Merq.Async.Core.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+		<MSBuild Projects="src\Async\Merq.Async.Core\Merq.Async.Core.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.vsix" />

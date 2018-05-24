@@ -5,6 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MSBuilder" Version="0.2.0" PrivateAssets="All" />
 		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="All" />
 		<PackageReference Include="GitInfo" Version="2.0.10" PrivateAssets="All" />
 	</ItemGroup>

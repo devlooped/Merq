@@ -232,7 +232,7 @@ namespace Merq
 
 			var results = bus.Execute (new CommandWithResults());
 
-			Assert.Equal (1, results.Count ());
+			Assert.Single(results);
 		}
 
 		[Fact]
