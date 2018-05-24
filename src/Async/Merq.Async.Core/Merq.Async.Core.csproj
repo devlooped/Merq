@@ -36,13 +36,6 @@
     <PackageFile Include="Microsoft.VisualStudio.Threading" Kind="Dependency" Version="15.7.18" />
   </ItemGroup>
 
-  <!-- We keep an invariant version based on GitInfo -->
-  <Target Name="SetVersionPrefix" BeforeTargets="GetVersion" DependsOnTargets="GitInfo">
-    <PropertyGroup>
-      <VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
-    </PropertyGroup>
-  </Target>
-
   <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
     <ItemGroup>
       <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg" Kind="Lib" />
