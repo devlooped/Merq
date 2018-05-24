@@ -1,37 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <RootNamespace>Merq</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Merq.Async</PackageId>
+    <Title>Merq: IAsyncManager</Title>
+    <Description>IAsyncManager core interfaces for advanced async management</Description>
+
+    <IncludeContentInPackage>false</IncludeContentInPackage>
+    <IncludeContentInPack>false</IncludeContentInPack>
+    <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
+  </PropertyGroup>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)..\', 'Merq.props'))\Merq.props" />
-  <Import Project="Merq.Async.props" />
 
   <ItemGroup>
-    <PackageReference Include="GitInfo">
-      <Version>2.*</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="IFluentInterface">
-      <Version>2.*</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="MSBuilder.ThisAssembly.Project">
-      <Version>0.3.3</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading.Tasks">
-      <Version>4.3.0</Version>
-    </PackageReference>
+    <PackageReference Include="IFluentInterface" Version="2.0.3" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
     <Content Include="GitInfo.txt" />
   </ItemGroup>
-  
+
+  <!-- We keep an invariant version based on GitInfo -->
+  <Target Name="SetVersionPrefix" BeforeTargets="GetVersion" DependsOnTargets="GitInfo">
+    <PropertyGroup>
+      <VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
+    </PropertyGroup>
+  </Target>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
 </Project>

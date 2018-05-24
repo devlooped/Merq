@@ -25,6 +25,9 @@
 		<GitInfoReportImportance>low</GitInfoReportImportance>
 		<GitSkipCache>true</GitSkipCache>
 		<GitIgnoreTagVersion>true</GitIgnoreTagVersion>
+
+		<CI Condition="'$(TF_BUILD)' == 'true' or '$(APPVEYOR)' != ''">true</CI>
+		<Version>0.0.0</Version>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<Optimize>false</Optimize>

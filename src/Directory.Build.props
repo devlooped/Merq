@@ -6,7 +6,8 @@
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
 		<PackageProjectUrl>https://github.com/MobileEssentials/Merq</PackageProjectUrl>
-		<PackageLicenseUrl>https://raw.github.com/MobileEssentials/Merq/master/LICENSE</PackageLicenseUrl>
+		<PackageLicenseUrl>https://github.com/MobileEssentials/Merq/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageIconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</PackageIconUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 </Project>

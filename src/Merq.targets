@@ -12,11 +12,18 @@
 	<ItemGroup Condition="'$(IncludeGlobalAssemblyInfo)' != 'false'">
 		<Compile Include="$(MSBuildThisFileDirectory)GlobalAssemblyInfo.cs" />
 	</ItemGroup>
-	
-	<Target Name="GetVersion" BeforeTargets="Build" DependsOnTargets="GitVersion" Returns="$(Version)">
+
+	<!-- Local builds should always be commit count +1, since we'll be always working on the next version to be published. -->
+	<Target Name="_SetLocalCommits" BeforeTargets="_GitPopulateVersionInfo" Condition="'$(CI)' != 'true'">
+		<PropertyGroup>
+			<GitCommits>$([MSBuild]::Add('$(GitCommits)', '1'))</GitCommits>
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="GetVersion" BeforeTargets="Build;Pack;GetAssemblyVersion;GetPackageVersion" DependsOnTargets="GitVersion" Returns="$(Version)">
 		<PropertyGroup>
 			<!-- Our version is always the base version, with different pre-release labels for non-baseline builds -->
-			<VersionPrefix>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VersionPrefix>
+			<VersionPrefix Condition="'$(VersionPrefix)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VersionPrefix>
 			<!-- PR builds are *always* prerelease -->
 			<VersionSuffix Condition="'$(GitBranch)' == 'undefined'">-pr</VersionSuffix>
 			<VersionSuffix Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''">-pr$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)</VersionSuffix>
@@ -30,7 +37,22 @@
 
 			<!-- Finally make up the version -->
 			<Version>$(VersionPrefix)$(VersionSuffix)</Version>
+			<PackageVersion>$(Version)</PackageVersion>
+			<InformationalVersion Condition="'$(InformationalVersion)' == ''">$(Version)-$(GitBranch)+$(GitCommit)</InformationalVersion>
 		</PropertyGroup>
+	</Target>
+
+	<Target Name="VersionInfoReport" DependsOnTargets="GetVersion;GetAssemblyVersion;GetPackageVersion" BeforeTargets="GitInfoReport">
+		<Message Importance="$(GitInfoReportImportance)" Text="Version Info:
+  AssemblyVersion:        $(AssemblyVersion)
+  FileVersion:            $(FileVersion)
+  InformationalVersion:   $(InformationalVersion)
+  PackageVersion:         $(PackageVersion)
+
+  Version:        $(Version)
+  VersionPrefix:  $(VersionPrefix)
+  VersionSuffix:  $(VersionSuffix)
+"/>
 	</Target>
 
 	<Target Name="Test" DependsOnTargets="Build;GetTargetPath">
