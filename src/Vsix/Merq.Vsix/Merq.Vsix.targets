@@ -2,9 +2,18 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="..\..\Merq.targets" />
 	<Import Project="Merq.Vsix.BindingRedirects.targets" />
-
 	<Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And Exists('$(VsSDKInstall)\Microsoft.VsSDK.targets')" />
 
+	<PropertyGroup>
+		<IsSystemComponent Condition="'$(IsSystemComponent)' == '' And '$(Configuration)' == 'Debug'">false</IsSystemComponent>
+		<IsExperimental Condition="'$(IsExperimental)' == '' And '$(Configuration)' == 'Debug'">true</IsExperimental>
+
+		<IsSystemComponent Condition="'$(IsSystemComponent)' == '' And '$(Configuration)' == 'Release'">true</IsSystemComponent>
+		<IsExperimental Condition="'$(IsExperimental)' == '' And '$(Configuration)' == 'Release'">false</IsExperimental>
+	</PropertyGroup>
+
+	<Target Name="IsSystemComponent" Returns="$(IsSystemComponent)" />
+	<Target Name="IsExperimental" Returns="$(IsExperimental)" />
 	<Target Name="GetVsixVersion" DependsOnTargets="GetVersion" Returns="$(VersionPrefix)" />
 
 	<!-- Redefine since the VSSDK one doesn't honor the condition -->
