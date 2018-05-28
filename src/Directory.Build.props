@@ -11,6 +11,8 @@
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
 		<DefaultItemExcludes>$(DefaultItemExcludes);**/*.binlog</DefaultItemExcludes>
+
+		<CI Condition="'$(TF_BUILD)' == 'true' or '$(APPVEYOR)' != ''">true</CI>
 	</PropertyGroup>
 
 	<!-- These are replaced after restore by GitInfo.targets -->
@@ -20,4 +22,13 @@
 	<Target Name="GetAssemblyVersion" />
 	<!-- Replaced by NuGetizer -->
 	<Target Name="GetPackageVersion" />
+
+	<Target Name="SetGitBranch" AfterTargets="GitInfo" Condition="'$(CI)' == 'true'">
+		<PropertyGroup>
+			<!-- Adjust branch name to CI provided value if available -->
+			<GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' != ''">$(SYSTEM_PULLREQUEST_TARGETBRANCH)</GitBranch>
+			<GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
+		</PropertyGroup>
+	</Target>
+
 </Project>
