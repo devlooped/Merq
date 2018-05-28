@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Merq
 {
-	[Export(typeof(IEventStream))]
+	[Export("Merq.IEventStream.Default", typeof(IEventStream))]
 	[PartCreationPolicy(CreationPolicy.Shared)]
 	internal class EventStreamComponent : EventStream
 	{

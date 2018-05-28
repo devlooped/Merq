@@ -26,6 +26,7 @@
   <ItemGroup>
     <Compile Include="Components\AsyncManagerProvider.cs" />
     <Compile Include="Components\CommandBusComponent.cs" />
+    <Compile Include="Components\DefaultExportProvider.cs" />
     <Compile Include="Components\EventStreamComponent.cs" />
     <Compile Include="MerqPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

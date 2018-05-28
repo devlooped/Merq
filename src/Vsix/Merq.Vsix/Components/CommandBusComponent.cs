@@ -9,7 +9,7 @@ using Merq.Properties;
 
 namespace Merq
 {
-	[Export(typeof(ICommandBus))]
+	[Export("Merq.ICommandBus.Default", typeof(ICommandBus))]
 	[PartCreationPolicy(CreationPolicy.Shared)]
 	internal class CommandBusComponent : ICommandBus
 	{
