@@ -18,6 +18,7 @@ namespace Merq
 		ThisAssembly.Git.SemVer.Major + "." + 
 		ThisAssembly.Git.SemVer.Minor + "." + 
 		ThisAssembly.Git.SemVer.Patch + ThisAssembly.Git.SemVer.DashLabel + " (" + 
+		ThisAssembly.Git.Branch + "@" +
 		ThisAssembly.Git.Commit + ")")]
 	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true)]
 	[ProvideBindingPath]
