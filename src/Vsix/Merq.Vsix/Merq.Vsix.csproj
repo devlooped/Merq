@@ -98,7 +98,7 @@
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.12" />
     <PackageReference Include="Microsoft.VisualStudio.SDK.VsixSuppression" Version="14.1.32" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.7.109" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.7.18" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.6.56" />
     <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
     <PackageReference Include="VSSDK.DTE.10" Version="10.0.4" />
     <PackageReference Include="VSSDK.IDE.11" Version="11.0.4" />
