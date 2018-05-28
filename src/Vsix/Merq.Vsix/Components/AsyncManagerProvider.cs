@@ -18,10 +18,8 @@ namespace Merq
 	internal class AsyncManagerProvider
 	{
 		[ImportingConstructor]
-		public AsyncManagerProvider ([Import] JoinableTaskContext context)
-		{
-			AsyncManager = new AsyncManager(context);
-		}
+		public AsyncManagerProvider (JoinableTaskContext context)
+			=> AsyncManager = new AsyncManager(context);
 
 		/// <summary>
 		/// Exports the <see cref="IAsyncManager"/>.
