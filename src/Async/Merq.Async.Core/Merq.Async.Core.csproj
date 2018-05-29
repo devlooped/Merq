@@ -18,7 +18,7 @@
     <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)..\', 'Merq.props'))\Merq.props" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.0.3" PrivateAssets="all" />
@@ -48,5 +48,5 @@
     </ItemGroup>
   </Target>
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Merq.targets))\Merq.targets" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
 </Project>
