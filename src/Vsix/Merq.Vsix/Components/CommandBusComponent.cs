@@ -24,7 +24,7 @@ namespace Merq
 		[ImportingConstructor]
 		public CommandBusComponent([Import(typeof(Microsoft.VisualStudio.Shell.SVsServiceProvider))] IServiceProvider services)
 			: this((IComponentModel)services.GetService(typeof(SComponentModel)))
-		{
+		{ 
 		}
 
 		public CommandBusComponent(IComponentModel components)
@@ -74,7 +74,7 @@ namespace Merq
 
 			Exception error = null;
 			var time = DateTime.UtcNow;
-			TriggerEventWithShieldAsync(CommandStarted, command);
+			TriggerEventWithShield(CommandStarted, command);
 			try
 			{
 				ForCommand().Execute((dynamic)command);
@@ -86,7 +86,7 @@ namespace Merq
 			}
 			finally
 			{
-				TriggerEventWithShieldAsync(CommandFinished,
+				TriggerEventWithShield(CommandFinished,
 					new CommandFinishedEventArgs(
 						command,
 						error,
@@ -100,7 +100,7 @@ namespace Merq
 
 			Exception error = null;
 			var time = DateTime.UtcNow;
-			TriggerEventWithShieldAsync(CommandStarted, command);
+			TriggerEventWithShield(CommandStarted, command);
 			try
 			{
 				return ForResult<TResult>().Execute((dynamic)command);
@@ -112,7 +112,7 @@ namespace Merq
 			}
 			finally
 			{
-				TriggerEventWithShieldAsync(CommandFinished,
+				TriggerEventWithShield(CommandFinished,
 					new CommandFinishedEventArgs(
 						command,
 						error,
@@ -126,10 +126,10 @@ namespace Merq
 
 			var time = DateTime.UtcNow;
 
-			TriggerEventWithShieldAsync(CommandStarted, command);
+			TriggerEventWithShield(CommandStarted, command);
 			var task = (Task)ForCommand().ExecuteAsync((dynamic)command, cancellation);
 			task.ContinueWith(t =>
-				TriggerEventWithShieldAsync(CommandFinished,
+				TriggerEventWithShield(CommandFinished,
 					new CommandFinishedEventArgs(
 						command,
 						t.Exception,
@@ -145,10 +145,10 @@ namespace Merq
 
 			var time = DateTime.UtcNow;
 
-			TriggerEventWithShieldAsync(CommandStarted, command);
+			TriggerEventWithShield(CommandStarted, command);
 			var task = (Task<TResult>)ForResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
 			task.ContinueWith(t =>
-				TriggerEventWithShieldAsync(CommandFinished,
+				TriggerEventWithShield(CommandFinished, 
 					new CommandFinishedEventArgs(
 						command,
 						t.Exception,
@@ -158,24 +158,19 @@ namespace Merq
 			return task;
 		}
 
-		Task TriggerEventWithShieldAsync<T>(EventHandler<T> eventHandler, T args)
+		void TriggerEventWithShield<T>(EventHandler<T> eventHandler, T args)
 		{
 			if (eventHandler != null)
 			{
-				return Task.Run(() =>
+				foreach (var handler in eventHandler.GetInvocationList())
 				{
-					foreach (var handler in eventHandler.GetInvocationList())
+					try
 					{
-						try
-						{
-							handler.DynamicInvoke(this, args);
-						}
-						catch { }
+						handler.DynamicInvoke(this, args);
 					}
-				});
+					catch { }
+				}
 			}
-
-			return Task.FromResult(true);
 		}
 
 		protected virtual void OnCommandStarted(IExecutable command)
