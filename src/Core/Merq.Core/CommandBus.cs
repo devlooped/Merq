@@ -15,16 +15,6 @@ namespace Merq
 		Dictionary<Type, ICommandHandler> handlerMap;
 
 		/// <summary>
-		/// Command started event
-		/// </summary>
-		public event EventHandler<IExecutable> CommandStarted;
-
-		/// <summary>
-		/// Command finished event
-		/// </summary>
-		public event EventHandler<CommandFinishedEventArgs> CommandFinished;
-
-		/// <summary>
 		/// Initializes the command bus with the given list of handlers.
 		/// </summary>
 		public CommandBus (IEnumerable<ICommandHandler> handlers)
@@ -86,10 +76,9 @@ namespace Merq
 		{
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
-			ExecuteImpl(
-				command,
+			ExecuteImpl (
 				"ExecuteCommand",
-				new[] { command.GetType() },
+				new[] { command.GetType () },
 				new[] { command });
 		}
 
@@ -104,7 +93,6 @@ namespace Merq
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			return (TResult)ExecuteImpl (
-					command,
 					"ExecuteCommandWithResult",
 					new[] { command.GetType (), typeof (TResult) },
 					new[] { command });
@@ -120,7 +108,6 @@ namespace Merq
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			return (Task)ExecuteImpl (
-					command,
 					"ExecuteCommandAsync",
 					new[] { command.GetType () },
 					new object[] { command, cancellation });
@@ -138,13 +125,12 @@ namespace Merq
 			if (command == null) throw new ArgumentNullException (nameof (command));
 
 			return (Task<TResult>)ExecuteImpl (
-				command,
 				"ExecuteCommandWithResultAsync",
 				new[] { command.GetType (), typeof (TResult) },
 				new object[] { command, cancellation });
 		}
 
-		object ExecuteImpl (IExecutable command, string methodName, Type[] typeArguments, params object[] parameters)
+		object ExecuteImpl (string methodName, Type[] typeArguments, params object[] parameters)
 		{
 			// Important: We need to do this in order to be able to invoke the Execute or ExecuteAsync
 			// methods without specifying the generic arguments by the caller explicitly
@@ -153,29 +139,17 @@ namespace Merq
 			// commandBus.Execute (new MyCommand ()) // void command
 			// var result = commandBus.execute (new MyCommandWithResult ()) // command with result
 
-			Exception error = null;
-			try
-			{
-				CommandStarted?.Invoke(this, command);
-
-				return typeof(CommandBus)
-					.GetTypeInfo()
-					.GetDeclaredMethod(methodName)
-					.MakeGenericMethod(typeArguments)
-					.Invoke(this, parameters);
-			}
-			catch (TargetInvocationException ex)
-			{
-				error = ex.InnerException;
-
+			try {
+				return typeof (CommandBus)
+					.GetTypeInfo ()
+					.GetDeclaredMethod (methodName)
+					.MakeGenericMethod (typeArguments)
+					.Invoke (this, parameters);
+			} catch (TargetInvocationException ex) {
 				// Rethrow the inner exception preserving stack trace.
 				System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
 				// Will never get here.
 				throw ex.InnerException;
-			}
-			finally
-			{
-				CommandFinished?.Invoke(this, new CommandFinishedEventArgs(command, error, 0));
 			}
 		}
 
