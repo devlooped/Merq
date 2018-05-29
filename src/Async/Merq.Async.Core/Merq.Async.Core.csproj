@@ -36,7 +36,7 @@
 
   <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
     <ItemGroup>
-      <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg" Kind="Lib" />
+      <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg;$(OutputPath)\$(PackageId)*.json" Kind="Lib" />
     </ItemGroup>
   
     <MSBuild Projects="..\Merq.Async\Merq.Async.csproj" Targets="GetPackageVersion">

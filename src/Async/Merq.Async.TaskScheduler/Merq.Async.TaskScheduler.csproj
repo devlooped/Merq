@@ -1,16 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+  <PropertyGroup>
+    <PackageId>Merq.Async.TaskScheduler</PackageId>
+    <Title>Merq: TaskScheduler IAsyncManager</Title>
+    <Description>Provides an implementation of IAsyncManager based on a TaskScheduler.</Description>
+    <Summary>Provides an implementation of IAsyncManager based on a TaskScheduler.</Summary>
+    <Copyright>Copyright 2016 © Mobile Essentials</Copyright>
+
+    <IncludeContentInPackage>false</IncludeContentInPackage>
+    <IncludeContentInPack>false</IncludeContentInPack>
+    <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
+  </PropertyGroup>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <ItemGroup>
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
@@ -19,6 +26,20 @@
   <ItemGroup>
     <ProjectReference Include="..\Merq.Async\Merq.Async.csproj" />
   </ItemGroup>
+
+  <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
+    <ItemGroup>
+      <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg;$(OutputPath)\$(PackageId)*.json" Kind="Lib" />
+    </ItemGroup>
+
+    <MSBuild Projects="..\Merq.Async\Merq.Async.csproj" Targets="GetPackageVersion">
+      <Output TaskParameter="TargetOutputs" PropertyName="AsyncVersion" />
+    </MSBuild>
+
+    <ItemGroup>
+      <PackageFile Include="Merq.Async" Kind="Dependency" Version="$(AsyncVersion)" />
+    </ItemGroup>
+  </Target>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
 </Project>
