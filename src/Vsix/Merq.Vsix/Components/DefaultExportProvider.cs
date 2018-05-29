@@ -9,8 +9,8 @@ namespace Merq.Components
 	{
 		[ImportingConstructor]
 		public DefaultExportProvider(
-			[Import("Merq.ICommandBus.Default", AllowDefault = true)] ICommandBus defaultCommandBus,
-			[Import("Merq.IEventStream.Default", AllowDefault = true)] IEventStream defaultEventStream,
+			[Import("Merq.ICommandBus.Default")] ICommandBus defaultCommandBus,
+			[Import("Merq.IEventStream.Default")] IEventStream defaultEventStream,
 			[ImportMany("Merq.ICommandBus")] IEnumerable<ICommandBus> customCommandBus,
 			[ImportMany("Merq.IEventStream")] IEnumerable<IEventStream> customEventStream)
 		{
