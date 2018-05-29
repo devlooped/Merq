@@ -25,6 +25,8 @@
 
 		<GitInfoReportImportance>low</GitInfoReportImportance>
 		<GitSkipCache>true</GitSkipCache>
+		<SkipReadGitCache>true</SkipReadGitCache>
+		<SkipWriteGitCache>true</SkipWriteGitCache>
 		<GitIgnoreTagVersion>true</GitIgnoreTagVersion>
 
 		<Version>0.0.0</Version>

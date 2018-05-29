@@ -66,6 +66,12 @@
 		</PropertyGroup>
 	</Target>
 
+	<Target Name="GetTargetPath" DependsOnTargets="GetPackageTargetPath" Returns="@(TargetPathWithTargetPlatformMoniker)">
+		<ItemGroup>
+			<TargetPathWithTargetPlatformMoniker Include="@(PackageTargetPath)" />
+		</ItemGroup>
+	</Target>
+
 	<!-- Import NuGet.targets for Restore -->
 	<PropertyGroup>
 		<NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'==''">$(MSBuildExtensionsPath)\..\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>

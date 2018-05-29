@@ -59,16 +59,12 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 	</Target>
 
-	<Target Name="Package">
+	<Target Name="Package" Returns="@(PackableProjects)">
 		<Exec Command="$(NuGetPackageRoot)\gitlink\2.2.0\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
 
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
-		
-		<MSBuild Projects="src\Merq.VisualStudio.proj" Targets="Pack" Properties="$(CommonBuildProperties)" />
-		<MSBuild Projects="src\Core\Merq\Merq.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
-		<MSBuild Projects="src\Core\Merq.Core\Merq.Core.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
-		<MSBuild Projects="src\Async\Merq.Async\Merq.Async.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
-		<MSBuild Projects="src\Async\Merq.Async.Core\Merq.Async.Core.csproj" Targets="Pack" Properties="$(CommonBuildProperties)" />
+
+		<MSBuild Projects="@(PackableProjects)" Targets="Pack" Properties="$(CommonBuildProperties)" />
 
 		<ItemGroup>
 			<Installer Include="src\**\*.vsix" />
@@ -76,10 +72,6 @@
 
 		<Copy SourceFiles="@(Installer)"
 			  DestinationFiles="@(Installer->'$(Out)\%(Filename)%(Extension)')"
-			  SkipUnchangedFiles="true" />
-		<Copy SourceFiles="src\Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json"
-			  Condition="Exists('src\Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json')"
-			  DestinationFolder="$(Out)"
 			  SkipUnchangedFiles="true" />
 	</Target>
 
@@ -89,14 +81,25 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="Versions" AfterTargets="Build">
-		<ItemGroup>
-			<Project Include="src\**\*.csproj" Exclude="src\**\*Tests.csproj" />
-		</ItemGroup>
-		<MSBuild Projects="@(Project)" Properties="$(CommonBuildProperties)" Targets="GetVersion">
+	<Target Name="Versions" DependsOnTargets="_CollectPackableProjects" AfterTargets="Build">
+		<MSBuild Projects="@(PackableProjects)" Properties="$(CommonBuildProperties)" Targets="GetPackageVersion">
 			<Output TaskParameter="TargetOutputs" ItemName="Version" />
 		</MSBuild>
 		<Message Importance="high" Text="$([System.IO.Path]::GetFileName('%(Version.MSBuildSourceProjectFile)').PadRight(36)) -&gt; %(Version.Identity)" />
+	</Target>
+
+	<Target Name="_CollectPackableProjects" Returns="@(PackableProjects)">
+		<ItemGroup>
+			<AllProjects Include="src\**\*.*proj" Exclude="src\**\*.wixproj" />
+		</ItemGroup>
+
+		<MSBuild Projects="@(AllProjects)" Targets="GetTargetPath">
+			<Output ItemName="AllProjectTargetPath" TaskParameter="TargetOutputs"/>
+		</MSBuild>
+
+		<ItemGroup>
+			<PackableProjects Include="@(AllProjectTargetPath -> '%(OriginalItemSpec)')" Condition="'%(AllProjectTargetPath.IsPackable)' == 'true'" />
+		</ItemGroup>
 	</Target>
 	
 	<Import Project="src\Merq.targets" />
