@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Vsix.IntegrationTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async.Core", "Async\Merq.Async.Core\Merq.Async.Core.csproj", "{4BEBE483-C359-468A-AAF4-4B6D844AEE43}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Async.Dispatcher", "Async\Merq.Async.Dispatcher\Merq.Async.Dispatcher.csproj", "{04E85744-C897-4C9B-9AB6-78804EDA7B2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{4BEBE483-C359-468A-AAF4-4B6D844AEE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BEBE483-C359-468A-AAF4-4B6D844AEE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BEBE483-C359-468A-AAF4-4B6D844AEE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04E85744-C897-4C9B-9AB6-78804EDA7B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04E85744-C897-4C9B-9AB6-78804EDA7B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04E85744-C897-4C9B-9AB6-78804EDA7B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04E85744-C897-4C9B-9AB6-78804EDA7B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,6 +111,7 @@ Global
 		{882DCF88-ADA6-4425-8E57-8EA4B3201DD5} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{571C5326-8221-4BB0-A5B3-DE0BBEC15F74} = {514F4A5F-3C2E-4137-BD6E-4B3A30A68879}
 		{4BEBE483-C359-468A-AAF4-4B6D844AEE43} = {B1D1E046-35CF-4785-AC95-5099802F3471}
+		{04E85744-C897-4C9B-9AB6-78804EDA7B2D} = {B1D1E046-35CF-4785-AC95-5099802F3471}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F401F53-1497-4C3F-BA2B-915F7560AF17}

@@ -24,8 +24,8 @@ namespace Merq
 		/// Initializes a new instance of the <see cref="AsyncManager" /> class 
 		/// using the current synchronization context as the application main thread.
 		/// </summary>
-		public AsyncManager ()
-			: this (new JoinableTaskContext ())
+		public AsyncManager()
+			: this(new JoinableTaskContext())
 		{
 		}
 
@@ -33,175 +33,159 @@ namespace Merq
 		/// In order to ensure proper behavior for this manager, the received 
 		/// <see cref="JoinableTaskContext"/> must be an application-wide singleton.
 		/// </summary>
-		public AsyncManager (JoinableTaskContext context)
-		{
-			if (context == null) throw new ArgumentNullException (nameof (context));
-
-			this.context = context;
-		}
+		public AsyncManager(JoinableTaskContext context)
+			=> this.context = context ?? throw new ArgumentNullException(nameof(context));
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.SwitchToBackground"/>.
 		/// </summary>
-		public virtual IAwaitable SwitchToBackground () => new TaskSchedulerAwaitable (TaskScheduler.Default.SwitchTo ());
+		public virtual IAwaitable SwitchToBackground() 
+			=> new TaskSchedulerAwaitable(TaskScheduler.Default.SwitchTo());
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.SwitchToMainThread"/>.
 		/// </summary>
-		public virtual IAwaitable SwitchToMainThread () => new MainThreadAwaitable (context.Factory.SwitchToMainThreadAsync ());
+		public virtual IAwaitable SwitchToMainThread() 
+			=> new MainThreadAwaitable(context.Factory.SwitchToMainThreadAsync());
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.Run(Func{Task})"/>.
 		/// </summary>
-		public virtual void Run (Func<Task> asyncMethod)
-		{
-			context.Factory.Run (asyncMethod);
-		}
+		public virtual void Run(Func<Task> asyncMethod) 
+			=> context.Factory.Run(asyncMethod);
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.Run{TResult}(Func{Task{TResult}})"/>.
 		/// </summary>
-		public virtual T Run<T> (Func<Task<T>> asyncMethod) => context.Factory.Run (asyncMethod);
+		public virtual T Run<T>(Func<Task<T>> asyncMethod)
+			=> context.Factory.Run(asyncMethod);
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.RunAsync(Func{Task})"/>.
 		/// </summary>
-		public virtual IAwaitable RunAsync (Func<Task> asyncMethod) => new JoinableTaskAwaitable (context.Factory.RunAsync (asyncMethod));
+		public virtual IAwaitable RunAsync(Func<Task> asyncMethod)
+			=> new JoinableTaskAwaitable(context.Factory.RunAsync(asyncMethod));
 
 		/// <summary>
 		/// See <see cref="IAsyncManager.RunAsync{TResult}(Func{Task{TResult}})"/>.
 		/// </summary>
-		public virtual IAwaitable<TResult> RunAsync<TResult> (Func<Task<TResult>> asyncMethod) => new JoinableTaskAwaitable<TResult> (context.Factory.RunAsync (asyncMethod));
+		public virtual IAwaitable<TResult> RunAsync<TResult>(Func<Task<TResult>> asyncMethod) 
+			=> new JoinableTaskAwaitable<TResult>(context.Factory.RunAsync(asyncMethod));
 
 		class TaskSchedulerAwaitable : IAwaitable
 		{
 			Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaitable awaitable;
 
-			public TaskSchedulerAwaitable (Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaitable awaitable)
-			{
-				this.awaitable = awaitable;
-			}
+			public TaskSchedulerAwaitable(Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaitable awaitable)
+				=> this.awaitable = awaitable;
 
-			public IAwaiter GetAwaiter () => new TaskSchedulerAwaiter (awaitable.GetAwaiter ());
+			public IAwaiter GetAwaiter() 
+				=> new TaskSchedulerAwaiter(awaitable.GetAwaiter());
 
 			class TaskSchedulerAwaiter : IAwaiter
 			{
 				Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaiter awaiter;
 
-				public TaskSchedulerAwaiter (Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaiter awaiter)
-				{
-					this.awaiter = awaiter;
-				}
+				public TaskSchedulerAwaiter(Microsoft.VisualStudio.Threading.AwaitExtensions.TaskSchedulerAwaiter awaiter)
+					=> this.awaiter = awaiter;
 
-				public bool IsCompleted => awaiter.IsCompleted;
+				public bool IsCompleted 
+					=> awaiter.IsCompleted;
 
-				public void GetResult () => awaiter.GetResult ();
+				public void GetResult() 
+					=> awaiter.GetResult();
 
-				public void OnCompleted (Action continuation) => awaiter.OnCompleted (continuation);
+				public void OnCompleted(Action continuation) 
+					=> awaiter.OnCompleted(continuation);
 			}
 		}
 
 		class MainThreadAwaitable : IAwaitable
 		{
-			JoinableTaskFactory.MainThreadAwaitable awaitable;
+			readonly JoinableTaskFactory.MainThreadAwaitable awaitable;
 
-			public MainThreadAwaitable (JoinableTaskFactory.MainThreadAwaitable awaitable)
-			{
-				this.awaitable = awaitable;
-			}
+			public MainThreadAwaitable(JoinableTaskFactory.MainThreadAwaitable awaitable)
+				=> this.awaitable = awaitable;
 
 
-			public IAwaiter GetAwaiter () => new MainThreadAwaiter (awaitable.GetAwaiter ());
+			public IAwaiter GetAwaiter() 
+				=> new MainThreadAwaiter(awaitable.GetAwaiter());
 
 			class MainThreadAwaiter : IAwaiter
 			{
-				JoinableTaskFactory.MainThreadAwaiter awaiter;
+				readonly JoinableTaskFactory.MainThreadAwaiter awaiter;
 
-				public MainThreadAwaiter (JoinableTaskFactory.MainThreadAwaiter awaiter)
-				{
-					this.awaiter = awaiter;
-				}
+				public MainThreadAwaiter(JoinableTaskFactory.MainThreadAwaiter awaiter)
+					=> this.awaiter = awaiter;
 
-				public bool IsCompleted => awaiter.IsCompleted;
+				public bool IsCompleted 
+					=> awaiter.IsCompleted;
 
-				public void GetResult ()
-				{
-					awaiter.GetResult ();
-				}
+				public void GetResult()
+					=> awaiter.GetResult();
 
-				public void OnCompleted (Action continuation)
-				{
-					awaiter.OnCompleted (continuation);
-				}
+				public void OnCompleted(Action continuation)
+					=> awaiter.OnCompleted(continuation);
 			}
 		}
 
 		class JoinableTaskAwaitable : IAwaitable
 		{
-			JoinableTask task;
+			readonly JoinableTask task;
 
-			public JoinableTaskAwaitable (JoinableTask task)
-			{
-				this.task = task;
-			}
+			public JoinableTaskAwaitable(JoinableTask task)
+				=> this.task = task;
 
-			public IAwaiter GetAwaiter () => new TaskAwaiter (task);
+			public IAwaiter GetAwaiter() 
+				=> new TaskAwaiter(task);
 
 			class TaskAwaiter : IAwaiter
 			{
-				System.Runtime.CompilerServices.TaskAwaiter awaiter;
+				readonly System.Runtime.CompilerServices.TaskAwaiter awaiter;
 
-				public TaskAwaiter (JoinableTask task)
-				{
-					awaiter = task.GetAwaiter ();
-				}
+				public TaskAwaiter(JoinableTask task)
+					=> awaiter = task.GetAwaiter();
 
-				public bool IsCompleted => awaiter.IsCompleted;
+				public bool IsCompleted 
+					=> awaiter.IsCompleted;
 
-				public void GetResult ()
-				{
 #pragma warning disable VSTHRD002
-                    awaiter.GetResult ();
+				public void GetResult()
+					=> awaiter.GetResult();
 #pragma warning restore VSTHRD002
-                }
 
-                public void OnCompleted (Action continuation)
-				{
-					awaiter.OnCompleted (continuation);
-				}
+				public void OnCompleted(Action continuation)
+					=> awaiter.OnCompleted(continuation);
 			}
 		}
 
 		class JoinableTaskAwaitable<TResult> : IAwaitable<TResult>
 		{
-			JoinableTask<TResult> task;
+			readonly JoinableTask<TResult> task;
 
-			public JoinableTaskAwaitable (JoinableTask<TResult> task)
-			{
-				this.task = task;
-			}
+			public JoinableTaskAwaitable(JoinableTask<TResult> task)
+				=> this.task = task;
 
-			public IAwaiter<TResult> GetAwaiter () => new TaskAwaiter (task);
+			public IAwaiter<TResult> GetAwaiter() 
+				=> new TaskAwaiter(task);
 
 			class TaskAwaiter : IAwaiter<TResult>
 			{
-				TaskAwaiter<TResult> awaiter;
+				readonly TaskAwaiter<TResult> awaiter;
 
-				public TaskAwaiter (JoinableTask<TResult> task)
-				{
-					awaiter = task.GetAwaiter ();
-				}
+				public TaskAwaiter(JoinableTask<TResult> task)
+					=> awaiter = task.GetAwaiter();
 
-				public bool IsCompleted => awaiter.IsCompleted;
+				public bool IsCompleted 
+					=> awaiter.IsCompleted;
 
 #pragma warning disable VSTHRD002
-				public TResult GetResult () => awaiter.GetResult ();
+				public TResult GetResult() 
+					=> awaiter.GetResult();
 #pragma warning restore VSTHRD002
 
-                public void OnCompleted (Action continuation)
-				{
-					awaiter.OnCompleted (continuation);
-				}
+				public void OnCompleted(Action continuation)
+					=> awaiter.OnCompleted(continuation);
 			}
 		}
 	}

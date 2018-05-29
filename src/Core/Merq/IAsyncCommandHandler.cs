@@ -7,7 +7,7 @@ namespace Merq
 	/// <summary>
 	/// Marker interface for asynchronous command handlers.
 	/// </summary>
-	[EditorBrowsable (EditorBrowsableState.Never)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IAsyncCommandHandler : ICommandHandler { }
 
 	/// <summary>
@@ -23,7 +23,7 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
-		Task ExecuteAsync (TCommand command, CancellationToken cancellation);
+		Task ExecuteAsync(TCommand command, CancellationToken cancellation);
 	}
 
 	/// <summary>
@@ -44,6 +44,6 @@ namespace Merq
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <param name="cancellation">Cancellation token to cancel command execution.</param>
 		/// <returns>The result of the execution.</returns>
-		Task<TResult> ExecuteAsync (TCommand command, CancellationToken cancellation);
+		Task<TResult> ExecuteAsync(TCommand command, CancellationToken cancellation);
 	}
 }

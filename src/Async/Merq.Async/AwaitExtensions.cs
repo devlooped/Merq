@@ -15,23 +15,16 @@ public static class AwaitExtensions
 	/// Gets an awaiter that schedules continuations on the specified scheduler.
 	/// </summary>
 	/// <param name="scheduler">The task scheduler used to execute continuations.</param>
-	[EditorBrowsable (EditorBrowsableState.Never)]
-	public static IAwaiter GetAwaiter (this TaskScheduler scheduler)
-	{
-		if (scheduler == null)
-			throw new ArgumentNullException (nameof (scheduler));
-
-		return new TaskSchedulerAwaiter (scheduler);
-	}
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static IAwaiter GetAwaiter(this TaskScheduler scheduler)
+		=> new TaskSchedulerAwaiter(scheduler ?? throw new ArgumentNullException(nameof(scheduler)));
 
 	class TaskSchedulerAwaiter : IAwaiter
 	{
-		TaskScheduler scheduler;
+		readonly TaskScheduler scheduler;
 
-        public TaskSchedulerAwaiter (TaskScheduler scheduler)
-		{
-			this.scheduler = scheduler;
-		}
+		public TaskSchedulerAwaiter(TaskScheduler scheduler)
+			=> this.scheduler = scheduler;
 
 		public bool IsCompleted
 		{
@@ -39,18 +32,14 @@ public static class AwaitExtensions
 			{
 				var isThreadPoolThread = SynchronizationContext.Current == null;
 				return
-					((scheduler == TaskScheduler.Default) & isThreadPoolThread) || 
+					((scheduler == TaskScheduler.Default) & isThreadPoolThread) ||
 					((scheduler == TaskScheduler.Current) && (TaskScheduler.Current != TaskScheduler.Default));
 			}
 		}
 
-		public void GetResult ()
-		{
-		}
+		public void GetResult() { }
 
-		public void OnCompleted (Action continuation)
-		{
-			Task.Factory.StartNew (continuation, CancellationToken.None, TaskCreationOptions.None, scheduler);
-		}
+		public void OnCompleted(Action continuation)
+			=> Task.Factory.StartNew(continuation, CancellationToken.None, TaskCreationOptions.None, scheduler);
 	}
 }

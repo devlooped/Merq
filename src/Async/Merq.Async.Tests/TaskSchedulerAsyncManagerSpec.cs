@@ -6,17 +6,15 @@ namespace Merq
 {
 	public class TaskSchedulerAsyncManagerSpec : BaseAsyncManagerSpec
 	{
-		public TaskSchedulerAsyncManagerSpec (ITestOutputHelper output)
-			: base (output)
+		public TaskSchedulerAsyncManagerSpec(ITestOutputHelper output)
+			: base(output)
 		{
 		}
 
 		[Fact]
-		public void when_scheduler_is_null_then_throws ()
-		{
-			Assert.Throws<ArgumentNullException> (() => new TaskSchedulerAsyncManager (null));
-		}
+		public void when_scheduler_is_null_then_throws()
+			=> Assert.Throws<ArgumentNullException>(() => new TaskSchedulerAsyncManager(null));
 
-		protected override IAsyncManager CreateAsyncManager () => new TaskSchedulerAsyncManager ();
+		protected override IAsyncManager CreateAsyncManager() => new TaskSchedulerAsyncManager();
 	}
 }

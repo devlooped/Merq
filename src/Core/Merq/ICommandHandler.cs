@@ -6,7 +6,7 @@ namespace Merq
 	/// Marker interface for all command handlers, whether synchronous or asynchronous, 
 	/// allowing the <see cref="ICommandBus"/> to receive both.
 	/// </summary>
-	[EditorBrowsable (EditorBrowsableState.Never)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface ICommandHandler { }
 
 	/// <summary>
@@ -19,7 +19,7 @@ namespace Merq
 		/// Executes the command synchronously.
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
-		void Execute (TCommand command);
+		void Execute(TCommand command);
 	}
 
 	/// <summary>
@@ -34,12 +34,12 @@ namespace Merq
 		/// </summary>
 		/// <param name="command">The command parameters for the execution.</param>
 		/// <returns>The result of the execution.</returns>
-		TResult Execute (TCommand command);
+		TResult Execute(TCommand command);
 	}
 
 	/// <summary>
 	/// Marker interface for all command handlers that return a result. 
 	/// </summary>
-	[EditorBrowsable (EditorBrowsableState.Never)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IExecuteResult { }
 }

@@ -16,45 +16,45 @@ namespace Merq
 	{
 		readonly FactDiscoverer factDiscoverer;
 
-		public StaFactDiscoverer (IMessageSink diagnosticMessageSink)
+		public StaFactDiscoverer(IMessageSink diagnosticMessageSink)
 		{
-			factDiscoverer = new FactDiscoverer (diagnosticMessageSink);
+			factDiscoverer = new FactDiscoverer(diagnosticMessageSink);
 		}
 
-		public IEnumerable<IXunitTestCase> Discover (ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
+		public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
 		{
-			return factDiscoverer.Discover (discoveryOptions, testMethod, factAttribute)
-								 .Select (testCase => new StaTestCase (testCase));
+			return factDiscoverer.Discover(discoveryOptions, testMethod, factAttribute)
+								 .Select(testCase => new StaTestCase(testCase));
 		}
 	}
 
-	[AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 #pragma warning disable 0436
-	[XunitTestCaseDiscoverer ("Merq.StaFactDiscoverer", ThisAssembly.Project.AssemblyName)]
+	[XunitTestCaseDiscoverer("Merq.StaFactDiscoverer", ThisAssembly.Project.AssemblyName)]
 #pragma warning restore 0436
 	public class StaFactAttribute : FactAttribute { }
 
 	/// <summary>
 	/// Wraps test cases for FactAttribute and TheoryAttribute so the test case runs on the WPF STA thread
 	/// </summary>
-	[DebuggerDisplay (@"\{ class = {TestMethod.TestClass.Class.Name}, method = {TestMethod.Method.Name}, display = {DisplayName}, skip = {SkipReason} \}")]
+	[DebuggerDisplay(@"\{ class = {TestMethod.TestClass.Class.Name}, method = {TestMethod.Method.Name}, display = {DisplayName}, skip = {SkipReason} \}")]
 	public class StaTestCase : LongLivedMarshalByRefObject, IXunitTestCase
 	{
 		IXunitTestCase testCase;
 
-		public StaTestCase (IXunitTestCase testCase)
+		public StaTestCase(IXunitTestCase testCase)
 		{
 			this.testCase = testCase;
 		}
 
 		/// <summary/>
-		[EditorBrowsable (EditorBrowsableState.Never)]
-		[Obsolete ("Called by the de-serializer", error: true)]
-		public StaTestCase () { }
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Called by the de-serializer", error: true)]
+		public StaTestCase() { }
 
 		public IMethodInfo Method => testCase.Method;
 
-		public Task<RunSummary> RunAsync (IMessageSink diagnosticMessageSink,
+		public Task<RunSummary> RunAsync(IMessageSink diagnosticMessageSink,
 										 IMessageBus messageBus,
 										 object[] constructorArguments,
 										 ExceptionAggregator aggregator,
@@ -65,15 +65,15 @@ namespace Merq
 			{
 				try
 				{
-                    // Set up the SynchronizationContext so that any awaits
-                    // resume on the STA thread as they would in a GUI app.
-                    SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+					// Set up the SynchronizationContext so that any awaits
+					// resume on the STA thread as they would in a GUI app.
+					SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-                    // Start off the test method.
-                    var testCaseTask = this.testCase.RunAsync(diagnosticMessageSink, messageBus, constructorArguments, aggregator, cancellationTokenSource);
+					// Start off the test method.
+					var testCaseTask = this.testCase.RunAsync(diagnosticMessageSink, messageBus, constructorArguments, aggregator, cancellationTokenSource);
 
-                    // Arrange to pump messages to execute any async work associated with the test.
-                    var frame = new DispatcherFrame();
+					// Arrange to pump messages to execute any async work associated with the test.
+					var frame = new DispatcherFrame();
 					Task.Run(async delegate
 					{
 						try
@@ -82,14 +82,14 @@ namespace Merq
 						}
 						finally
 						{
-                            // The test case's execution is done. Terminate the message pump.
-                            frame.Continue = false;
+							// The test case's execution is done. Terminate the message pump.
+							frame.Continue = false;
 						}
 					});
 					Dispatcher.PushFrame(frame);
 
-                    // Report the result back to the Task we returned earlier.
-                    CopyTaskResultFrom(tcs, testCaseTask);
+					// Report the result back to the Task we returned earlier.
+					CopyTaskResultFrom(tcs, testCaseTask);
 				}
 				catch (Exception e)
 				{
@@ -97,8 +97,8 @@ namespace Merq
 				}
 			});
 
-			thread.SetApartmentState (ApartmentState.STA);
-			thread.Start ();
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 			return tcs.Task;
 		}
 
@@ -120,31 +120,31 @@ namespace Merq
 
 		public string UniqueID => testCase.UniqueID;
 
-		public void Deserialize (IXunitSerializationInfo info)
+		public void Deserialize(IXunitSerializationInfo info)
 		{
-			testCase = info.GetValue<IXunitTestCase> ("InnerTestCase");
+			testCase = info.GetValue<IXunitTestCase>("InnerTestCase");
 		}
 
-		public void Serialize (IXunitSerializationInfo info)
+		public void Serialize(IXunitSerializationInfo info)
 		{
-			info.AddValue ("InnerTestCase", testCase);
+			info.AddValue("InnerTestCase", testCase);
 		}
 
 		static void CopyTaskResultFrom<T>(TaskCompletionSource<T> tcs, Task<T> template)
 		{
 			if (tcs == null)
-				throw new ArgumentNullException (nameof (tcs));
+				throw new ArgumentNullException(nameof(tcs));
 			if (template == null)
-				throw new ArgumentNullException (nameof (template));
+				throw new ArgumentNullException(nameof(template));
 			if (!template.IsCompleted)
-				throw new ArgumentException ("Task must be completed first.", nameof (template));
+				throw new ArgumentException("Task must be completed first.", nameof(template));
 
 			if (template.IsFaulted)
-				tcs.SetException (template.Exception);
+				tcs.SetException(template.Exception);
 			else if (template.IsCanceled)
-				tcs.SetCanceled ();
+				tcs.SetCanceled();
 			else
-				tcs.SetResult (template.Result);
+				tcs.SetResult(template.Result);
 		}
 	}
 }

@@ -69,7 +69,7 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		void Run (Func<Task> asyncMethod);
+		void Run(Func<Task> asyncMethod);
 
 		/// <summary>
 		/// Runs the specified asynchronous method to completion while synchronously blocking the calling thread.
@@ -99,7 +99,7 @@ namespace Merq
 		/// as an ordinary async method execution would. For example, if the caller was on the main thread, execution
 		/// resumes after an await on the main thread; but if it started on a threadpool thread it resumes on a threadpool thread.</para>
 		/// </remarks>
-		IAwaitable RunAsync (Func<Task> asyncMethod);
+		IAwaitable RunAsync(Func<Task> asyncMethod);
 
 		/// <summary>
 		/// Invokes an async delegate on the caller's thread, and yields back to the caller when the async method yields.
@@ -122,7 +122,7 @@ namespace Merq
 		/// <summary>
 		/// Gets an awaitable that schedules continuations on the default background scheduler.
 		/// </summary>
-		IAwaitable SwitchToBackground ();
+		IAwaitable SwitchToBackground();
 
 		/// <summary>
 		/// Gets an awaitable whose continuations execute on the synchronization context that 
@@ -145,6 +145,6 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		IAwaitable SwitchToMainThread ();
+		IAwaitable SwitchToMainThread();
 	}
 }

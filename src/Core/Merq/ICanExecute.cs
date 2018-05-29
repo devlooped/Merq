@@ -11,6 +11,6 @@
 		/// current state of the environment or the command itself.
 		/// </summary>
 		/// <param name="command">The command being queried for execution.</param>		
-		bool CanExecute (TCommand command);
+		bool CanExecute(TCommand command);
 	}
 }

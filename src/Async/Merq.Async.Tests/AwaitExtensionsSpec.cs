@@ -6,9 +6,9 @@ namespace Merq
 	public class AwaitExtensionsSpec
 	{
 		[Fact]
-		public void when_scheduler_is_null_then_throws ()
+		public void when_scheduler_is_null_then_throws()
 		{
-			Assert.Throws<ArgumentNullException> (() => AwaitExtensions.GetAwaiter (null));
+			Assert.Throws<ArgumentNullException>(() => AwaitExtensions.GetAwaiter(null));
 		}
 	}
 }

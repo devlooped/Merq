@@ -10,8 +10,8 @@ namespace Merq
 		/// <summary>
 		/// Method invoked when awaiting this instance.
 		/// </summary>
-		[EditorBrowsable (EditorBrowsableState.Never)]
-		IAwaiter GetAwaiter ();
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		IAwaiter GetAwaiter();
 	}
 
 	/// <summary>
@@ -23,7 +23,7 @@ namespace Merq
 		/// <summary>
 		/// Method invoked when awaiting this instance.
 		/// </summary>
-		[EditorBrowsable (EditorBrowsableState.Never)]
-		IAwaiter<TResult> GetAwaiter ();
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		IAwaiter<TResult> GetAwaiter();
 	}
 }

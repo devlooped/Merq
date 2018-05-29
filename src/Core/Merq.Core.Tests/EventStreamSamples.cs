@@ -11,7 +11,7 @@ namespace Merq
 	public class EventStreamSamples
 	{
 		[Fact]
-		public void when_patient_readmitted_then_raises_alert ()
+		public void when_patient_readmitted_then_raises_alert()
 		{
 			var events = new EventStream();
 			var query =
@@ -25,29 +25,30 @@ namespace Merq
 
 			var readmitted = new List<int>();
 
-			using (var subscription = query.Subscribe (e => readmitted.Add (e.PatientId))) {
+			using (var subscription = query.Subscribe(e => readmitted.Add(e.PatientId)))
+			{
 				// Two patients come in.
-				events.Push (new PatientEnteredHospital { PatientId = 1, When = new DateTime (2011, 1, 1) });
-				events.Push (new PatientEnteredHospital { PatientId = 2, When = new DateTime (2011, 1, 1) });
+				events.Push(new PatientEnteredHospital { PatientId = 1, When = new DateTime(2011, 1, 1) });
+				events.Push(new PatientEnteredHospital { PatientId = 2, When = new DateTime(2011, 1, 1) });
 
 				// Both leave same day.
-				events.Push (new PatientLeftHospital { PatientId = 1, When = new DateTime (2011, 1, 15) });
-				events.Push (new PatientLeftHospital { PatientId = 2, When = new DateTime (2011, 1, 15) });
+				events.Push(new PatientLeftHospital { PatientId = 1, When = new DateTime(2011, 1, 15) });
+				events.Push(new PatientLeftHospital { PatientId = 2, When = new DateTime(2011, 1, 15) });
 
 				// One comes back before 5 days passed.
-				events.Push (new PatientEnteredHospital { PatientId = 1, When = new DateTime (2011, 1, 18) });
+				events.Push(new PatientEnteredHospital { PatientId = 1, When = new DateTime(2011, 1, 18) });
 
 				// The other comes back after 10 days passed.
-				events.Push (new PatientEnteredHospital { PatientId = 1, When = new DateTime (2011, 1, 25) });
+				events.Push(new PatientEnteredHospital { PatientId = 1, When = new DateTime(2011, 1, 25) });
 			}
 
 			// We should have an alert for patient 1 who came back before 5 days passed.
 			Assert.Single(readmitted);
-			Assert.Equal (1, readmitted[0]);
+			Assert.Equal(1, readmitted[0]);
 		}
 
 		[Fact]
-		public void when_user_login_fails_too_fast_then_locks_account ()
+		public void when_user_login_fails_too_fast_then_locks_account()
 		{
 			var seconds = TimeSpan.FromSeconds(1).Ticks;
 			var events = new EventStream();
@@ -78,7 +79,7 @@ namespace Merq
 			// observable with our event stream, causing us
 			// to publish events as they are "raised" by the
 			// test scheduler.
-			observable.Subscribe (failure => events.Push (failure));
+			observable.Subscribe(failure => events.Push(failure));
 
 			var query = events.Of<LoginFailure>()
 				// Sliding windows 1' long, every 10''
@@ -94,10 +95,11 @@ namespace Merq
 
 			var blocked = new List<int>();
 
-			using (var subscription = query.Subscribe (userId => blocked.Add (userId))) {
+			using (var subscription = query.Subscribe(userId => blocked.Add(userId)))
+			{
 				// Here we could advance the scheduler half way and test intermediate
 				// state if needed. We go all the way past the end of our login failures.
-				scheduler.AdvanceTo (100 * seconds);
+				scheduler.AdvanceTo(100 * seconds);
 			}
 
 			// We should have only user # 2 in the list.
@@ -109,7 +111,7 @@ namespace Merq
 
 		public class BaseEvent : EventArgs, IBaseEvent
 		{
-			public override string ToString ()
+			public override string ToString()
 			{
 				return "Base event";
 			}
@@ -120,9 +122,9 @@ namespace Merq
 			public int PatientId { get; set; }
 			public DateTimeOffset When { get; set; }
 
-			public override string ToString ()
+			public override string ToString()
 			{
-				return string.Format ("Patient {0} entered on {1}.", PatientId, When);
+				return string.Format("Patient {0} entered on {1}.", PatientId, When);
 			}
 		}
 
@@ -131,9 +133,9 @@ namespace Merq
 			public int PatientId { get; set; }
 			public DateTimeOffset When { get; set; }
 
-			public override string ToString ()
+			public override string ToString()
 			{
-				return string.Format ("Patient {0} left on {1}.", PatientId, When);
+				return string.Format("Patient {0} left on {1}.", PatientId, When);
 			}
 		}
 

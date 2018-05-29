@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Async.Core\Merq.Async.Core.csproj" />
+    <ProjectReference Include="..\Merq.Async.Dispatcher\Merq.Async.Dispatcher.csproj" />
     <ProjectReference Include="..\Merq.Async.TaskScheduler\Merq.Async.TaskScheduler.csproj" />
     <ProjectReference Include="..\Merq.Async\Merq.Async.csproj" />
   </ItemGroup>

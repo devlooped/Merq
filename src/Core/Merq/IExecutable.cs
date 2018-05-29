@@ -7,7 +7,7 @@ namespace Merq
 	/// allows <see cref="ICanExecute{TCommand}"/> and <see cref="ICommand"/> 
 	/// to reference either.
 	/// </summary>
-	[EditorBrowsable (EditorBrowsableState.Never)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IExecutable
 	{
 	}

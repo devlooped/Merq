@@ -1,43 +1,30 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Merq
 {
 	/// <summary>
 	/// Alternative implementation of <see cref="IAsyncManager"/> based on 
-	/// a <see cref="TaskScheduler"/> for the main thread.
+	/// a <see cref="Dispatcher"/>
 	/// </summary>
 	/// <remarks>
 	/// This is a very simple async manager that does not perform any 
 	/// reentrancy detection and deadlock avoidance. For those features
 	/// use the <c>Merq.Async.Core</c> package and its <c>AsyncManager</c> instead.
 	/// </remarks>
-	public class TaskSchedulerAsyncManager : IAsyncManager
+	public class DispatcherAsyncManager : IAsyncManager
 	{
-		readonly TaskScheduler mainScheduler;
+		readonly Dispatcher dispatcher;
 
 		/// <summary>
-		/// Initializes the <see cref="TaskSchedulerAsyncManager"/> using 
-		/// <see cref="TaskScheduler.FromCurrentSynchronizationContext"/> as the main 
+		/// Initializes the <see cref="DispatcherAsyncManager"/> using the 
+		/// specified <paramref name="dispatcher"/> as the main 
 		/// thread scheduler.
 		/// </summary>
-		public TaskSchedulerAsyncManager()
-			: this(TaskScheduler.FromCurrentSynchronizationContext())
-		{
-		}
-
-		/// <summary>
-		/// Initializes the <see cref="TaskSchedulerAsyncManager"/> using the 
-		/// specified <paramref name="mainThreadScheduler"/> as the main 
-		/// thread task scheduler.
-		/// </summary>
-		/// <param name="mainThreadScheduler">The main thread to switch to when 
-		/// <see cref="SwitchToMainThread"/> is invoked.</param>
-		public TaskSchedulerAsyncManager(TaskScheduler mainThreadScheduler)
-			=> mainScheduler = mainThreadScheduler ?? throw new ArgumentNullException(nameof(mainThreadScheduler));
+		public DispatcherAsyncManager(Dispatcher dispatcher)
+			=> this.dispatcher = dispatcher;
 
 		/// <summary>
 		/// Runs the specified asynchronous method to completion while synchronously blocking the calling thread.
@@ -67,7 +54,7 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		public virtual void Run(Func<Task> asyncMethod)
+		public void Run(Func<Task> asyncMethod)
 		{
 			var done = new ManualResetEventSlim();
 			AggregateException ex = null;
@@ -79,7 +66,7 @@ namespace Merq
 
 			done.Wait();
 			if (ex != null)
-				ExceptionDispatchInfo.Capture(ex.GetBaseException()).Throw();
+				throw ex.GetBaseException();
 		}
 
 		/// <summary>
@@ -95,12 +82,11 @@ namespace Merq
 		/// resumes after an await on the main thread; but if it started on a threadpool thread it resumes on a threadpool thread.</para>
 		/// <para>See the <see cref="Run(Func{Task})" /> overload documentation for an example.</para>
 		/// </remarks>
-		public virtual TResult Run<TResult>(Func<Task<TResult>> asyncMethod)
+		public TResult Run<TResult>(Func<Task<TResult>> asyncMethod)
 		{
 			var done = new ManualResetEventSlim();
 			AggregateException ex = null;
 			TResult result = default(TResult);
-
 			asyncMethod().ContinueWith(task =>
 			{
 				ex = task.Exception;
@@ -111,7 +97,7 @@ namespace Merq
 
 			done.Wait();
 			if (ex != null)
-				ExceptionDispatchInfo.Capture(ex.GetBaseException()).Throw();
+				throw ex.GetBaseException();
 
 			return result;
 		}
@@ -120,7 +106,7 @@ namespace Merq
 		/// Invokes an async delegate on the caller's thread, and yields back to the caller when the async method yields.
 		/// </summary>
 		/// <param name="asyncMethod">The method that, when executed, will begin the async operation.</param>
-		public virtual IAwaitable RunAsync(Func<Task> asyncMethod)
+		public IAwaitable RunAsync(Func<Task> asyncMethod)
 			=> new TaskAwaitable(asyncMethod());
 
 		/// <summary>
@@ -128,17 +114,16 @@ namespace Merq
 		/// </summary>
 		/// <typeparam name="TResult">The type of value returned by the asynchronous operation.</typeparam>
 		/// <param name="asyncMethod">The method that, when executed, will begin the async operation.</param>
-		public virtual IAwaitable<TResult> RunAsync<TResult>(Func<Task<TResult>> asyncMethod) 
+		public IAwaitable<TResult> RunAsync<TResult>(Func<Task<TResult>> asyncMethod)
 			=> new TaskAwaitable<TResult>(asyncMethod());
 
 		/// <summary>
 		/// Gets an awaitable that schedules continuations on the default background scheduler.
 		/// </summary>
-		public virtual IAwaitable SwitchToBackground()
-			=> new TaskSchedulerAwaitable(TaskScheduler.Default);
+		public IAwaitable SwitchToBackground() => new TaskSchedulerAwaitable(TaskScheduler.Default);
 
 		/// <summary>
-		/// Gets an awaitable whose continuations execute on the synchronization context that 
+		/// Gets an awaitable whose continuations execute on the dispatcher context that 
 		/// the manager was initialized with.
 		/// </summary>
 		/// <remarks>
@@ -158,7 +143,33 @@ namespace Merq
 		/// </code>
 		/// </example>
 		/// </remarks>
-		public virtual IAwaitable SwitchToMainThread()
-			=> new TaskSchedulerAwaitable(mainScheduler);
+		public IAwaitable SwitchToMainThread() => new DispatcherAwaitable(dispatcher);
+
+		class DispatcherAwaitable : IAwaitable
+		{
+			readonly Dispatcher dispatcher;
+
+			public DispatcherAwaitable(Dispatcher dispatcher)
+				=> this.dispatcher = dispatcher;
+
+			public IAwaiter GetAwaiter() 
+				=> new DispatcherAwaiter(dispatcher);
+
+			class DispatcherAwaiter : IAwaiter
+			{
+				readonly Dispatcher dispatcher;
+
+				public DispatcherAwaiter(Dispatcher dispatcher)
+					=> this.dispatcher = dispatcher;
+
+				public bool IsCompleted 
+					=> dispatcher.Thread == Thread.CurrentThread;
+
+				public void GetResult() { }
+
+				public void OnCompleted(Action continuation)
+					=> dispatcher.BeginInvoke(continuation);
+			}
+		}
 	}
 }
