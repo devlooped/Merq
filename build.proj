@@ -59,7 +59,7 @@
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 	</Target>
 
-	<Target Name="Package" Returns="@(PackableProjects)">
+	<Target Name="Package" DependsOnTargets="_CollectPackableProjects" Returns="@(PackableProjects)">
 		<Exec Command="$(NuGetPackageRoot)\gitlink\2.2.0\lib\net45\GitLink.exe . -f &quot;$([System.String]::new('%(Solution.FullPath)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\').TrimStart('/'))&quot; -u https://github.com/MobileEssentials/Merq -b &quot;$(GitBranch)&quot; -c &quot;$(Configuration)&quot;" StandardOutputImportance="low" />
 
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
