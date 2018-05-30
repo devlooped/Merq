@@ -9,5 +9,5 @@
 	/// Marker interface for asynchronous commands whose execution results in a value
 	/// being returned by its command handler.
 	/// </summary>
-	public interface IAsyncCommand<out TResult> : IExecutable { }
+	public interface IAsyncCommand<out TResult> : IExecutable<TResult> { }
 }

@@ -11,4 +11,12 @@ namespace Merq
 	public interface IExecutable
 	{
 	}
+
+	/// <summary>
+	/// Marker interface for both synchronous and asynchronous non-void commands.
+	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public interface IExecutable<out TResult> : IExecutable
+	{
+	}
 }
