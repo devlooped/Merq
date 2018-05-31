@@ -11,8 +11,8 @@ namespace Merq.Components
 		public DefaultExportProvider(
 			[Import("Merq.ICommandBus.Default")] ICommandBus defaultCommandBus,
 			[Import("Merq.IEventStream.Default")] IEventStream defaultEventStream,
-			[ImportMany("Merq.ICommandBus")] IEnumerable<ICommandBus> customCommandBus,
-			[ImportMany("Merq.IEventStream")] IEnumerable<IEventStream> customEventStream)
+			[ImportMany("Merq.ICommandBus.Override")] IEnumerable<ICommandBus> customCommandBus,
+			[ImportMany("Merq.IEventStream.Override")] IEnumerable<IEventStream> customEventStream)
 		{
 			CommandBus = customCommandBus.FirstOrDefault() ?? defaultCommandBus;
 			EventStream = customEventStream.FirstOrDefault() ?? defaultEventStream;
