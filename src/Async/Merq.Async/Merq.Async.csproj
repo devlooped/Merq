@@ -25,6 +25,14 @@
   <ItemGroup>
     <Content Include="GitInfo.txt" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Merq.Async.targets">
+      <FrameworkSpecific>true</FrameworkSpecific>
+      <Kind>build</Kind>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
 
   <!-- We keep an invariant version based on GitInfo -->
   <Target Name="SetVersionPrefix" BeforeTargets="GetVersion" DependsOnTargets="GitInfo">

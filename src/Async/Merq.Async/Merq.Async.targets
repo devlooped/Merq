@@ -1,0 +1,10 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="_ExcludeMerqAsyncFromVsix" DependsOnTargets="GetVsixSourceItems" BeforeTargets="RemoveVSSDKAssemblies">
+		<ItemGroup>
+			<SuppressPackaging Include="@(VSIXSourceItem)"
+							   Condition="$([MSBuild]::ValueOrDefault('%(Filename)', '').StartsWith('Merq.Async')) " />
+		</ItemGroup>
+	</Target>
+
+</Project>
