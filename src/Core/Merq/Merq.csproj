@@ -38,5 +38,5 @@
 		</PropertyGroup>
 	</Target>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)..'))" />
 </Project>
