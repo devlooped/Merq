@@ -9,7 +9,9 @@
 		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())')" />
 
 		<ItemGroup>
-			<ToDelete Include="$(TEMP)\packages\$(PackageId)*.nupkg" />
+			<_ToDelete Include="$(TEMP)\packages\$(PackageId)*.nupkg" />
+			<ToDelete Include="@(_ToDelete)"
+					  Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d+\.\d+\.\d+\.*'))" />
 		</ItemGroup>
 		<Delete Files="@(ToDelete)" />
 
