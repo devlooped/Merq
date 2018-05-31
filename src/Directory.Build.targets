@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="Nuke">
+		<Exec Command="rmdir $(IntermediateOutputPath.TrimEnd('\').TrimEnd('/')) /S /Q" Condition="Exists('$(IntermediateOutputPath)')" />
+		<Exec Command="rmdir $(OutputPath.TrimEnd('\').TrimEnd('/')) /S /Q" Condition="Exists('$(OutputPath)')" />
+	</Target>
+
+	<Target Name="LocalPublish" Condition="'$(CI)' != 'true'" AfterTargets="Pack">
+		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())')" />
+
+		<ItemGroup>
+			<ToDelete Include="$(TEMP)\packages\$(PackageId)*.nupkg" />
+		</ItemGroup>
+		<Delete Files="@(ToDelete)" />
+
+		<MakeDir Directories="$(TEMP)\packages" Condition="!Exists('$(TEMP)\packages')" />
+		<Copy SourceFiles="$(PackageTargetPath)" DestinationFolder="$(TEMP)\packages" />
+	</Target>
+
+	<Target Name="_EnsureLocalPackages" BeforeTargets="Restore">
+		<MakeDir Directories="$(TEMP)\packages" Condition="!Exists('$(TEMP)\packages')" />
+	</Target>
+
+
+</Project>
