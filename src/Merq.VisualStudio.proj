@@ -47,9 +47,6 @@
 		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest">
 			<Kind>tools</Kind>
 		</PackageFile>
-		<PackageFile Include="Vsix\Merq.Vsix\bin\$(Configuration)\Microsoft.VisualStudio.Xamarin.Merq.json">
-			<Kind>tools</Kind>
-		</PackageFile>
 	</ItemGroup>
 
 	<ItemGroup>
