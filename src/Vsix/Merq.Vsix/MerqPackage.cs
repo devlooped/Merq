@@ -20,9 +20,9 @@ namespace Merq
 		ThisAssembly.Git.SemVer.Patch + ThisAssembly.Git.SemVer.DashLabel + " (" + 
 		ThisAssembly.Git.Branch + "@" +
 		ThisAssembly.Git.Commit + ")")]
-	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true)]
+	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[ProvideBindingPath]
-	public class MerqPackage : Package
+	public class MerqPackage : AsyncPackage
 	{
 	}
 }
