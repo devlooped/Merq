@@ -102,7 +102,7 @@
     <PackageReference Include="VSSDK.ComponentModelHost.11" Version="11.0.4" />
     <PackageReference Include="VSSDK.DTE.10" Version="10.0.4" />
     <PackageReference Include="VSSDK.IDE.11" Version="11.0.4" />
-    <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.14.0" Version="*" />
     <PackageReference Include="VSSDK.VSLangProj.11" Version="11.0.4" />
   </ItemGroup>
   <ItemGroup>
