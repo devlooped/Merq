@@ -56,6 +56,9 @@
 
 		<Exec Command='rmdir "$(Out)" /S /Q' Condition="Exists('$(Out)')" ContinueOnError="true" StandardOutputImportance="low" />
 		<Message Text="Build properties: $(CommonBuildProperties)" Importance="high" />
+
+		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+
 		<MSBuild Projects="@(Solution)" Properties="$(CommonBuildProperties)" />
 	</Target>
 
@@ -65,14 +68,6 @@
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 
 		<MSBuild Projects="@(PackableProjects)" Targets="Pack" Properties="$(CommonBuildProperties)" />
-
-		<ItemGroup>
-			<Installer Include="src\**\*.vsix" />
-		</ItemGroup>
-
-		<Copy SourceFiles="@(Installer)"
-			  DestinationFiles="@(Installer->'$(Out)\%(Filename)%(Extension)')"
-			  SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="BeforePush" BeforeTargets="Push">
