@@ -27,7 +27,7 @@ namespace Merq
 	/// </summary>
 	/// <typeparam name="TCommand">Type of command supported by the handler.</typeparam>
 	/// <typeparam name="TResult">The type of the returned value from the execution.</typeparam>
-	public interface ICommandHandler<in TCommand, out TResult> : IExecutableCommandHandler<TCommand>, IExecuteResult, ICanExecute<TCommand> where TCommand : ICommand<TResult>
+	public interface ICommandHandler<in TCommand, out TResult> : IExecutableCommandHandler<TCommand, TResult>, IExecuteResult, ICanExecute<TCommand> where TCommand : ICommand<TResult>
 	{
 		/// <summary>
 		/// Executes the command synchronously.

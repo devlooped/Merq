@@ -36,7 +36,7 @@ namespace Merq
 	/// NOTE: we can't make TResult covariant since the result is Task{T} which is a class and 
 	/// isn't covariant on the {T} either.
 	/// </devdoc>
-	public interface IAsyncCommandHandler<in TCommand, TResult> : IAsyncCommandHandler, IExecutableCommandHandler<TCommand>, IExecuteResult, ICanExecute<TCommand> where TCommand : IAsyncCommand<TResult>
+	public interface IAsyncCommandHandler<in TCommand, TResult> : IAsyncCommandHandler, IExecutableCommandHandler<TCommand, TResult>, IExecuteResult, ICanExecute<TCommand> where TCommand : IAsyncCommand<TResult>
 	{
 		/// <summary>
 		/// Executes the command asynchronously.
