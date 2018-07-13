@@ -84,10 +84,12 @@
     <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj">
       <Project>{33bdd9d1-3e01-49c1-ab46-50941dffd5d4}</Project>
       <Name>Merq.Core</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Merq\Merq.csproj">
       <Project>{c6b16d17-4f6a-4457-8497-92068e53de39}</Project>
       <Name>Merq</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;DebugSymbolsProjectOutputGroup;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup;BuiltProjectOutputGroupDependencies;DebugSymbolsProjectOutputGroupDependencies;SatelliteDllsProjectOutputGroupDependencies</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
