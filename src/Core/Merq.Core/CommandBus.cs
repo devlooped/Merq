@@ -116,9 +116,9 @@ namespace Merq
 				(_, __) => new Lazy<ICommandHandler>(() => handler.Value));
 
 		static Type GetCommandType(Type type)
-			=> type.GetInterfaces()
-				.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IExecutableCommandHandler<>))
-				.Select(t => t.GetGenericArguments()[0])
+			=> type.GetTypeInfo().ImplementedInterfaces
+				.Where(t => t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof(IExecutableCommandHandler<>))
+				.Select(t => t.GetTypeInfo().GenericTypeArguments[0])
 				.FirstOrDefault() ?? throw new ArgumentException();
 
 		/// <summary>
