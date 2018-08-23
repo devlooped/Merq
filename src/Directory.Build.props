@@ -15,6 +15,12 @@
 		<CI Condition="'$(TF_BUILD)' == 'true' or '$(APPVEYOR)' != ''">true</CI>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="MSBuilder" Version="0.2.0" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="All" />
+		<PackageReference Include="GitInfo" Version="2.0.11" PrivateAssets="All" />
+	</ItemGroup>
+
 	<!-- These are replaced after restore by GitInfo.targets -->
 	<Target Name="GitVersion" />
 	<Target Name="GitInfo" />

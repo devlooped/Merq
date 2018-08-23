@@ -82,8 +82,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.*" PrivateAssets="all" />
-    <PackageReference Include="MSBuilder" Version="*" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.0.14" />
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.12" />

@@ -56,7 +56,7 @@
 		<PackageReference Include="NuGet.Build.Packaging" Version="*" PrivateAssets="All" />
 	</ItemGroup>
 	
-	<Import Project="Merq.targets" />
+	<Import Project="Directory.Build.targets" />
 	<Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GetVersion">
 		<PropertyGroup>
 			<PackageVersion>$(Version)</PackageVersion>

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="..\..\Merq.targets" />
 	<Import Project="Merq.Vsix.BindingRedirects.targets" />
 	<Import Project="$(VsSDKInstall)\Microsoft.VsSDK.targets" Condition="'$(VsSDKVersion)' == '' And Exists('$(VsSDKInstall)\Microsoft.VsSDK.targets')" />
 

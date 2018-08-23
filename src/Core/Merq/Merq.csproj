@@ -37,6 +37,5 @@
 			<VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
 		</PropertyGroup>
 	</Target>
-
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)..'))" />
+	
 </Project>

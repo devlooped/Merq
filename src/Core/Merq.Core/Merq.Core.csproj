@@ -59,5 +59,4 @@
     </ItemGroup>
   </Target>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.targets', '$(MSBuildThisFileDirectory)'))" />
 </Project>
