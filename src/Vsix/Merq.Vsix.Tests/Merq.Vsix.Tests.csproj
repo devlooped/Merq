@@ -26,9 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Async\Merq.Async.Core\Merq.Async.Core.csproj" />
     <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj" />
     <ProjectReference Include="..\Merq.Vsix\Merq.Vsix.csproj" />
   </ItemGroup>
 

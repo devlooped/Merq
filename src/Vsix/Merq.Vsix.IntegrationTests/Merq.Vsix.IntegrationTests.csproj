@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\..\Async\Merq.Async\Merq.Async.csproj" />
   </ItemGroup>
 
   <!-- Remove Threading analyzers -->

@@ -21,7 +21,6 @@ namespace Merq
 			this.output = output;
 		}
 
-		[InlineData(typeof(IAsyncManager))]
 		[InlineData(typeof(ICommandBus))]
 		[InlineData(typeof(IEventStream))]
 		[VsixTheory]
@@ -73,25 +72,6 @@ namespace Merq
 			Assert.False(commands.CanHandle(new FooCommand()));
 			Assert.False(commands.CanHandle<FooAsyncCommand>());
 		}
-
-		[VsixFact]
-		public async Task when_using_async_manager_then_succeeds()
-		{
-			var manager = GlobalServices.GetService<SComponentModel, IComponentModel>().GetService<IAsyncManager>();
-
-			await manager.SwitchToBackground();
-
-			Assert.True(true, "So true...");
-
-			await manager.SwitchToMainThread();
-
-			Assert.True(true, "Still true...");
-
-			manager.Run(async () => await Task.Delay(10));
-
-			await manager.RunAsync(async () => await Task.Delay(10));
-		}
-
 
 		public class FooCommand : ICommand { }
 

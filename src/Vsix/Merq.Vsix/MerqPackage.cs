@@ -5,8 +5,6 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase]
 [assembly: ProvideCodeBase(AssemblyName = "Merq")]
 [assembly: ProvideCodeBase(AssemblyName = "Merq.Core")]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Async")]
-[assembly: ProvideCodeBase(AssemblyName = "Merq.Async.Core")]
 
 namespace Merq
 {

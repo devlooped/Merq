@@ -22,9 +22,9 @@
 		<IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
 
 		<PackageId>Merq.VisualStudio</PackageId>
-		<Title>Merq.VisualStudio: Command Bus + Event Stream + Async Manager VSIX and WiX Installers</Title>
-		<Description>Command Bus, Event Stream and Async Manager implementation installers for Visual Studio Extensibility.</Description>
-		<Summary>Command Bus, Event Stream and Async Manager implementation installers for Visual Studio Extensibility.</Summary>
+		<Title>Merq.VisualStudio: Command Bus + Event Stream</Title>
+		<Description>Command Bus and Event Stream implementation installers for Visual Studio Extensibility.</Description>
+		<Summary>Command Bus and Event Stream implementation installers for Visual Studio Extensibility.</Summary>
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
 		<PackageOutputPath>$(Out)</PackageOutputPath>

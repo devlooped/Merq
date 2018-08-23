@@ -2,7 +2,7 @@ This NuGet package targets VSIX projects that embed the Merq VSIX or WiX Toolset
 projects (.wixproj) that build MSIs or chained installers (with Burn).
 
 It provides the installer for the Merq VSIX that provides the MEF components 
-to consume ICommandBus, IEventStream or IAsyncManager from Visual Studio 2012 or later.
+to consume ICommandBus or IEventStream from Visual Studio 2012 or later.
 
 == VSIX Projects ==
 
