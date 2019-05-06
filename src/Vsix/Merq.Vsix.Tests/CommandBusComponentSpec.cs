@@ -171,7 +171,7 @@ namespace Merq
 		}
 
 		[Fact]
-		public async void when_executing_async_command_then_invokes_async_handler_with_result()
+		public async Task when_executing_async_command_then_invokes_async_handler_with_result()
 		{
 			var handler = new Mock<IAsyncCommandHandler<AsyncCommandWithResult, Result>>();
 			var command = new AsyncCommandWithResult();
@@ -232,7 +232,7 @@ namespace Merq
 
 			var results = bus.Execute(new CommandWithResults());
 
-			Assert.Equal(1, results.Count());
+			Assert.Single(results);
 		}
 
 		[Fact]
