@@ -24,7 +24,7 @@ namespace Merq
 		[ImportingConstructor]
 		public CommandBusComponent([Import(typeof(Microsoft.VisualStudio.Shell.SVsServiceProvider))] IServiceProvider services)
 			: this((IComponentModel)services.GetService(typeof(SComponentModel)))
-		{ 
+		{
 		}
 
 		public CommandBusComponent(IComponentModel components)

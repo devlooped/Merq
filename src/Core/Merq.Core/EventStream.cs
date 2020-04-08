@@ -105,7 +105,7 @@ namespace Merq
 			}
 		}
 
-		static bool IsValid<TEvent>() 
+		static bool IsValid<TEvent>()
 			=> typeof(TEvent).GetTypeInfo().IsPublic || typeof(TEvent).GetTypeInfo().IsNestedPublic;
 
 		abstract class Subject
