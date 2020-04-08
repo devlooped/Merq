@@ -1,0 +1,134 @@
+name: clide
+
+trigger:
+  batch: false
+  branches:
+    include:
+    - master
+    - dev/*
+    - feature/*
+    - rel/*
+    exclude:
+    - v*
+  paths:
+    exclude:
+    - docs
+    - icon
+
+variables:
+- group: Xamarin Release
+- group: Xamarin-Secrets
+- name: Configuration
+  value: Release
+- name: DotNetVersion
+  value: 3.1.x
+- name: PackageOutputPath
+  value: $(Build.ArtifactStagingDirectory)/package
+- name: System.Debug
+  value: true
+
+resources:
+  repositories:
+  - repository: templates
+    type: github
+    name: xamarin/yaml-templates
+    ref: refs/heads/master
+    endpoint: xamarin
+
+stages:
+- stage: Windows
+  jobs:
+  - job: Build
+    pool: VSEng-MicroBuildVS2019
+    steps:
+    - checkout: self
+      clean: true
+      submodules: recursive
+    - task: UseDotNet@2
+      inputs:
+        version: $(DotNetVersion)
+        performMultiLevelLookup: true
+    - script: 'dotnet tool update -g dotnet-format && dotnet format -w $(Build.SourcesDirectory) --dry-run --check -v:diag'
+      displayName: Check .editorconfig compliance
+    - template: dump-environment.yml@templates
+
+    - task: MSBuild@1
+      displayName: Build
+      inputs:
+        solution: src\Merq.sln
+        msbuildArguments: '-r -bl:$(Build.ArtifactStagingDirectory)/logs/build.binlog'
+
+    - task: VSTest@2
+      displayName: 'Test'
+      timeoutInMinutes: 5
+      inputs:
+        testAssemblyVer2: |
+          **\*Tests.dll
+          !**\*IntegrationTests.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        codeCoverageEnabled: true
+        runInParallel: false
+        rerunFailedTests: true
+        rerunMaxAttempts: 5
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Logs'
+      condition: always()
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/logs'
+        ArtifactName: logs
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/package'
+        ArtifactName: package
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Symbols'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/artifacts'
+        ArtifactName: symbols
+
+- stage: Upload
+  jobs:
+  - job: Upload
+    pool: VSEng-MicroBuildVS2019
+    steps:
+    - checkout: self
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: runtime
+        version: $(DotNetVersion)
+        performMultiLevelLookup: true
+    - script: 'dotnet tool update -g --version 7.0.0 PowerShell >nul || dotnet tool list -g'
+      displayName: UsePowerShell
+
+    - template: fix-source-version/v2.yml@templates
+    # This is only needed while we teach the build-tools tasks how to receive overriden variables.
+    - script: git reset --hard $(GitHub.Commit)
+      displayName: Align checkout with GitHub.Commit
+      condition: ne(variables['GitHub.Commit'], variables['Build.SourceVersion'])
+
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        artifactName: package
+
+    - template: dump-environment.yml@templates
+    - template: upload-to-storage/win/v1.yml@templates
+      parameters:
+        ArtifactsDirectory: '$(Build.ArtifactStagingDirectory)/package'
+        Azure.ContainerName: 'xvs-merq'
+        GitHub.Context: 'artifacts'
+
+    - task: NuGetCommand@2
+      displayName: Push Packages
+      continueOnError: true
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['PushPackages'], 'true')))
+      inputs:
+        command: push
+        packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
+        nuGetFeedType: external
+        publishFeedCredentials: 'xamarin-impl public feed'
