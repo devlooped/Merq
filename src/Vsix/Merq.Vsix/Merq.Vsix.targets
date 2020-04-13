@@ -25,9 +25,10 @@
 	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="GetVersion">
 		<PropertyGroup>
 			<TargetVsixContainerName>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainerName)', '$(VersionPrefix).vsix'))</TargetVsixContainerName>
-			<TargetVsixContainer Condition="'$(Out)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
+			<TargetVsixContainer Condition="'$(PackageOutputPath)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
 			<TargetVsixContainer Condition="'$(Out)' == ''">$([System.IO.Path]::Combine('$(OutDir)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
 		</PropertyGroup>
+		<MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
 	</Target>
 
 	<!-- Remove Threading analyzers -->

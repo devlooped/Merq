@@ -8,8 +8,6 @@ trigger:
     - dev/*
     - feature/*
     - rel/*
-    exclude:
-    - v*
   paths:
     exclude:
     - docs
