@@ -22,7 +22,7 @@
 
 	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="Version">
 		<PropertyGroup>
-			<TargetVsixContainerName>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainerName)', '$(VersionPrefix).vsix'))</TargetVsixContainerName>
+			<TargetVsixContainerName>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainerName)', '$(FileVersion).vsix'))</TargetVsixContainerName>
 			<TargetVsixContainer Condition="'$(PackageOutputPath)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
 			<TargetVsixContainer Condition="'$(Out)' == ''">$([System.IO.Path]::Combine('$(OutDir)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
 		</PropertyGroup>

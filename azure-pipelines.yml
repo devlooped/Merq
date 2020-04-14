@@ -46,7 +46,7 @@ stages:
       inputs:
         version: $(DotNetVersion)
         performMultiLevelLookup: true
-    - script: 'dotnet tool update -g dotnet-format && dotnet format -w $(Build.SourcesDirectory) --dry-run --check -v:diag'
+    - script: 'dotnet tool update -g dotnet-format && dotnet format -f $(Build.SourcesDirectory)\src --dry-run --check -v:diag'
       displayName: Check .editorconfig compliance
     - template: dump-environment.yml@templates
 
