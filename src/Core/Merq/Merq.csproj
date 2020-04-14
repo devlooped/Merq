@@ -31,11 +31,4 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <!-- We keep an invariant version based on GitInfo -->
-	<Target Name="SetVersionPrefix" BeforeTargets="GetVersion" DependsOnTargets="GitInfo">
-		<PropertyGroup>
-			<VersionPrefix>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</VersionPrefix>
-		</PropertyGroup>
-	</Target>
-	
 </Project>

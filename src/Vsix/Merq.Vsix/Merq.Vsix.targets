@@ -11,7 +11,7 @@
 
 	<Target Name="IsSystemComponent" Returns="$(IsSystemComponent)" />
 	<Target Name="IsExperimental" Returns="$(IsExperimental)" />
-	<Target Name="GetVsixVersion" DependsOnTargets="GetVersion" Returns="$(VersionPrefix)" />
+	<Target Name="GetVsixVersion" DependsOnTargets="Version" Returns="$(PackageVersion)" />
 
 	<!-- Redefine since the VSSDK one doesn't honor the condition -->
 	<Target Name="VerifyTargetVersion" Condition="'$(VerifyTargetVersion)' == 'true'">
@@ -20,7 +20,7 @@
 		</CompareBuildTaskVersion>
 	</Target>
 
-	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="GetVersion">
+	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="Version">
 		<PropertyGroup>
 			<TargetVsixContainerName>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainerName)', '$(VersionPrefix).vsix'))</TargetVsixContainerName>
 			<TargetVsixContainer Condition="'$(PackageOutputPath)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
