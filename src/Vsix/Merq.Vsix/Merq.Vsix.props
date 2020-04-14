@@ -4,6 +4,9 @@
 
 	<PropertyGroup>
 		<VerifyTargetVersion>false</VerifyTargetVersion>
+		<BypassVsixValidation Condition="'$(CI)' == 'true'">true</BypassVsixValidation>
+		<CreateVsixContainer>$(CI)</CreateVsixContainer>
+
 		<UseCodebase>true</UseCodebase>
 		<IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
 		<IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
@@ -11,6 +14,11 @@
 
 		<ExtensionInstallationFolder>Merq</ExtensionInstallationFolder>
 		<IsProductComponent>true</IsProductComponent>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Artifacts SDK">
+		<ArtifactsPath Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)/artifacts</ArtifactsPath>
+		<DefaultArtifactsFileMatch>Merq*dll Merq*pdb</DefaultArtifactsFileMatch>
 	</PropertyGroup>
 
 </Project>
