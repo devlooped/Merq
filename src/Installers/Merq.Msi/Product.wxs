@@ -30,7 +30,7 @@
 
 		<Icon Id="Merq.ico" SourceFile="$(var.ProductIcon)" />
 		<Property Id="ARPPRODUCTICON" Value="Merq.ico" />
-		<Property Id="ARPHELPLINK" Value="http://github.com/MobileEssentials/Merq" />
+		<Property Id="ARPHELPLINK" Value="http://github.com/Xamarin/Merq" />
 		<Property Id="ARPCOMMENTS" Value="Extensibility Message Bus" />
 		
 		<!-- Explicit value passed in by the VS15 installer should prevail, for SxS reasons -->

@@ -6,7 +6,7 @@
 		<Identity Id="Merq" Version="|Merq.Vsix;GetVsixVersion|" Language="en-US" Publisher="Mobile Essentials" />
 		<DisplayName>Extensibility Message Bus</DisplayName>
 		<Description xml:space="preserve">Provides common messaging-based MEF services for loosely coupled Visual Studio extension components communication and integration.</Description>
-		<MoreInfo>https://github.com/MobileEssentials/Merq</MoreInfo>
+		<MoreInfo>https://github.com/Xamarin/Merq</MoreInfo>
 		<License>LICENSE</License>
 		<Icon>Merq.ico</Icon>
 		<PreviewImage>200.png</PreviewImage>

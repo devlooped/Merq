@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core.Tests", "Core\Mer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core", "Core\Merq.Core\Merq.Core.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Vsix", "Vsix\Merq.Vsix\Merq.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Vsix", "Vsix\Merq.Vsix\Merq.Vsix.csproj", "{C9A505CA-F826-473A-8290-B36AF6BE56FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Vsix.Tests", "Vsix\Merq.Vsix.Tests\Merq.Vsix.Tests.csproj", "{882DCF88-ADA6-4425-8E57-8EA4B3201DD5}"
 EndProject

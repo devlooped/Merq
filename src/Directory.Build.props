@@ -5,9 +5,9 @@
 		<Owners>mobessen</Owners>
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
-		<PackageProjectUrl>https://github.com/MobileEssentials/Merq</PackageProjectUrl>
-		<PackageLicenseUrl>https://github.com/MobileEssentials/Merq/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageIconUrl>https://raw.github.com/MobileEssentials/Merq/master/icon/48.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/Xamarin/Merq</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/Xamarin/Merq/blob/main/LICENSE</PackageLicenseUrl>
+		<PackageIconUrl>https://raw.github.com/Xamarin/Merq/main/icon/48.png</PackageIconUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
 		<DefaultItemExcludes>$(DefaultItemExcludes);**/*.binlog</DefaultItemExcludes>
@@ -21,7 +21,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSBuilder" Version="0.2.0" PrivateAssets="All" />
-		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="All" />
+		<PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="All" />
 		<PackageReference Include="GitInfo" Version="2.0.11" PrivateAssets="All" />
 	</ItemGroup>
 

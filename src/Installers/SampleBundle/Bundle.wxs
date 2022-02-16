@@ -15,7 +15,7 @@
 		        LogoFile="Resources/banner.bmp"
 				ThemeFile="Resources/ClassicTheme.xml"
 				LocalizationFile="Resources/ClassicTheme.wxl"
-				LicenseUrl="https://github.com/MobileEssentials/Merq/blob/master/LICENSE" />
+				LicenseUrl="https://github.com/Xamarin/Merq/blob/main/LICENSE" />
 		</BootstrapperApplicationRef>
 
 		<Chain>

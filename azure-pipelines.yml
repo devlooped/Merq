@@ -4,8 +4,7 @@ trigger:
   batch: false
   branches:
     include:
-    - master
-    - dev/*
+    - main
     - feature/*
     - rel/*
   paths:
@@ -14,8 +13,8 @@ trigger:
     - icon
 
 variables:
-- group: Xamarin Release
 - group: Xamarin-Secrets
+- group: Xamarin Release
 - name: Configuration
   value: Release
 - name: DotNetVersion
@@ -30,31 +29,69 @@ resources:
   - repository: templates
     type: github
     name: xamarin/yaml-templates
-    ref: refs/heads/master
+    ref: refs/heads/main
     endpoint: xamarin
 
 stages:
 - stage: Windows
   jobs:
   - job: Build
-    pool: VSEng-MicroBuildVS2019
+    pool:
+      vmImage: windows-2019
     steps:
     - checkout: self
       clean: true
       submodules: recursive
+
     - task: UseDotNet@2
       inputs:
         version: $(DotNetVersion)
         performMultiLevelLookup: true
-    - script: 'dotnet tool update -g dotnet-format && dotnet format -f $(Build.SourcesDirectory)\src --dry-run --check -v:diag'
+
+    - powershell: |
+        dotnet --version
+        dotnet --list-sdks
+      displayName: 'Show .NET versions'
+
+    - task: NuGetAuthenticate@0
+      displayName: Authenticate NuGet feeds
+      inputs:
+        forceReinstallCredentialProvider: true
+
+    # Disabled due to unreliability in loading the service index for source https://devdiv.pkgs.visualstudio.com/_packaging/xamarin-xvs/nuget/v3/index.json. [C:\Users\VssAdministrator\AppData\Local\Temp\nabauqrz.xry\restore.csproj]
+    - powershell: |
+        # https://stackoverflow.com/questions/58764322/cannot-install-dotnet-ef-tool-on-windows-10
+        # https://devdiv.visualstudio.com/DevDiv/_artifacts/feed/xamarin-xvs/NuGet/dotnet-format/6.0.226302/versions
+        dotnet tool update -g dotnet-format --version 6.0.226302
+        dotnet format -f $(Build.SourcesDirectory)\src --check -v:diag
       displayName: Check .editorconfig compliance
+      enabled: false
+
     - template: dump-environment.yml@templates
 
     - task: MSBuild@1
       displayName: Build
       inputs:
         solution: src\Merq.sln
-        msbuildArguments: '-r -bl:$(Build.ArtifactStagingDirectory)/logs/build.binlog'
+        configuration: $(Configuration)
+        msbuildArguments: '-r -v:normal -p:Configuration=$(Configuration) -bl:$(Build.ArtifactStagingDirectory)/logs/build.binlog'   # Note: Setting configuration on the task does not appear to be sufficient. Also set as a build property
+
+    - powershell: |
+        $filename = "$(Build.SourcesDirectory)\src\Vsix\Merq.Vsix\obj\$(Configuration)\extension.vsixmanifest"
+        if ([IO.File]::Exists($filename)) {
+          type $filename
+        } else {
+          Write-Host "File not found: ${filename}"
+        }
+
+        $filename = "$(Build.SourcesDirectory)\src\Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest"
+        if ([IO.File]::Exists($filename)) {
+          type $filename
+        } else {
+          Write-Host "File not found: ${filename}"
+        }
+      displayName: Show extension.vsixmanifest
+      condition: always()
 
     - task: VSTest@2
       displayName: 'Test'
@@ -69,14 +106,14 @@ stages:
         runInParallel: false
         rerunFailedTests: true
         rerunMaxAttempts: 5
-    
+
     - task: PublishBuildArtifacts@1
       displayName: 'Logs'
       condition: always()
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/logs'
         ArtifactName: logs
-    
+
     - task: PublishBuildArtifacts@1
       displayName: 'Artifacts'
       inputs:
@@ -92,7 +129,8 @@ stages:
 - stage: Upload
   jobs:
   - job: Upload
-    pool: VSEng-MicroBuildVS2019
+    pool:
+      vmImage: windows-2022
     steps:
     - checkout: self
 
@@ -103,12 +141,6 @@ stages:
         performMultiLevelLookup: true
     - script: 'dotnet tool update -g --version 7.0.0 PowerShell >nul || dotnet tool list -g'
       displayName: UsePowerShell
-
-    - template: fix-source-version/v2.yml@templates
-    # This is only needed while we teach the build-tools tasks how to receive overriden variables.
-    - script: git reset --hard $(GitHub.Commit)
-      displayName: Align checkout with GitHub.Commit
-      condition: ne(variables['GitHub.Commit'], variables['Build.SourceVersion'])
 
     - task: DownloadBuildArtifacts@0
       inputs:
@@ -121,12 +153,15 @@ stages:
         Azure.ContainerName: 'xvs-merq'
         GitHub.Context: 'artifacts'
 
-    - task: NuGetCommand@2
-      displayName: Push Packages
-      continueOnError: true
-      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['PushPackages'], 'true')))
-      inputs:
-        command: push
-        packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
-        nuGetFeedType: external
-        publishFeedCredentials: 'xamarin-impl public feed'
+    # TODO: If you are making updates to the product code as opposed to an infrastructure change, you will need to re-enable this nuget.org publishing step as part of your PR
+    #       Also update the README file to remove the IMPORTANT notice regarding the need to re-enable this step
+    #       This step was disabled at the time of making the needed infrastructure changes to migrate Merg from the MobileEssentials GitHub org to Xamarin
+    # - task: NuGetCommand@2
+    #  displayName: Push Packages
+    #  continueOnError: true
+    #  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['PushPackages'], 'true')))
+    #  inputs:
+    #    command: push
+    #    packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
+    #    nuGetFeedType: external
+    #    publishFeedCredentials: 'xamarin-impl public feed'

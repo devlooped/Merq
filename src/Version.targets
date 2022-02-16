@@ -28,10 +28,12 @@
           BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageVersion;Pack"
           DependsOnTargets="GitVersion"
           Condition="'$(ExcludeRestorePackageImports)' != 'true' and '$(GitInfoImported)' == 'true'">
+
     <PropertyGroup>
       <!-- PR builds are *always* prerelease -->
       <!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/#/merge -->
-      <GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(GitSemVerDashLabel)-pr$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</GitSemVerDashLabel>
+      <PRNumber Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</PRNumber>
+      <GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(GitSemVerDashLabel)-pr$(PRNumber)</GitSemVerDashLabel>
       <GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
 
       <!-- Adjust branch name to CI provided value if available -->
@@ -39,8 +41,8 @@
       <GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
       <GitBranch Condition="'$(APPVEYOR_REPO_BRANCH)' != ''">$(APPVEYOR_REPO_BRANCH)</GitBranch>
 
-      <!-- NOTE: build metadata does not affect version matching, so even if you work from a different branch+commit that gets 
-           rebased+merged later on, the version # might still be the same (provided there weren't additional commits in master 
+      <!-- NOTE: build metadata does not affect version matching, so even if you work from a different branch+commit that gets
+           rebased+merged later on, the version # might still be the same (provided there weren't additional commits in main
            before the rebase+merge.
       -->
       <_IndexOfBranchSlash>$(GitBranch.LastIndexOf('/'))</_IndexOfBranchSlash>
@@ -48,19 +50,27 @@
       <_GitBranch Condition="'$(_IndexOfBranchSlash)' != '0'">$(GitBranch.Substring($(_IndexOfBranchSubstring)))</_GitBranch>
       <_GitBranch Condition="'$(_IndexOfBranchSlash)' == '0'">$(GitBranch)</_GitBranch>
 
-      <!-- We'll use GitFlow and ship publicly from master, meaning we don't need branch metadata from there -->
-      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' == '' and '$(_GitBranch)' != 'master' and '$(_GitBranch.StartsWith(v))' != 'true'">-$(_GitBranch)</GitSemVerDashLabel>
-      <SemVerMetadata Condition="'$(GitSemVerDashLabel)' != '-$(_GitBranch)' and '$(_GitBranch)' != 'master'">$(_GitBranch).</SemVerMetadata>
+      <!-- We'll use GitFlow and ship publicly from main, meaning we don't need branch metadata from there -->
+      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' == '' and '$(_GitBranch)' != 'main' and '$(_GitBranch.StartsWith(v))' != 'true'">-$(_GitBranch)</GitSemVerDashLabel>
+      <SemVerMetadata Condition="'$(GitSemVerDashLabel)' != '-$(_GitBranch)' and '$(_GitBranch)' != 'main'">$(_GitBranch).</SemVerMetadata>
       <SemVerMetadata>$(SemVerMetadata)sha.$(GitCommit)</SemVerMetadata>
 
       <!-- If there is a pre-release label, fix the major.minor.build and increment the release label digit instead. -->
-      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)</PackageVersion>
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitCommits)</PackageVersion>
       <!-- If shipping stable, semver the package version -->
       <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</PackageVersion>
       <AssemblyVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</AssemblyVersion>
       <FileVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</FileVersion>
       <InformationalVersion>$(PackageVersion)+$(SemVerMetadata)</InformationalVersion>
     </PropertyGroup>
+
+    <Message Importance="high" Text="CI=$(CI)" />
+    <Message Importance="high" Text="TF_BUILD=$(TF_BUILD)" />
+    <Message Importance="high" Text="PRNumber=$(PRNumber)" />
+    <Message Importance="high" Text="APPVEYOR_PULL_REQUEST_NUMBER=$(APPVEYOR_PULL_REQUEST_NUMBER)" />
+    <Message Importance="high" Text="_GitBranch=$(_GitBranch)" />
+    <Message Importance="high" Text="GitBaseVersionPatch=$(GitBaseVersionPatch)" />
+    <Message Importance="high" Text="GitSemVerDashLabel=$(GitSemVerDashLabel)" />
   </Target>
 
 </Project>
