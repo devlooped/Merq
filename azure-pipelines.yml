@@ -165,3 +165,16 @@ stages:
     #    packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
     #    nuGetFeedType: external
     #    publishFeedCredentials: 'xamarin-impl public feed'
+
+- stage: SBOM
+  displayName: 'Software Bill of Materials'
+  dependsOn:
+  - Upload
+
+  jobs:
+  - template: compliance/sbom/job.v1.yml@templates          # Software Bill of Materials (SBOM): https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/secure-supply-chain/ado-sbom-generator
+    parameters:
+      packageName: 'Mobile Essentials'
+      artifactNames: ['package']
+      packageFilter: '*.vsix;*.nupkg'
+      packageVersionRegex: '(?i)^Merq\.(?<version>\d+\.\d+\.\d+).vsix$'
