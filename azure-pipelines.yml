@@ -37,7 +37,9 @@ stages:
   jobs:
   - job: Build
     pool:
-      vmImage: windows-2019
+      name: AzurePipelines-EO
+      demands:
+      - ImageOverride -equals AzurePipelinesWindows2022compliant
     steps:
     - checkout: self
       clean: true
@@ -130,7 +132,10 @@ stages:
   jobs:
   - job: Upload
     pool:
-      vmImage: windows-2022
+      name: AzurePipelines-EO
+      demands:
+      - ImageOverride -equals AzurePipelinesWindows2022compliant
+
     steps:
     - checkout: self
 
