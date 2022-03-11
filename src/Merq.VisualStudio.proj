@@ -27,8 +27,7 @@
 		<Summary>Command Bus and Event Stream implementation installers for Visual Studio Extensibility.</Summary>
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
-		<PackageOutputPath>$(Out)</PackageOutputPath>
-		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">..\out</PackageOutputPath>
+		<PackageOutputPath>$(OutDir)</PackageOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -55,7 +54,7 @@
 		<PackageReference Include="GitInfo" Version="1.1.48" PrivateAssets="All" />
 		<PackageReference Include="NuGet.Build.Packaging" Version="*" PrivateAssets="All" />
 	</ItemGroup>
-	
+
 	<Import Project="Directory.Build.targets" />
 	<Target Name="SetPackageVersion" BeforeTargets="GetPackageVersion" DependsOnTargets="GetVersion">
 		<PropertyGroup>
@@ -74,7 +73,7 @@
 		<NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'==''">$(MSBuildExtensionsPath)\..\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
 	</PropertyGroup>
 	<Import Condition="Exists('$(NuGetRestoreTargets)')" Project="$(NuGetRestoreTargets)" />
-	
+
 	<!-- NuGet generated targets -->
 	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets')" />
 

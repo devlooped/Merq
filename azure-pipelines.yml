@@ -23,6 +23,10 @@ variables:
   value: $(Build.ArtifactStagingDirectory)/package
 - name: System.Debug
   value: true
+- name: TeamName
+  value: "VSCX Platform Tools"
+- name: MainBranch
+  value: refs/heads/main
 
 resources:
   repositories:
@@ -37,9 +41,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: AzurePipelines-EO
-      demands:
-      - ImageOverride -equals AzurePipelinesWindows2022compliant
+      name: VSEngSS-MicroBuild2022-1ES
     steps:
     - checkout: self
       clean: true
@@ -59,6 +61,32 @@ stages:
       displayName: Authenticate NuGet feeds
       inputs:
         forceReinstallCredentialProvider: true
+
+    - powershell: |
+        $branch = "$(Build.SourceBranch)"
+        Write-Host "Branch: ${branch}"
+        $buildReason = "$(Build.Reason)"
+        Write-Host "Build.Reason: ${buildReason}"
+        $codeSignOverride = ''          # Defaulting to empty as opposed to 'false' allows for the template to still determine if signing is needed
+        # The template will only set Xamarin.CodeSign to true and enable real sigining for builds triggered against release branches such as 'd17-0'
+        # The template does not enable real signing for the main branch and so we enable real signing for main here
+        if ($branch -eq "$(MainBranch)") {
+          $codeSignOverride = 'true'
+        }
+        Write-Host "Setting CodeSignOverride: ${codeSignOverride}"
+        Write-Host "##vso[task.setvariable variable=CodeSignOverride]$codeSignOverride"
+      displayName: 'Set CodeSignOverride'
+
+    - template: jenkins-codesign/signType.v1.yml@templates
+      parameters:
+        CodeSignOverride: "$(CodeSignOverride)"
+
+    - task: MicroBuildSigningPlugin@2
+      inputs:
+        signType: "$(Xamarin.SignType)"
+        feedSource: 'https://devdiv.pkgs.visualstudio.com/DefaultCollection/_packaging/MicroBuildToolset/nuget/v3/index.json'
+      env:
+        TeamName: "$(TeamName)"
 
     # Disabled due to unreliability in loading the service index for source https://devdiv.pkgs.visualstudio.com/_packaging/xamarin-xvs/nuget/v3/index.json. [C:\Users\VssAdministrator\AppData\Local\Temp\nabauqrz.xry\restore.csproj]
     - powershell: |
@@ -121,6 +149,14 @@ stages:
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/package'
         ArtifactName: package
+
+    - task: MicroBuildCodesignVerify@3
+      displayName: 'Verify Signed Files'
+      inputs:
+        TargetFolders: |
+          $(Build.ArtifactStagingDirectory)/package
+        ExcludeSNVerify: true
+        ApprovalListPathForCerts: '$(Build.SourcesDirectory)/signexclusionlist.csv'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Symbols'

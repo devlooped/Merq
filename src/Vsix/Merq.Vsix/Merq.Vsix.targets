@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	
+
 	<PropertyGroup>
 		<IsSystemComponent Condition="'$(IsSystemComponent)' == '' And '$(Configuration)' == 'Debug'">false</IsSystemComponent>
 		<IsExperimental Condition="'$(IsExperimental)' == '' And '$(Configuration)' == 'Debug'">true</IsExperimental>
@@ -23,8 +23,7 @@
 	<Target Name="AppendVsixVersionToTargetVsixContainer" BeforeTargets="CreateVsixContainer" DependsOnTargets="Version">
 		<PropertyGroup>
 			<TargetVsixContainerName>$([System.IO.Path]::ChangeExtension('$(TargetVsixContainerName)', '$(FileVersion).vsix'))</TargetVsixContainerName>
-			<TargetVsixContainer Condition="'$(PackageOutputPath)' != ''">$([System.IO.Path]::Combine('$(PackageOutputPath)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
-			<TargetVsixContainer Condition="'$(Out)' == ''">$([System.IO.Path]::Combine('$(OutDir)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
+			<TargetVsixContainer >$([System.IO.Path]::Combine('$(OutDir)', '$(TargetVsixContainerName)'))</TargetVsixContainer>
 		</PropertyGroup>
 		<MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
 	</Target>
