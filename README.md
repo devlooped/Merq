@@ -1,9 +1,6 @@
 ![Icon](https://raw.github.com/Xamarin/Merq/main/icon/32.png) Merq
 ================
 
-⚠️<b>IMPORTANT:</b> If you are making updates to the product code you **must** re-enable the nuget publishing step as part of your PR.  See the **TODO** comment at the bottom of the `azure-pipelines.yml` file. Also remove this warning from this **README** as part of that change
-<br><br>
-
 > **Mercury:** messenger of the Roman gods
 
 > *Mercury* > *Merq-ry* > **Merq** 

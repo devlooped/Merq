@@ -194,18 +194,15 @@ stages:
         Azure.ContainerName: 'xvs-merq'
         GitHub.Context: 'artifacts'
 
-    # TODO: If you are making updates to the product code as opposed to an infrastructure change, you will need to re-enable this nuget.org publishing step as part of your PR
-    #       Also update the README file to remove the IMPORTANT notice regarding the need to re-enable this step
-    #       This step was disabled at the time of making the needed infrastructure changes to migrate Merg from the MobileEssentials GitHub org to Xamarin
-    # - task: NuGetCommand@2
-    #  displayName: Push Packages
-    #  continueOnError: true
-    #  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['PushPackages'], 'true')))
-    #  inputs:
-    #    command: push
-    #    packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
-    #    nuGetFeedType: external
-    #    publishFeedCredentials: 'xamarin-impl public feed'
+    - task: NuGetCommand@2
+      displayName: Push Packages
+      continueOnError: true
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['PushPackages'], 'true')))
+      inputs:
+        command: push
+        packagesToPush: $(Build.ArtifactStagingDirectory)/package/*.nupkg
+        nuGetFeedType: external
+        publishFeedCredentials: 'xamarin-impl public feed'
 
 - stage: SBOM
   displayName: 'Software Bill of Materials'
