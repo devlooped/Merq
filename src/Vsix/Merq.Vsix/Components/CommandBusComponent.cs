@@ -110,7 +110,7 @@ namespace Merq
 			{
 				var handler = components.GetExtensions<ICommandHandler<TCommand>>().FirstOrDefault();
 				if (handler == null)
-					throw new NotSupportedException(Strings.CommandBus.NoHandler(command.GetType()));
+					throw new NotSupportedException(string.Format(Resources.CommandBus_NoHandler, command.GetType()));
 
 				handler.Execute(command);
 			}
@@ -119,7 +119,7 @@ namespace Merq
 			{
 				var handler = components.GetExtensions<IAsyncCommandHandler<TCommand>>().FirstOrDefault();
 				if (handler == null)
-					throw new NotSupportedException(Strings.CommandBus.NoHandler(command.GetType()));
+					throw new NotSupportedException(string.Format(Resources.CommandBus_NoHandler, command.GetType()));
 
 				return handler.ExecuteAsync(command, cancellation);
 			}
@@ -138,7 +138,7 @@ namespace Merq
 			{
 				var handler = components.GetExtensions<ICommandHandler<TCommand, TResult>>().FirstOrDefault();
 				if (handler == null)
-					throw new NotSupportedException(Strings.CommandBus.NoHandler(command.GetType()));
+					throw new NotSupportedException(string.Format(Resources.CommandBus_NoHandler, command.GetType()));
 
 				return handler.Execute(command);
 			}
@@ -147,7 +147,7 @@ namespace Merq
 			{
 				var handler = components.GetExtensions<IAsyncCommandHandler<TCommand, TResult>>().FirstOrDefault();
 				if (handler == null)
-					throw new NotSupportedException(Strings.CommandBus.NoHandler(command.GetType()));
+					throw new NotSupportedException(string.Format(Resources.CommandBus_NoHandler, command.GetType()));
 
 				return handler.ExecuteAsync(command, cancellation);
 			}

@@ -70,7 +70,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
-    <PackageReference Include="netfx-System.StringResources" Version="3.0.14" PrivateAssets="all" />
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.12" />
     <PackageReference Include="Xamarin.VSSDK" Version="0.4.0-alpha.24" />
     <PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.4.0-alpha.24" />

@@ -51,7 +51,7 @@ namespace Merq
 		{
 			if (@event == null) throw new ArgumentNullException(nameof(@event));
 			if (!IsValid<TEvent>())
-				throw new NotSupportedException(Strings.EventStream.PublishedEventNotPublic);
+				throw new NotSupportedException(Resources.EventStream_PublishedEventNotPublic);
 
 			var eventType = @event.GetType().GetTypeInfo();
 
@@ -64,7 +64,7 @@ namespace Merq
 		public virtual IObservable<TEvent> Of<TEvent>()
 		{
 			if (!IsValid<TEvent>())
-				throw new NotSupportedException(Strings.EventStream.SubscribedEventNotPublic);
+				throw new NotSupportedException(Resources.EventStream_SubscribedEventNotPublic);
 
 			var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent).GetTypeInfo(), info =>
 			{
