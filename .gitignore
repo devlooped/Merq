@@ -3,6 +3,7 @@ out
 bin
 obj
 packages
+pack
 *.nuget.targets
 *.nuget.props
 *.lock.json

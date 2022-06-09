@@ -5,7 +5,13 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>Merq</RootNamespace>
     <TargetVsixContainerName>Merq.vsix</TargetVsixContainerName>
+    <CreateVsixContainer>true</CreateVsixContainer>
     <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
+
+    <DeployExtension>true</DeployExtension>
+    <DeployExtension Condition="$(CI)">false</DeployExtension>
+    <OverrideDeployVsixExtensionFiles>false</OverrideDeployVsixExtensionFiles>
+    <OverrideGeneratePkgDef>false</OverrideGeneratePkgDef>
   </PropertyGroup>
 
   <Import Project="Merq.Vsix.props" />
@@ -73,6 +79,9 @@
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.12" />
     <PackageReference Include="Xamarin.VSSDK" Version="0.4.0-alpha.24" />
     <PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.4.0-alpha.24" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4054" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.1.32210.191" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.36" ExcludeAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
