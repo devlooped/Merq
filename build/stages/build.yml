@@ -136,6 +136,14 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/artifacts'
         ArtifactName: symbols
 
+    - task: ComponentGovernanceComponentDetection@0
+      inputs:
+        scanType: 'Register'
+        verbosity: 'Verbose'
+        failOnAlert: true
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+      displayName: 'Component Governance (PR)'
+
     - pwsh: |
         $complianceEnabled = if ($env:COMPLIANCEENABLED) { $env:COMPLIANCEENABLED } else { '' }
 
