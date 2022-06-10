@@ -30,7 +30,7 @@ stages:
        displayName: Run BinSkim Analysis
        inputs:
         InputType: Basic
-        AnalyzeTarget: '$(Build.ArtifactStagingDirectory)\artifacts\*.dll'
+        AnalyzeTarget: '$(Build.ArtifactStagingDirectory)\symbols\*.dll'
         AnalyzeVerbose: true
        continueOnError: true
        condition: succeededOrFailed()
