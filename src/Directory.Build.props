@@ -17,6 +17,7 @@
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)../pack</PackageOutputPath>
 		<GeneratePackageOnBuild>$(CI)</GeneratePackageOnBuild>
 		<PackageOnBuild>$(CI)</PackageOnBuild>
+		<CheckForOverflowUnderflow Condition=" '$(Configuration)' == 'Debug' ">true</CheckForOverflowUnderflow>
 	</PropertyGroup>
 
 	<ItemGroup>
