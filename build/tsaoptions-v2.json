@@ -1,0 +1,20 @@
+{
+    "codebaseName": "merq_main",
+    "notificationAliases": [
+        "xvs@microsoft.com",
+        "maagno@microsoft.com",
+        "emafern@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "REDMOND\\vsengxamarin",
+        "REDMOND\\maagno",
+        "REDMOND\\emafern"
+    ],
+    "instanceUrl": "DEVDIV",
+    "projectName": "DevDiv",
+    "areaPath": "DevDiv\\VS Client - Tools\\Platform\\Xamarin VS",
+    "iterationPath": "DevDiv",
+    "tools": [
+        "CodeQL"
+    ]
+}

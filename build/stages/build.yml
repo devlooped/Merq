@@ -1,0 +1,158 @@
+# Build Stage
+
+parameters:
+- name: EnableCodeSign
+  type: boolean
+  default: true
+
+stages:
+- stage: Build
+  jobs:
+  - job: Windows
+    pool:
+      name: $(WindowsPoolName)
+    steps:
+    - checkout: self
+      clean: true
+      submodules: recursive
+
+    - task: UseDotNet@2
+      inputs:
+        version: $(DotNetVersion)
+        performMultiLevelLookup: true
+
+    - powershell: |
+        dotnet --version
+        dotnet --list-sdks
+      displayName: 'Show .NET versions'
+
+    - task: NuGetAuthenticate@0
+      displayName: Authenticate NuGet feeds
+      inputs:
+        forceReinstallCredentialProvider: true
+
+    - ${{ if eq(parameters.EnableCodeSign, true) }}:
+      - powershell: |
+            $branch = '$(Build.SourceBranch)'
+            $codeSignOverride = if ($env:FORCECODESIGN) { $env:FORCECODESIGN } else { '' }
+        
+            if($branch -eq '$(MainBranch)' -or $codeSignOverride -eq 'true') {
+              $codeSignOverride = 'true'
+            }
+
+            Write-Host "Code Sign Override: $codeSignOverride"
+            Write-Host "##vso[task.setvariable variable=Xamarin.CodeSignOverride]$codeSignOverride"
+        name: 'SetCodeSignOnMain'
+        displayName: 'Evaluate CodeSign for Main Branch'
+
+    - ${{ if eq(parameters.EnableCodeSign, true) }}:
+      - template: jenkins-codesign/signType.v1.yml@templates
+        parameters:
+          CodeSignOverride: "$(Xamarin.CodeSignOverride)"
+
+    - ${{ if eq(parameters.EnableCodeSign, true) }}:
+      - task: MicroBuildSigningPlugin@3
+        displayName: "Prepare Signing Tools (MicroBuild)"
+        inputs:
+          signType: '$(Xamarin.SignType)'
+          feedSource: 'https://devdiv.pkgs.visualstudio.com/DefaultCollection/_packaging/MicroBuildToolset/nuget/v3/index.json'
+        env:
+          TeamName: $(TeamName)
+
+    # Disabled due to unreliability in loading the service index for source https://devdiv.pkgs.visualstudio.com/_packaging/xamarin-xvs/nuget/v3/index.json. [C:\Users\VssAdministrator\AppData\Local\Temp\nabauqrz.xry\restore.csproj]
+    - powershell: |
+        # https://stackoverflow.com/questions/58764322/cannot-install-dotnet-ef-tool-on-windows-10
+        # https://devdiv.visualstudio.com/DevDiv/_artifacts/feed/xamarin-xvs/NuGet/dotnet-format/6.0.226302/versions
+        dotnet tool update -g dotnet-format --version 6.0.226302
+        dotnet format -f $(Build.SourcesDirectory)\src --check -v:diag
+      displayName: Check .editorconfig compliance
+      enabled: false
+
+    - template: dump-environment.yml@templates
+
+    - task: MSBuild@1
+      displayName: Build
+      inputs:
+        solution: src\Merq.sln
+        configuration: $(Configuration)
+        msbuildArguments: '-r -v:normal -p:Configuration=$(Configuration) -p:_SignFiles=${{ parameters.EnableCodeSign }} -bl:$(Build.ArtifactStagingDirectory)/logs/build.binlog'   # Note: Setting configuration on the task does not appear to be sufficient. Also set as a build property
+
+    - powershell: |
+        $filename = "$(Build.SourcesDirectory)\src\Vsix\Merq.Vsix\obj\$(Configuration)\extension.vsixmanifest"
+        if ([IO.File]::Exists($filename)) {
+          type $filename
+        } else {
+          Write-Host "File not found: ${filename}"
+        }
+
+        $filename = "$(Build.SourcesDirectory)\src\Vsix\Merq.Vsix\bin\$(Configuration)\extension.vsixmanifest"
+        if ([IO.File]::Exists($filename)) {
+          type $filename
+        } else {
+          Write-Host "File not found: ${filename}"
+        }
+      displayName: Show extension.vsixmanifest
+      condition: always()
+
+    - task: VSTest@2
+      displayName: 'Test'
+      timeoutInMinutes: 5
+      inputs:
+        testAssemblyVer2: |
+          **\*Tests.dll
+          !**\*IntegrationTests.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        codeCoverageEnabled: true
+        runInParallel: false
+        rerunFailedTests: true
+        rerunMaxAttempts: 5
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Logs'
+      condition: always()
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/logs'
+        ArtifactName: logs
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/package'
+        ArtifactName: package
+
+    - ${{ if eq(parameters.EnableCodeSign, true) }}:
+      - task: MicroBuildCodesignVerify@3
+        displayName: 'Verify Signed Files'
+        inputs:
+          TargetFolders: |
+            $(Build.ArtifactStagingDirectory)/package
+          ExcludeSNVerify: true
+          ApprovalListPathForCerts: '$(Build.SourcesDirectory)/build/signexclusionlist.csv'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Symbols'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/artifacts'
+        ArtifactName: symbols
+
+    - pwsh: |
+        $complianceEnabled = if ($env:COMPLIANCEENABLED) { $env:COMPLIANCEENABLED } else { '' }
+
+        if ($complianceEnabled -eq '') {
+          $branch = '$(Build.SourceBranch)'
+          $isRelease = '$(Xamarin.IsRelease)'
+          $reason = '$(Build.Reason)'
+
+          if($branch -eq '$(MainBranch)' -or $isRelease -eq 'true' -or $reason -eq 'PullRequest') {
+            $complianceEnabled = 'true'
+          } else {
+            $complianceEnabled = 'false'
+          }  
+        }
+
+        Write-Host "Source Branch: $branch, Is Release Branch: $isRelease, Build Reason: $reason"
+        Write-Host "Requires Compliance Stage: $complianceEnabled"
+        Write-Host "##vso[task.setvariable variable=Xamarin.ComplianceEnabled;isOutput=true]$complianceEnabled"
+      name: 'SetComplianceNeed'
+      displayName: 'Evaluate Compliance Need'
