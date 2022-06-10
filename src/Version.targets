@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.0.11" PrivateAssets="all" />
+    <PackageReference Include="GitInfo" Version="2.2.0" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>

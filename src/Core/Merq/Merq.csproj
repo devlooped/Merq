@@ -17,12 +17,12 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.0.3" PrivateAssets="all" />
+    <PackageReference Include="IFluentInterface" Version="2.1.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.3" PrivateAssets="all" />
+    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
