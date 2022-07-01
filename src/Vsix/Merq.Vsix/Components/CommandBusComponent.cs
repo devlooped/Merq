@@ -11,7 +11,7 @@ namespace Merq
 {
     [Export("Merq.ICommandBus.Default", typeof(ICommandBus))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    internal class CommandBusComponent : ICommandBus
+    class CommandBusComponent : ICommandBus
     {
         MethodInfo canHandleMethod = typeof(CommandBusComponent)
             .GetTypeInfo()

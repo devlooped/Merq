@@ -164,5 +164,5 @@ namespace Merq
 
     public class AnotherEvent : BaseEvent { }
 
-    internal class NonPublicEvent { }
+    class NonPublicEvent { }
 }

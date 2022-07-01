@@ -8,7 +8,7 @@ namespace Merq
 {
     [Export("Merq.IEventStream.Default", typeof(IEventStream))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    internal class EventStreamComponent : EventStream
+    class EventStreamComponent : EventStream
     {
         IComponentModel components;
 
