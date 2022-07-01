@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 
 #if DEBUG
-[assembly: AssemblyConfiguration ("DEBUG")]
+[assembly: AssemblyConfiguration("DEBUG")]
 #endif
 #if RELEASE
 [assembly: AssemblyConfiguration ("RELEASE")]

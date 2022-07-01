@@ -13,4 +13,4 @@ asynchronously executing commands in a main thread deadlock-free way.
 [![Coverage Status](https://coveralls.io/repos/github/Xamarin/Merq/badge.svg?branch=main)](https://coveralls.io/github/Xamarin/Merq?branch=main)
 [![Latest version](https://img.shields.io/nuget/v/Merq.svg)](https://www.nuget.org/packages/Merq)
 [![Join the chat at https://gitter.im/MobileEssentials](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MobileEssentials?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![License](https://img.shields.io/github/license/MobileEssentials/Merq.svg)](https://github.com/Xamarin/Merq/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/MobileEssentials/Merq.svg)](https://github.com/Xamarin/Merq/blob/main/license.txt)

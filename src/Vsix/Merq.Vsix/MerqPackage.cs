@@ -8,19 +8,19 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Merq
 {
-	/// <summary>
-	/// Package providing Merq registration.
-	/// </summary>
-	[Guid("49A95AF4-CB3D-4770-BD67-B0BBB46C6463")]
-	[InstalledProductRegistration("#100", "#110",
-		ThisAssembly.Git.SemVer.Major + "." +
-		ThisAssembly.Git.SemVer.Minor + "." +
-		ThisAssembly.Git.SemVer.Patch + ThisAssembly.Git.SemVer.DashLabel + " (" +
-		ThisAssembly.Git.Branch + "@" +
-		ThisAssembly.Git.Commit + ")")]
-	[PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-	[ProvideBindingPath]
-	public class MerqPackage : AsyncPackage
-	{
-	}
+    /// <summary>
+    /// Package providing Merq registration.
+    /// </summary>
+    [Guid("49A95AF4-CB3D-4770-BD67-B0BBB46C6463")]
+    [InstalledProductRegistration("#100", "#110",
+        ThisAssembly.Git.SemVer.Major + "." +
+        ThisAssembly.Git.SemVer.Minor + "." +
+        ThisAssembly.Git.SemVer.Patch + ThisAssembly.Git.SemVer.DashLabel + " (" +
+        ThisAssembly.Git.Branch + "@" +
+        ThisAssembly.Git.Commit + ")")]
+    [PackageRegistration(RegisterUsing = RegistrationMethod.CodeBase, UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideBindingPath]
+    public class MerqPackage : AsyncPackage
+    {
+    }
 }

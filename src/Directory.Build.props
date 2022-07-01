@@ -5,9 +5,9 @@
 		<Owners>mobessen</Owners>
 		<Copyright>Copyright 2016 © Mobile Essentials</Copyright>
 
-		<PackageProjectUrl>https://github.com/Xamarin/Merq</PackageProjectUrl>
-		<PackageLicenseUrl>https://github.com/Xamarin/Merq/blob/main/LICENSE</PackageLicenseUrl>
-		<PackageIconUrl>https://raw.github.com/Xamarin/Merq/main/icon/48.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/xamarin/Merq</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/xamarin/Merq/blob/main/license.txt</PackageLicenseUrl>
+		<PackageIconUrl>https://raw.github.com/xamarin/Merq/main/icon/48.png</PackageIconUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
 		<DefaultItemExcludes>$(DefaultItemExcludes);**/*.binlog</DefaultItemExcludes>

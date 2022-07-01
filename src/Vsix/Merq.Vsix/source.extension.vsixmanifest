@@ -7,7 +7,7 @@
 		<DisplayName>Extensibility Message Bus</DisplayName>
 		<Description xml:space="preserve">Provides common messaging-based MEF services for loosely coupled Visual Studio extension components communication and integration.</Description>
 		<MoreInfo>https://github.com/Xamarin/Merq</MoreInfo>
-		<License>LICENSE</License>
+		<License>license.txt</License>
 		<Icon>Merq.ico</Icon>
 		<PreviewImage>200.png</PreviewImage>
 		<Tags>vsix</Tags>
