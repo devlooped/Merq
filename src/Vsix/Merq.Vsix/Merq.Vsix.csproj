@@ -10,8 +10,9 @@
 
     <DeployExtension>true</DeployExtension>
     <DeployExtension Condition="$(CI)">false</DeployExtension>
-    <OverrideDeployVsixExtensionFiles>false</OverrideDeployVsixExtensionFiles>
-    <OverrideGeneratePkgDef>false</OverrideGeneratePkgDef>
+
+    <!-- Allows properly importing VSSDK without using a legacy csproj -->
+    <CustomAfterMicrosoftCSharpTargets Condition="'$(VsSDKInstall)' != ''" >$(VsSDKInstall)\Microsoft.VsSDK.targets</CustomAfterMicrosoftCSharpTargets>
   </PropertyGroup>
 
   <Import Project="Merq.Vsix.props" />
@@ -67,18 +68,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.9.3039">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.14" />
-    <PackageReference Include="Xamarin.VSSDK" Version="0.4.0-alpha.24" />
-    <PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.4.0-alpha.24" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4054" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.1.32210.191" />
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.36" ExcludeAssets="all" />
@@ -96,13 +88,13 @@
   -->
   <Target Name="TempRemoveVsixSourceItems" BeforeTargets="ValidateVsixReferencedAssemblies">
     <ItemGroup>
-      <VSIXSourceItem Remove="$(IntermediateOutputPath)Merq.Vsix.dll"/>
+      <VSIXSourceItem Remove="$(IntermediateOutputPath)Merq.Vsix.dll" />
     </ItemGroup>
   </Target>
 
   <Target Name="ReturnVsixSourceItems" AfterTargets="ValidateVsixReferencedAssemblies">
     <ItemGroup>
-      <VSIXSourceItem Include="$(IntermediateOutputPath)Merq.Vsix.dll"/>
+      <VSIXSourceItem Include="$(IntermediateOutputPath)Merq.Vsix.dll" />
     </ItemGroup>
   </Target>
 
@@ -118,10 +110,7 @@
     <ItemGroup>
       <NupkgFiles Include="$(PackageOutputPath)\Merq.*.nupkg" />
     </ItemGroup>
-    <Copy
-      SourceFiles="@(NupkgFiles)"
-      DestinationFolder="$(OutDir)"
-    />
+    <Copy SourceFiles="@(NupkgFiles)" DestinationFolder="$(OutDir)" />
   </Target>
 
   <Target Name="SignVsix" BeforeTargets="SignFiles" DependsOnTargets="GetFilesToSign;CreateVsixContainer;CopyNuGetFilesToOutputDir" Condition="'$(Configuration)' == 'Release'">
@@ -140,10 +129,7 @@
       <SignedFiles Include="$(OutDir)*.nupkg" />
       <SignedFiles Include="$(OutDir)$(TargetVsixContainerName)" />
     </ItemGroup>
-    <Copy
-      SourceFiles="@(SignedFiles)"
-      DestinationFolder="$(PackageOutputPath)"
-    />
+    <Copy SourceFiles="@(SignedFiles)" DestinationFolder="$(PackageOutputPath)" />
   </Target>
 
   <ItemGroup>
