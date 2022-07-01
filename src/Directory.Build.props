@@ -12,6 +12,8 @@
 
 		<DefaultItemExcludes>$(DefaultItemExcludes);**/*.binlog</DefaultItemExcludes>
 
+		<LangVersion>Latest</LangVersion>
+
 		<CI>false</CI>
 		<CI Condition="'$(TF_BUILD)' == 'true' or '$(APPVEYOR)' != ''">true</CI>
 		<PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)../pack</PackageOutputPath>

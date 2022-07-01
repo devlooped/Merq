@@ -34,8 +34,7 @@
       <Link>Merq.ico</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\..\..\LICENSE">
-      <Link>LICENSE</Link>
+    <Content Include="..\..\..\license.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -69,7 +68,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
     <PackageReference Include="Clarius.VisualStudio" Version="2.0.14" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4054" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.1.32210.191" />
