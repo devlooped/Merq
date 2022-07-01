@@ -11,6 +11,15 @@ trigger:
     exclude:
     - docs
     - icon
+pr:
+  - main
+  - master
+  - feature/*
+  - new/*
+  - rel/*
+  - pre/*
+  - d16-*
+  - d17-*
 
 variables:
 - template: build/variables.yml
