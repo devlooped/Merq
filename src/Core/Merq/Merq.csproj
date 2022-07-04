@@ -8,17 +8,13 @@
     <PackageId>Merq</PackageId>
     <Title>Merq: Command Bus + Event Stream (Interfaces)</Title>
     <Description>Command Bus and Event Stream patterns core interfaces</Description>
-
-    <IncludeContentInPackage>false</IncludeContentInPackage>
-    <IncludeContentInPack>false</IncludeContentInPack>
-    <IncludeGlobalAssemblyInfo>false</IncludeGlobalAssemblyInfo>
   </PropertyGroup>
-
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.8.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
   </ItemGroup>
 

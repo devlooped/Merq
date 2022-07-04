@@ -12,7 +12,7 @@ namespace Merq
         {
             var stream = new EventStream();
 
-            Assert.Throws<ArgumentNullException>(() => stream.Push<object>(null));
+            Assert.Throws<ArgumentNullException>(() => stream.Push<object?>(null));
         }
 
         [Fact]

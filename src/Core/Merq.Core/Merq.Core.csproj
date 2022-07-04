@@ -7,26 +7,23 @@
     <Title>Merq: Command Bus + Event Stream (Implementations)</Title>
     <Summary>Default implementation of core interfaces for ICommandBus and IEventStream</Summary>
     <Description>Default implementation of core interfaces for ICommandBus and IEventStream</Description>
-    <InferPackageContents>false</InferPackageContents>
   </PropertyGroup>
-
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Merq.props', '$(MSBuildThisFileDirectory)'))" />
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.*" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.8.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq\Merq.csproj" Pack="False" />
+    <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Merq.Core.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001009d69078301b6c4881e95cd924d5e355a4d24ba3d28fb571e00124706538eef959eb371fbb9bd2776fbe7d228178df51fbd4a849aff37161190f3254c77167d16e42c2be32c817537b67b874b66be01a4b6d1c780ff052c8f7f52cad6751288911d450cf443ed4f40b266332f6f25204df23df9a23d38e5fe19f6372a636c7da1</_Parameter1>
-    </AssemblyAttribute>
+    <InternalVisibleTo Include="Merq.Core.Tests" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,17 +48,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Name="AddPackageContents" BeforeTargets="GetPackageContents">
-    <ItemGroup>
-      <PackageFile Include="$(OutputPath)\$(PackageId).*" Exclude="$(OutputPath)\$(PackageId)*.nupkg;$(OutputPath)\$(PackageId)*.json" Kind="Lib" />
-    </ItemGroup>
-
-    <MSBuild Projects="..\Merq\Merq.csproj" Targets="GetPackageVersion">
-      <Output TaskParameter="TargetOutputs" PropertyName="MerqVersion" />
-    </MSBuild>
-
-    <ItemGroup>
-      <PackageFile Include="Merq" Kind="Dependency" Version="$(MerqVersion)" />
-    </ItemGroup>
-  </Target>
 </Project>

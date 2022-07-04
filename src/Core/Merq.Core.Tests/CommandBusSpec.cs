@@ -85,7 +85,7 @@ namespace Merq
         {
             var bus = new CommandBus(Mock.Of<ICommandHandler<Command>>());
 
-            Assert.False(bus.CanHandle((Command)null));
+            Assert.False(bus.CanHandle(default(Command)!));
         }
 
         [Fact]
@@ -185,43 +185,43 @@ namespace Merq
         [Fact]
         public void when_constructing_with_null_handlers_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBus(default(IEnumerable<ICommandHandler>)));
+            Assert.Throws<ArgumentNullException>(() => new CommandBus(default(IEnumerable<ICommandHandler>)!));
         }
 
         [Fact]
         public void when_can_handle_with_null_command_then_returns_false()
         {
-            Assert.False(new CommandBus().CanHandle(null));
+            Assert.False(new CommandBus().CanHandle(null!));
         }
 
         [Fact]
         public void when_can_execute_with_null_command_then_returns_false()
         {
-            Assert.False(new CommandBus().CanExecute<Command>(null));
+            Assert.False(new CommandBus().CanExecute<Command>(null!));
         }
 
         [Fact]
         public void when_execute_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBus().Execute(default(Command)));
+            Assert.Throws<ArgumentNullException>(() => new CommandBus().Execute(default(Command)!));
         }
 
         [Fact]
         public void when_execute_result_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBus().Execute(default(CommandWithResult)));
+            Assert.Throws<ArgumentNullException>(() => new CommandBus().Execute(default(CommandWithResult)!));
         }
 
         [Fact]
         public async Task when_executeasync_with_null_command_then_throws()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBus().ExecuteAsync(default(AsyncCommand), CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBus().ExecuteAsync(default(AsyncCommand)!, CancellationToken.None));
         }
 
         [Fact]
         public async Task when_executeasync_result_with_null_command_then_throws()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBus().ExecuteAsync(default(AsyncCommandWithResult), CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBus().ExecuteAsync(default(AsyncCommandWithResult)!, CancellationToken.None));
         }
 
         [Fact]
