@@ -221,7 +221,7 @@ public class CommandBus : ICommandBus
 
     class VoidExecutor<TCommand> : VoidExecutor where TCommand : ICommand
     {
-        ICommandHandler<TCommand> handler;
+        readonly ICommandHandler<TCommand> handler;
 
         public VoidExecutor(ICommandHandler handler)
             => this.handler = (ICommandHandler<TCommand>)handler;
@@ -253,7 +253,7 @@ public class CommandBus : ICommandBus
 
     class VoidAsyncExecutor<TCommand> : VoidAsyncExecutor where TCommand : IAsyncCommand
     {
-        IAsyncCommandHandler<TCommand> handler;
+        readonly IAsyncCommandHandler<TCommand> handler;
 
         public VoidAsyncExecutor(ICommandHandler handler)
             => this.handler = (IAsyncCommandHandler<TCommand>)handler;
@@ -269,7 +269,7 @@ public class CommandBus : ICommandBus
 
     class ResultAsyncExecutor<TCommand, TResult> : ResultAsyncExecutor where TCommand : IAsyncCommand<TResult>
     {
-        IAsyncCommandHandler<TCommand, TResult> handler;
+        readonly IAsyncCommandHandler<TCommand, TResult> handler;
 
         public ResultAsyncExecutor(ICommandHandler handler)
             => this.handler = (IAsyncCommandHandler<TCommand, TResult>)handler;

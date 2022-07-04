@@ -115,7 +115,7 @@ public class EventStream : IEventStream
 
     class Subject<T> : Subject, IObservable<T>
     {
-        readonly ConcurrentDictionary<IObserver<T>, object> observers = new ConcurrentDictionary<IObserver<T>, object>();
+        readonly ConcurrentDictionary<IObserver<T>, object> observers = new();
 
         public override void OnNext(object value)
         {
