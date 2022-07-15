@@ -11,7 +11,7 @@ namespace Merq;
 class EventStreamComponent : EventStream
 {
     readonly IComponentModel? components;
-    
+
     [ImportingConstructor]
     public EventStreamComponent([Import(typeof(SVsServiceProvider))] IServiceProvider services)
         => components = (IComponentModel)services.GetService(typeof(SComponentModel))!;
@@ -26,7 +26,7 @@ class EventStreamComponent : EventStream
         // the concrete IObservable<BaseEvent> here, which considerably simplifies 
         // the implementation here and avoids caching/invalidation/traversal of 
         // TEvent hierarchy, etc.
-        return components?.GetExtensions<IObservable<TEvent>>() ?? 
+        return components?.GetExtensions<IObservable<TEvent>>() ??
             Array.Empty<IObservable<TEvent>>();
     }
 }
