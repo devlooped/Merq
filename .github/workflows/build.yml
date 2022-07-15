@@ -23,51 +23,20 @@ defaults:
     shell: bash
 
 jobs:
-  dotnet-format:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
         with: 
           submodules: recursive
           fetch-depth: 0
-
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
 
       - name: ✓ ensure format
         run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
-
-  build:
-    name: build-${{ matrix.os }}
-    needs: dotnet-format
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
-    steps:
-      - name: 🤘 checkout
-        uses: actions/checkout@v2
-        with: 
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: ⚙ dotnet
-        uses: actions/setup-dotnet@v1
-        if: matrix.os != 'windows-latest'
-        with:
-          dotnet-version: '6.0.x'
-
+          
       - name: 🙏 build
         run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
-
-      - name: ⚙ GNU grep
-        if: matrix.os == 'macOS-latest'
-        run: |
-          brew install grep
-          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
 
       - name: 🧪 test
         uses: ./.github/workflows/test

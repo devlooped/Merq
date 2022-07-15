@@ -81,7 +81,7 @@ namespace Merq
         {
             var bus = new CommandBusComponent(Mock.Of<IComponentModel>());
 
-            Assert.Throws<ArgumentNullException>(() => bus.CanHandle((Command)null));
+            Assert.Throws<ArgumentNullException>(() => bus.CanHandle((Command)null!));
         }
 
         [Fact]
@@ -190,37 +190,37 @@ namespace Merq
         [Fact]
         public void when_can_handle_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).CanHandle(null));
+            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).CanHandle(null!));
         }
 
         [Fact]
         public void when_can_execute_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).CanExecute<Command>(null));
+            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).CanExecute<Command>(null!));
         }
 
         [Fact]
         public void when_execute_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).Execute(default(Command)));
+            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).Execute(default(Command)!));
         }
 
         [Fact]
         public void when_execute_result_with_null_command_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).Execute(default(CommandWithResult)));
+            Assert.Throws<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).Execute(default(CommandWithResult)!));
         }
 
         [Fact]
         public async Task when_executeasync_with_null_command_then_throws()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).ExecuteAsync(default(AsyncCommand), CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).ExecuteAsync(default(AsyncCommand)!, CancellationToken.None));
         }
 
         [Fact]
         public async Task when_executeasync_result_with_null_command_then_throws()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).ExecuteAsync(default(AsyncCommandWithResult), CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => new CommandBusComponent(Mock.Of<IComponentModel>()).ExecuteAsync(default(AsyncCommandWithResult)!, CancellationToken.None));
         }
 
         [Fact]

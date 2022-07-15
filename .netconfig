@@ -1,8 +1,3 @@
-[file ".github/workflows/build.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	sha = e19ed3228a0ac7f64a43197241a788fb224a683f
-	etag = 4e65025ab77d15766520234d3a9953ff4f1eea91620e1080f10909de19804877
-	weak
 [file ".github/workflows/test/action.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/test/action.yml
 	sha = 9a1b07589b9bde93bc12528e9325712a32dec418
@@ -12,11 +7,6 @@
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/changelog.yml
 	sha = be8f625e4cf5c2c572c7e56ba6dc4c4935ab0c00
 	etag = 202803313c2792cb09d9cb8041fe4b39e550e26c90971a57b92534c599a596a7
-	weak
-[file ".github/workflows/publish.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/workflows/publish.yml
-	sha = 0e5a33cc685fa85e3a81b797202f3e14e1cd84a9
-	etag = 1d6a05b7f684b4fc1bb387750b0e100406e8a0017981c4e9d39a012479f35266
 	weak
 [file ".github/dependabot.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/dependabot.yml

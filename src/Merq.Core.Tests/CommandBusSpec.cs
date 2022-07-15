@@ -41,7 +41,7 @@ namespace Merq
         }
 
         [Fact]
-        public async void when_executing_async_command_without_handler_then_throws()
+        public async Task when_executing_async_command_without_handler_then_throws()
         {
             var bus = new CommandBus();
 
@@ -49,7 +49,7 @@ namespace Merq
         }
 
         [Fact]
-        public async void when_executing_async_command_with_result_without_handler_then_throws()
+        public async Task when_executing_async_command_with_result_without_handler_then_throws()
         {
             var bus = new CommandBus();
 
@@ -154,7 +154,7 @@ namespace Merq
         }
 
         [Fact]
-        public async void when_executing_async_command_then_invokes_async_handler()
+        public async Task when_executing_async_command_then_invokes_async_handler()
         {
             var handler = new Mock<IAsyncCommandHandler<AsyncCommand>>();
             var command = new AsyncCommand();
@@ -168,7 +168,7 @@ namespace Merq
         }
 
         [Fact]
-        public async void when_executing_async_command_then_invokes_async_handler_with_result()
+        public async Task when_executing_async_command_then_invokes_async_handler_with_result()
         {
             var handler = new Mock<IAsyncCommandHandler<AsyncCommandWithResult, Result>>();
             var command = new AsyncCommandWithResult();

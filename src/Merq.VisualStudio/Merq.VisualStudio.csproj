@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <PackageId>Merq.VisualStudio</PackageId>
+    <Title>Merq: Command Bus + Event Stream (for Visual Studio Hosting)</Title>
+    <Description>Merq MEF components suitable for hosting with Microsoft.VisualStudio.Composition.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.2.32505.173" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
+    <ProjectReference Include="..\Merq\Merq.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Merq.Tests" />
+  </ItemGroup>
+
+</Project>

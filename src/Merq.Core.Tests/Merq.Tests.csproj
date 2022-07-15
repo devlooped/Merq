@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DocumentationFile />
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
+    <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
+    <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
 
 </Project>

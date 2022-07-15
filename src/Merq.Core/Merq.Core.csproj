@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>Merq.Core</PackageId>
     <Title>Merq: Command Bus + Event Stream (Implementations)</Title>
     <Summary>Default implementation of core interfaces for ICommandBus and IEventStream</Summary>
@@ -10,9 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.*" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="IFluentInterface" Version="2.*" PrivateAssets="all" />
     <PackageReference Include="NuGetizer" Version="0.8.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" Pack="false" />
@@ -27,25 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <FilesToSign Include="$(OutDir)\Merq.Core.dll">
-        <Authenticode>Microsoft400</Authenticode>
-    </FilesToSign>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Merq</CustomToolNamespace>
-    </EmbeddedResource>
+    <Compile Update="Properties\Resources.Designer.cs" DependentUpon="Resources.resx"/>
   </ItemGroup>
 
 </Project>
