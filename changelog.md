@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.0-beta](https://github.com/devlooped/Merq/tree/v1.2.0-beta) (2022-07-20)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-alpha...v1.2.0-beta)
+
+:twisted_rightwards_arrows: Merged:
+
+- Ensure we strong-name the assemblies with the previous key [\#4](https://github.com/devlooped/Merq/pull/4) (@kzu)
+
 ## [v1.2.0-alpha](https://github.com/devlooped/Merq/tree/v1.2.0-alpha) (2022-07-16)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/9aed78c8a37c830093a8dbeb15981df3640dd350...v1.2.0-alpha)
