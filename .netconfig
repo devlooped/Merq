@@ -53,3 +53,8 @@
 	sha = 1537aa96d3c999642d678e1143b09950f235b977
 	etag = 754274e682c3523e3ac0a142ada64abff20551dc73bf16edfbd66415dcf87fd0
 	weak
+[file ".github/workflows/release-notes.yml"]
+	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-notes.yml
+	sha = be8f625e4cf5c2c572c7e56ba6dc4c4935ab0c00
+	etag = d1de9cb9c403ed8632d22d4cc153ae63b075266b9ce638b9ac73fd47dd2bccc1
+	weak
