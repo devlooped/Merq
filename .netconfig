@@ -25,8 +25,8 @@
 	weak
 [file ".github/workflows/dotnet-file.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
-	sha = 2a39a426f66402e47c80818f92748a1bfd7d736c
-	etag = c424e4f9159bd5d4ccb3b65646a65eed5ad153f57111e3b56900ebce10194f3f
+	sha = ef47d782b45dbf3dc7f47f39168a2eed9c536a40
+	etag = 41db5ebfb3f06bf2a9d55919f50a10fa80057a0d636532beac3b77464c3c1b5d
 	weak
 [file "license.txt"]
 	url = https://github.com/devlooped/oss/blob/main/license.txt
@@ -35,8 +35,8 @@
 	weak
 [file ".editorconfig"]
 	url = https://github.com/devlooped/oss/blob/main/.editorconfig
-	sha = 0683ee777d7d878d4bf013d7deea352685135a05
-	etag = 985aa022503959d35b03c870f07ae604cead7580d260775235ef6665aa9a6cbe
+	sha = 369cd2bd49ce032f616a2fcb4c997535dbe8d9aa
+	etag = 4e857df48d0abd81512350d6b3b1a1c83b78284be65bd5172a4ec8e52cd04e2d
 	weak
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
@@ -45,8 +45,8 @@
 	weak
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
-	sha = 024f73321ffe4e927151ff94666c52c2d425139a
-	etag = 816dff7cb821a885da46ad200f9b8bea3438d74da3172bc43716d5670abaee6c
+	sha = b9fb0a7d34d6c16fb404f9dff4aac6789ef08a00
+	etag = 852b16129d2c681ad6ec86ff56b256541e0ce0961eb3a9492e0ead89ffe5a6bd
 	weak
 [file "src/nuget.config"]
 	url = https://github.com/devlooped/oss/blob/main/src/nuget.config
