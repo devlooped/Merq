@@ -259,38 +259,6 @@ public class CommandBusSpec
         Assert.Same(exception, actual);
     }
 
-    public class AsyncCommand : IAsyncCommand { }
-
-    public class AsyncCommandWithResult : IAsyncCommand<Result> { }
-
-    public class Command : ICommand { }
-
-    public class CommandWithResult : ICommand<Result> { }
-
-    public class CommandWithResults : ICommand<IEnumerable<Result>> { }
-
-    public class Result { }
-
-    class NonPublicCommandHandlerWithResults : ICommandHandler<CommandWithResults, IEnumerable<Result>>
-    {
-        Result result;
-
-        public NonPublicCommandHandlerWithResults(Result result)
-        {
-            this.result = result;
-        }
-
-        bool ICanExecute<CommandWithResults>.CanExecute(CommandWithResults command)
-        {
-            return true;
-        }
-
-        IEnumerable<Result> ICommandHandler<CommandWithResults, IEnumerable<Result>>.Execute(CommandWithResults command)
-        {
-            yield return result;
-        }
-    }
-
     // Ensure all test to be run using a derived command bus class
     class CommandBus : Merq.CommandBus
     {
