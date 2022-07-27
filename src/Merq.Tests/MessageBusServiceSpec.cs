@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Subjects;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace Merq;
 
@@ -32,17 +36,47 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     }
 
     [Fact]
-    public void when_notifying_external_producer_then_throws()
+    public void given_external_producer_when_subscribing_to_base_then_notifies()
     {
-        var producer = new Subject<int>();
-        var collection = new ServiceCollection()
+        var producer = new Subject<ConcreteEvent>();
+
+        var bus = new ServiceCollection()
             .AddMessageBus()
-            .AddSingleton<IObservable<int>>(producer);
+            .AddSingleton<IObservable<ConcreteEvent>>(producer)
+            .AddSingleton<IObservable<BaseEvent>>(producer)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
 
-        var services = collection.BuildServiceProvider();
-        var bus = services.GetRequiredService<IMessageBus>();
+        var expected = new ConcreteEvent();
+        BaseEvent? actual = default;
 
-        Assert.Throws<NotSupportedException>(() => bus.Notify(42));
+        bus.Observe<BaseEvent>().Subscribe(e => actual = e);
+
+        producer.OnNext(expected);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void given_external_producer_then_can_notify_event()
+    {
+        var producer = new Subject<ConcreteEvent>();
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton<IObservable<ConcreteEvent>>(producer)
+            .AddSingleton<IObservable<BaseEvent>>(producer)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        var expected = new ConcreteEvent();
+        ConcreteEvent? actual = default;
+
+        bus.Observe<ConcreteEvent>().Subscribe(e => actual = e);
+
+        bus.Notify(expected);
+
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
@@ -144,6 +178,246 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         subject2.OnNext(new AnotherEvent());
 
         Assert.Equal(2, called);
+    }
+
+    [Fact]
+    public void when_executing_command_without_handler_then_throws()
+    {
+        Assert.False(bus.CanExecute(new Command()));
+        Assert.False(bus.CanHandle<Command>());
+        Assert.False(bus.CanHandle(new Command()));
+        Assert.Throws<InvalidOperationException>(() => bus.Execute(new Command()));
+    }
+
+    [Fact]
+    public void when_executing_command_with_result_without_handler_then_throws()
+    {
+        Assert.False(bus.CanExecute(new CommandWithResult()));
+        Assert.False(bus.CanHandle<CommandWithResult>());
+        Assert.False(bus.CanHandle(new CommandWithResult()));
+        Assert.Throws<InvalidOperationException>(() => bus.Execute(new CommandWithResult()));
+    }
+
+    [Fact]
+    public async Task when_executing_async_command_without_handler_then_throws()
+    {
+        Assert.False(bus.CanExecute(new AsyncCommand()));
+        Assert.False(bus.CanHandle<AsyncCommand>());
+        Assert.False(bus.CanHandle(new AsyncCommand()));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => bus.ExecuteAsync(new AsyncCommand(), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task when_executing_async_command_with_result_without_handler_then_throws()
+    {
+        Assert.False(bus.CanExecute(new AsyncCommandWithResult()));
+        Assert.False(bus.CanHandle<AsyncCommandWithResult>());
+        Assert.False(bus.CanHandle(new AsyncCommandWithResult()));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => bus.ExecuteAsync(new AsyncCommandWithResult(), CancellationToken.None));
+    }
+
+    [Fact]
+    public void when_can_handle_requested_for_registered_handler_then_returns_true()
+    {
+        var handler = Mock.Of<ICommandHandler<Command>>();
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler)
+            .AddSingleton<IExecutableCommandHandler<Command>>(handler)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        Assert.True(bus.CanHandle(new Command()));
+    }
+
+    [Fact]
+    public void when_can_execute_requested_then_invokes_sync_handler()
+    {
+        var command = new Command();
+        var handler = Mock.Of<ICommandHandler<Command>>(c => c.CanExecute(command) == true);
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler)
+            .AddSingleton<IExecutableCommandHandler<Command>>(handler)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        Assert.True(bus.CanExecute(command));
+    }
+
+    [Fact]
+    public void when_can_execute_requested_then_invokes_async_handler()
+    {
+        var command = new AsyncCommand();
+        var handler = Mock.Of<IAsyncCommandHandler<AsyncCommand>>(c => c.CanExecute(command) == true);
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler)
+            .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        Assert.True(bus.CanExecute(command));
+    }
+
+    [Fact]
+    public void when_executing_sync_command_then_invokes_sync_handler()
+    {
+        var handler = new Mock<ICommandHandler<Command>>();
+        var command = new Command();
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        bus.Execute(command);
+
+        handler.Verify(x => x.Execute(command));
+    }
+
+    [Fact]
+    public void when_executing_sync_command_then_invokes_sync_handler_with_result()
+    {
+        var handler = new Mock<ICommandHandler<CommandWithResult, Result>>();
+        var command = new CommandWithResult();
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        bus.Execute(command);
+
+        handler.Verify(x => x.Execute(command));
+    }
+
+    [Fact]
+    public void when_executing_sync_command_with_result_then_invokes_sync_handler_with_result()
+    {
+        var handler = new Mock<ICommandHandler<CommandWithResult, Result>>();
+        var command = new CommandWithResult();
+        var expected = new Result();
+
+        handler.Setup(x => x.Execute(command)).Returns(expected);
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        var result = bus.Execute(command);
+
+        Assert.Same(expected, result);
+    }
+
+    [Fact]
+    public async Task when_executing_async_command_then_invokes_async_handler()
+    {
+        var handler = new Mock<IAsyncCommandHandler<AsyncCommand>>();
+        var command = new AsyncCommand();
+        handler.Setup(x => x.ExecuteAsync(command, CancellationToken.None)).Returns(Task.FromResult(true));
+
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        await bus.ExecuteAsync(command, CancellationToken.None);
+
+        handler.Verify(x => x.ExecuteAsync(command, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task when_executing_async_command_then_invokes_async_handler_with_result()
+    {
+        var handler = new Mock<IAsyncCommandHandler<AsyncCommandWithResult, Result>>();
+        var command = new AsyncCommandWithResult();
+        var result = new Result();
+        handler.Setup(x => x.ExecuteAsync(command, CancellationToken.None)).Returns(Task.FromResult(result));
+        
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<AsyncCommandWithResult>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        await bus.ExecuteAsync(command, CancellationToken.None);
+
+        handler.Verify(x => x.ExecuteAsync(command, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task when_execute_with_null_command_then_throwsAsync()
+    {
+        Assert.Throws<ArgumentNullException>(() => bus.Execute(default(Command)!));
+        Assert.Throws<ArgumentNullException>(() => bus.Execute(default(CommandWithResult)!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => bus.ExecuteAsync(default(AsyncCommand)!, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => bus.ExecuteAsync(default(AsyncCommandWithResult)!, CancellationToken.None));
+    }
+
+    [Fact]
+    public void when_executing_non_public_command_handler_then_invokes_handler_with_result()
+    {
+        var handler = new NonPublicCommandHandlerWithResults(new Result());
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton<ICommandHandler<CommandWithResults, IEnumerable<Result>>>(handler)
+            .AddSingleton<IExecutableCommandHandler<CommandWithResults>>(handler)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        var results = bus.Execute(new CommandWithResults());
+
+        Assert.Single(results);
+    }
+
+    [Fact]
+    public void when_executing_command_as_explicit_ICommand_then_invokes_handler()
+    {
+        var handler = new Mock<ICommandHandler<Command>>();
+        var command = new Command();
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        bus.Execute((ICommand)command);
+
+        handler.Verify(x => x.Execute(command));
+    }
+
+    [Fact]
+    public void when_command_execution_throws_then_throws_original_exception()
+    {
+        var handler = new Mock<ICommandHandler<Command>>();
+        var command = new Command();
+        var exception = new InvalidOperationException();
+        handler.Setup(x => x.Execute(command)).Throws(exception);
+        var bus = new ServiceCollection()
+            .AddMessageBus()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .BuildServiceProvider()
+            .GetRequiredService<IMessageBus>();
+
+        var actual = Assert.Throws<InvalidOperationException>(() => bus.Execute((ICommand)command));
+
+        Assert.Same(exception, actual);
     }
 
     class NestedEvent { }
