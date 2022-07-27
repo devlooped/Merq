@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.0](https://github.com/devlooped/Merq/tree/v1.2.0) (2022-07-25)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-beta...v1.2.0)
+
+:twisted_rightwards_arrows: Merged:
+
+- Introduce IMessageBus unifying interface for Commands+Events [\#6](https://github.com/devlooped/Merq/pull/6) (@kzu)
+
 ## [v1.2.0-beta](https://github.com/devlooped/Merq/tree/v1.2.0-beta) (2022-07-20)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-alpha...v1.2.0-beta)
