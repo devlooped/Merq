@@ -1,8 +1,8 @@
 # Changelog
 
-## [v1.2.1](https://github.com/devlooped/Merq/tree/v1.2.1) (2022-07-28)
+## [v1.3.0](https://github.com/devlooped/Merq/tree/v1.3.0) (2022-07-28)
 
-[Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-beta...v1.2.1)
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-beta...v1.3.0)
 
 :sparkles: Implemented enhancements:
 
