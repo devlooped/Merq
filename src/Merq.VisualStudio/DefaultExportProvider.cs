@@ -15,24 +15,15 @@ public class DefaultExportProvider
     /// </summary>
     [ImportingConstructor]
     public DefaultExportProvider(
-        [Import("Merq.ICommandBus.Default")] ICommandBus defaultCommandBus,
-        [Import("Merq.IEventStream.Default")] IEventStream defaultEventStream,
-        [ImportMany("Merq.ICommandBus.Override")] IEnumerable<ICommandBus> customCommandBus,
-        [ImportMany("Merq.IEventStream.Override")] IEnumerable<IEventStream> customEventStream)
+        [Import("Merq.IMessageBus.Default")] IMessageBus defaultMessageBus,
+        [ImportMany("Merq.IMessageBus.Override")] IEnumerable<IMessageBus> customMessageBus)
     {
-        CommandBus = customCommandBus.FirstOrDefault() ?? defaultCommandBus;
-        EventStream = customEventStream.FirstOrDefault() ?? defaultEventStream;
+        MessageBus = customMessageBus.FirstOrDefault() ?? defaultMessageBus;
     }
 
     /// <summary>
-    /// Exports the <see cref="ICommandBus"/>
+    /// Exports the <see cref="IMessageBus"/>
     /// </summary>
     [Export]
-    public ICommandBus CommandBus { get; }
-
-    /// <summary>
-    /// Exports the <see cref="IEventStream"/>
-    /// </summary>
-    [Export]
-    public IEventStream EventStream { get; }
+    public IMessageBus MessageBus { get; }
 }
