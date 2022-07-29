@@ -4,9 +4,15 @@ using System.Linq;
 
 namespace Merq;
 
+/// <summary>
+/// Exports the components the message bus depends on.
+/// </summary>
 [PartCreationPolicy(CreationPolicy.Shared)]
-class DefaultExportProvider
+public class DefaultExportProvider
 {
+    /// <summary>
+    /// Creates the export provider.
+    /// </summary>
     [ImportingConstructor]
     public DefaultExportProvider(
         [Import("Merq.ICommandBus.Default")] ICommandBus defaultCommandBus,
@@ -18,9 +24,15 @@ class DefaultExportProvider
         EventStream = customEventStream.FirstOrDefault() ?? defaultEventStream;
     }
 
+    /// <summary>
+    /// Exports the <see cref="ICommandBus"/>
+    /// </summary>
     [Export]
     public ICommandBus CommandBus { get; }
 
+    /// <summary>
+    /// Exports the <see cref="IEventStream"/>
+    /// </summary>
     [Export]
     public IEventStream EventStream { get; }
 }
