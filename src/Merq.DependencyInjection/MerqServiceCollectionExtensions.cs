@@ -15,5 +15,5 @@ public static class MerqServiceCollectionExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddMessageBus(this IServiceCollection services)
-        => services.AddSingleton<IMessageBus, MessageBusService>();
+        => services.AddSingleton<IMessageBus, MessageBus>();
 }
