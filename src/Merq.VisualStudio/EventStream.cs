@@ -51,7 +51,7 @@ public class EventStream : IEventStream
     {
         if (@event == null) throw new ArgumentNullException(nameof(@event));
         if (!IsValid<TEvent>())
-            throw new NotSupportedException(Resources.EventStream_PublishedEventNotPublic);
+            throw new NotSupportedException();
 
         var eventType = @event.GetType().GetTypeInfo();
 
@@ -64,7 +64,7 @@ public class EventStream : IEventStream
     public virtual IObservable<TEvent> Of<TEvent>()
     {
         if (!IsValid<TEvent>())
-            throw new NotSupportedException(Resources.EventStream_SubscribedEventNotPublic);
+            throw new NotSupportedException();
 
         var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent).GetTypeInfo(), info =>
         {

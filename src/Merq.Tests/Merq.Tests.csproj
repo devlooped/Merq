@@ -6,6 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CommandBusComponentSpec.cs" />
+    <Compile Remove="EventStreamComponentSpec.cs" />
+    <Compile Remove="EventStreamSpec.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="CommandBusComponentSpec.cs" />
+    <None Include="EventStreamComponentSpec.cs" />
+    <None Include="EventStreamSpec.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />

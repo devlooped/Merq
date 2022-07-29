@@ -1,5 +1,5 @@
-﻿A simple default implementation of the message bus that has no external 
-dependencies. 
+﻿Default implementation of the message bus that has no external 
+dependencies.
 
 This implementation of `IMessageBus` relies on two other components: an 
 `EventStream` (which provides the eventing side of the bus) and a 

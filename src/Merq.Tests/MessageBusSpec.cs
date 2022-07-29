@@ -8,23 +8,19 @@ using Moq;
 
 namespace Merq;
 
-public record MessageBusServiceSpec(ITestOutputHelper Output)
+public record MessageBusSpec(ITestOutputHelper Output)
 {
-    IMessageBus bus = new ServiceCollection()
-        .AddMessageBus()
-        .BuildServiceProvider()
-        .GetRequiredService<IMessageBus>();
+    IMessageBus bus = new MessageBus(new ServiceCollection().BuildServiceProvider());
 
     [Fact]
     public void when_subscribing_external_producer_then_succeeds()
     {
         var producer = new Subject<int>();
         var collection = new ServiceCollection()
-            .AddMessageBus()
             .AddSingleton<IObservable<int>>(producer);
 
         var services = collection.BuildServiceProvider();
-        var bus = services.GetRequiredService<IMessageBus>();
+        var bus = new MessageBus(services);
         
         int? value = default;
 
@@ -40,12 +36,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     {
         var producer = new Subject<ConcreteEvent>();
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton<IObservable<ConcreteEvent>>(producer)
             .AddSingleton<IObservable<BaseEvent>>(producer)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var expected = new ConcreteEvent();
         BaseEvent? actual = default;
@@ -62,12 +56,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     {
         var producer = new Subject<ConcreteEvent>();
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton<IObservable<ConcreteEvent>>(producer)
             .AddSingleton<IObservable<BaseEvent>>(producer)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var expected = new ConcreteEvent();
         ConcreteEvent? actual = default;
@@ -159,16 +151,14 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     {
         var subject1 = new Subject<ConcreteEvent>();
         var subject2 = new Subject<AnotherEvent>();
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton<IObservable<ConcreteEvent>>(subject1)
             // NOTE: the producer needs to properly register as the base types too
             .AddSingleton<IObservable<BaseEvent>>(subject1)
             .AddSingleton(subject2)
             .AddSingleton<IObservable<AnotherEvent>>(subject2)
             .AddSingleton<IObservable<BaseEvent>>(subject2)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var called = 0;
 
@@ -221,12 +211,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     {
         var handler = Mock.Of<ICommandHandler<Command>>();
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler)
             .AddSingleton<IExecutableCommandHandler<Command>>(handler)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         Assert.True(bus.CanHandle(new Command()));
     }
@@ -237,12 +225,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new Command();
         var handler = Mock.Of<ICommandHandler<Command>>(c => c.CanExecute(command) == true);
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler)
             .AddSingleton<IExecutableCommandHandler<Command>>(handler)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         Assert.True(bus.CanExecute(command));
     }
@@ -253,12 +239,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new AsyncCommand();
         var handler = Mock.Of<IAsyncCommandHandler<AsyncCommand>>(c => c.CanExecute(command) == true);
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler)
             .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         Assert.True(bus.CanExecute(command));
     }
@@ -269,12 +253,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var handler = new Mock<ICommandHandler<Command>>();
         var command = new Command();
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         bus.Execute(command);
 
@@ -287,12 +269,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var handler = new Mock<ICommandHandler<CommandWithResult, Result>>();
         var command = new CommandWithResult();
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         bus.Execute(command);
 
@@ -308,12 +288,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
 
         handler.Setup(x => x.Execute(command)).Returns(expected);
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var result = bus.Execute(command);
 
@@ -327,12 +305,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new AsyncCommand();
         handler.Setup(x => x.ExecuteAsync(command, CancellationToken.None)).Returns(Task.FromResult(true));
 
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         await bus.ExecuteAsync(command, CancellationToken.None);
 
@@ -346,13 +322,11 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new AsyncCommandWithResult();
         var result = new Result();
         handler.Setup(x => x.ExecuteAsync(command, CancellationToken.None)).Returns(Task.FromResult(result));
-        
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<AsyncCommandWithResult>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         await bus.ExecuteAsync(command, CancellationToken.None);
 
@@ -372,12 +346,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     public void when_executing_non_public_command_handler_then_invokes_handler_with_result()
     {
         var handler = new NonPublicCommandHandlerWithResults(new Result());
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton<ICommandHandler<CommandWithResults, IEnumerable<Result>>>(handler)
             .AddSingleton<IExecutableCommandHandler<CommandWithResults>>(handler)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var results = bus.Execute(new CommandWithResults());
 
@@ -389,12 +361,10 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     {
         var handler = new Mock<ICommandHandler<Command>>();
         var command = new Command();
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         bus.Execute((ICommand)command);
 
@@ -408,16 +378,62 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new Command();
         var exception = new InvalidOperationException();
         handler.Setup(x => x.Execute(command)).Throws(exception);
-        var bus = new ServiceCollection()
-            .AddMessageBus()
+        var bus = new MessageBus(new ServiceCollection()
             .AddSingleton(handler.Object)
             .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
-            .BuildServiceProvider()
-            .GetRequiredService<IMessageBus>();
+            .BuildServiceProvider());
 
         var actual = Assert.Throws<InvalidOperationException>(() => bus.Execute((ICommand)command));
 
         Assert.Same(exception, actual);
+    }
+
+    [Fact]
+    public void when_executing_non_public_command_then_invokes_handler()
+    {
+        var handler = new NonPublicCommandHandler();
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<ICommandHandler<NonPublicCommand>>(handler)
+            .AddSingleton<IExecutableCommandHandler<NonPublicCommand>>(handler)
+            .BuildServiceProvider());
+
+        bus.Execute(new NonPublicCommand());
+    }
+
+    [Fact]
+    public void when_executing_non_public_command_result_then_invokes_handler()
+    {
+        var handler = new NonPublicCommandResultHandler();
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<ICommandHandler<NonPublicCommandResult, int>>(handler)
+            .AddSingleton<IExecutableCommandHandler<NonPublicCommandResult>>(handler)
+            .BuildServiceProvider());
+
+        Assert.Equal(42, bus.Execute(new NonPublicCommandResult()));
+    }
+
+    [Fact]
+    public async Task when_executing_non_public_asynccommand_then_invokes_handler()
+    {
+        var handler = new NonPublicAsyncCommandHandler();
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<IAsyncCommandHandler<NonPublicAsyncCommand>>(handler)
+            .AddSingleton<IExecutableCommandHandler<NonPublicAsyncCommand>>(handler)
+            .BuildServiceProvider());
+
+        await bus.ExecuteAsync(new NonPublicAsyncCommand(), CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task when_executing_non_public_àsynccommand_result_then_invokes_handler()
+    {
+        var handler = new NonPublicAsyncCommandResultHandler();
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<IAsyncCommandHandler<NonPublicAsyncCommandResult, int>>(handler)
+            .AddSingleton<IExecutableCommandHandler<NonPublicAsyncCommandResult>>(handler)
+            .BuildServiceProvider());
+
+        Assert.Equal(42, await bus.ExecuteAsync(new NonPublicAsyncCommandResult(), CancellationToken.None));
     }
 
     class NestedEvent { }
