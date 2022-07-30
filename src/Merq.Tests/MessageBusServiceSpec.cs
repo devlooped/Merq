@@ -224,7 +224,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler)
-            .AddSingleton<IExecutableCommandHandler<Command>>(handler)
+            .AddSingleton<ICommandHandler<Command>>(handler)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -240,7 +240,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler)
-            .AddSingleton<IExecutableCommandHandler<Command>>(handler)
+            .AddSingleton<ICommandHandler<Command>>(handler)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -256,7 +256,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler)
-            .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler)
+            .AddSingleton<IAsyncCommandHandler<AsyncCommand>>(handler)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -272,7 +272,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .AddSingleton<ICommandHandler<Command>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -290,7 +290,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
+            .AddSingleton<ICommandHandler<CommandWithResult, Result>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -311,7 +311,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<CommandWithResult>>(handler.Object)
+            .AddSingleton<ICommandHandler<CommandWithResult, Result>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -330,7 +330,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<AsyncCommand>>(handler.Object)
+            .AddSingleton<IAsyncCommandHandler<AsyncCommand>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -350,7 +350,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<AsyncCommandWithResult>>(handler.Object)
+            .AddSingleton<IAsyncCommandHandler<AsyncCommandWithResult, Result>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -375,7 +375,6 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton<ICommandHandler<CommandWithResults, IEnumerable<Result>>>(handler)
-            .AddSingleton<IExecutableCommandHandler<CommandWithResults>>(handler)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -392,7 +391,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .AddSingleton<ICommandHandler<Command>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
@@ -411,7 +410,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var bus = new ServiceCollection()
             .AddMessageBus()
             .AddSingleton(handler.Object)
-            .AddSingleton<IExecutableCommandHandler<Command>>(handler.Object)
+            .AddSingleton<ICommandHandler<Command>>(handler.Object)
             .BuildServiceProvider()
             .GetRequiredService<IMessageBus>();
 
