@@ -13,7 +13,6 @@ public class AsyncCommandWithResult : IAsyncCommand<Result> { }
 public class Command : ICommand { }
 
 
-[Export(typeof(IExecutableCommandHandler<Command>))]
 [Export(typeof(ICommandHandler<Command>))]
 public class CommandHandler : ICommandHandler<Command>
 {
@@ -23,7 +22,6 @@ public class CommandHandler : ICommandHandler<Command>
 
 public class CommandWithResult : ICommand<Result> { }
 
-[Export(typeof(IExecutableCommandHandler<CommandWithResult>))]
 [Export(typeof(ICommandHandler<CommandWithResult, Result>))]
 public class CommandWithResultHandler : ICommandHandler<CommandWithResult, Result>
 {
@@ -37,7 +35,6 @@ public class Result { }
 
 class NonPublicCommand : ICommand { }
 
-[Export(typeof(IExecutableCommandHandler<NonPublicCommand>))]
 [Export(typeof(ICommandHandler<NonPublicCommand>))]
 class NonPublicCommandHandler : ICommandHandler<NonPublicCommand>
 {
@@ -47,7 +44,6 @@ class NonPublicCommandHandler : ICommandHandler<NonPublicCommand>
 
 class NonPublicCommandResult : ICommand<int> { }
 
-[Export(typeof(IExecutableCommandHandler<NonPublicCommandResult>))]
 [Export(typeof(ICommandHandler<NonPublicCommandResult, int>))]
 class NonPublicCommandResultHandler : ICommandHandler<NonPublicCommandResult, int>
 {
@@ -57,7 +53,6 @@ class NonPublicCommandResultHandler : ICommandHandler<NonPublicCommandResult, in
 
 class NonPublicAsyncCommand : IAsyncCommand { }
 
-[Export(typeof(IExecutableCommandHandler<NonPublicAsyncCommand>))]
 [Export(typeof(IAsyncCommandHandler<NonPublicAsyncCommand>))]
 class NonPublicAsyncCommandHandler : IAsyncCommandHandler<NonPublicAsyncCommand>
 {
@@ -67,7 +62,6 @@ class NonPublicAsyncCommandHandler : IAsyncCommandHandler<NonPublicAsyncCommand>
 
 class NonPublicAsyncCommandResult : IAsyncCommand<int> { }
 
-[Export(typeof(IExecutableCommandHandler<NonPublicAsyncCommandResult>))]
 [Export(typeof(IAsyncCommandHandler<NonPublicAsyncCommandResult, int>))]
 class NonPublicAsyncCommandResultHandler : IAsyncCommandHandler<NonPublicAsyncCommandResult, int>
 {
@@ -75,7 +69,6 @@ class NonPublicAsyncCommandResultHandler : IAsyncCommandHandler<NonPublicAsyncCo
     public Task<int> ExecuteAsync(NonPublicAsyncCommandResult command, CancellationToken cancellation) => Task.FromResult(42);
 }
 
-[Export(typeof(IExecutableCommandHandler<CommandWithResults>))]
 [Export(typeof(ICommandHandler<CommandWithResults, IEnumerable<Result>>))]
 class NonPublicCommandHandlerWithResults : ICommandHandler<CommandWithResults, IEnumerable<Result>>
 {

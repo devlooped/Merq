@@ -31,6 +31,7 @@ namespace Merq;
 /// </remarks>
 public class MessageBus : IMessageBus
 {
+    static readonly ConcurrentDictionary<Type, Type> handlerTypeMap = new();
     static readonly MethodInfo canHandleMethod = typeof(MessageBus).GetMethod(nameof(CanHandle), Type.EmptyTypes);
 
     // All subjects active in the event stream.
@@ -42,10 +43,10 @@ public class MessageBus : IMessageBus
     readonly ConcurrentDictionary<Type, bool> canHandleMap = new();
     readonly IServiceProvider services;
 
-    readonly ConcurrentDictionary<Type, VoidExecutor> voidExecutors = new();
-    readonly ConcurrentDictionary<Type, VoidAsyncExecutor> voidAsyncExecutors = new();
-    readonly ConcurrentDictionary<Type, ResultExecutor> resultExecutors = new();
-    readonly ConcurrentDictionary<Type, ResultAsyncExecutor> resultAsyncExecutors = new();
+    readonly ConcurrentDictionary<Type, VoidDispatcher> voidExecutors = new();
+    readonly ConcurrentDictionary<Type, VoidAsyncDispatcher> voidAsyncExecutors = new();
+    readonly ConcurrentDictionary<Type, ResultDispatcher> resultExecutors = new();
+    readonly ConcurrentDictionary<Type, ResultAsyncDispatcher> resultAsyncExecutors = new();
 
     /// <summary>
     /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
@@ -63,8 +64,7 @@ public class MessageBus : IMessageBus
     /// <returns><see langword="true"/> if a command handler is registered and 
     /// the command can be executed. <see langword="false"/> otherwise.</returns>
     public bool CanExecute<TCommand>(TCommand command) where TCommand : IExecutable
-        => CanHandle<TCommand>() &&
-           services.GetService<IExecutableCommandHandler<TCommand>>() is ICanExecute<TCommand> canExec &&
+        => services.GetService(GetHandlerType(GetCommandType(command))) is ICanExecute<TCommand> canExec &&
            canExec.CanExecute(command);
 
     /// <summary>
@@ -76,7 +76,7 @@ public class MessageBus : IMessageBus
     /// <see langword="false"/> otherwise.</returns>
     public bool CanHandle<TCommand>() where TCommand : IExecutable
         => canHandleMap.GetOrAdd(typeof(TCommand), type
-            => services.GetService<IExecutableCommandHandler<TCommand>>() != null);
+            => services.GetService(GetHandlerType(typeof(TCommand))) != null);
 
     /// <summary>
     /// Determines whether the given command has a handler registered in the
@@ -88,7 +88,7 @@ public class MessageBus : IMessageBus
     /// <see langword="false"/> otherwise.</returns>
     public bool CanHandle(IExecutable command)
         => canHandleMap.GetOrAdd(command.GetType(), type
-            => (bool)canHandleMethod.MakeGenericMethod(type).Invoke(this, null));
+            => services.GetService(GetHandlerType(GetCommandType(command))) != null);
 
     /// <summary>
     /// Executes the given synchronous command.
@@ -102,8 +102,8 @@ public class MessageBus : IMessageBus
             ExecuteImpl((dynamic)command);
         else
             voidExecutors.GetOrAdd(type, type 
-                => (VoidExecutor)Activator.CreateInstance(
-                    typeof(VoidExecutor<>).MakeGenericType(type),
+                => (VoidDispatcher)Activator.CreateInstance(
+                    typeof(VoidDispatcher<>).MakeGenericType(type),
                     services))
             .Execute(command);
     }
@@ -122,8 +122,8 @@ public class MessageBus : IMessageBus
             return WithResult<TResult>().Execute((dynamic)command);
 
         return (TResult)resultExecutors.GetOrAdd(type, type 
-                => (ResultExecutor)Activator.CreateInstance(
-                   typeof(ResultExecutor<,>).MakeGenericType(type, typeof(TResult)),
+                => (ResultDispatcher)Activator.CreateInstance(
+                   typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                    services))
             .Execute(command)!;
     }
@@ -141,8 +141,8 @@ public class MessageBus : IMessageBus
             return ExecuteAsyncImpl((dynamic)command, cancellation);
 
         return voidAsyncExecutors.GetOrAdd(type, type 
-            => (VoidAsyncExecutor)Activator.CreateInstance(
-                typeof(VoidAsyncExecutor<>).MakeGenericType(type),
+            => (VoidAsyncDispatcher)Activator.CreateInstance(
+                typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
                 services))
             .ExecuteAsync(command, cancellation);
     }
@@ -162,8 +162,8 @@ public class MessageBus : IMessageBus
             return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
 
         return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type 
-            => (ResultAsyncExecutor)Activator.CreateInstance(
-                typeof(ResultAsyncExecutor<,>).MakeGenericType(type, typeof(TResult)),
+            => (ResultAsyncDispatcher)Activator.CreateInstance(
+                typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                 services))
             .ExecuteAsync(command, cancellation);
     }
@@ -217,6 +217,28 @@ public class MessageBus : IMessageBus
         return new CompositeObservable<TEvent>(new[] { subject }.Concat(producers).ToArray());
     }
 
+    static Type GetHandlerType(Type commandType)
+    {
+        return handlerTypeMap.GetOrAdd(commandType, type =>
+        {
+            if (typeof(ICommand).IsAssignableFrom(commandType))
+                return typeof(ICommandHandler<>).MakeGenericType(type);
+            
+            if (type.GetInterfaces().FirstOrDefault(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>)) is Type iface)
+                return typeof(ICommandHandler<,>).MakeGenericType(type, iface.GetGenericArguments()[0]);
+
+            if (typeof(IAsyncCommand).IsAssignableFrom(commandType))
+                return typeof(IAsyncCommandHandler<>).MakeGenericType(type);
+            
+            if (type.GetInterfaces().FirstOrDefault(i =>
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncCommand<>)) is Type iface2)
+                return typeof(IAsyncCommandHandler<,>).MakeGenericType(type, iface2.GetGenericArguments()[0]);
+
+            throw new InvalidOperationException($"Type {type} does not implement any command interface.");
+        });
+    }
+
     static Type GetCommandType(IExecutable command)
         => command?.GetType() ?? throw new ArgumentNullException(nameof(command));
 
@@ -259,12 +281,12 @@ public class MessageBus : IMessageBus
 
     #endregion
 
-    #region Command Executors
+    #region Command Dispatchers
 
     // In order for the caller to avoid having to specify both the command 
     // type and the result type when executing, we resort to inferring the 
     // latter from the former. But in order for this to work, we need to 
-    // introduce an intermediary "executor" which is typed to the actual 
+    // introduce an intermediary "dispatcher" which is typed to the actual 
     // command instance received in the various Execute* overloads. 
     // 
     // This might seem like unnecessary complexity, but it actually produces 
@@ -285,64 +307,64 @@ public class MessageBus : IMessageBus
     // Execute overloads can invoke them with the generic command argument, as well as the 
     // generic implementations that contain the actual invocation and downcast.
 
-    abstract class VoidExecutor
+    abstract class VoidDispatcher
     {
         public abstract void Execute(IExecutable command);
     }
 
-    class VoidExecutor<TCommand> : VoidExecutor where TCommand : ICommand
+    class VoidDispatcher<TCommand> : VoidDispatcher where TCommand : ICommand
     {
         readonly IServiceProvider services;
 
-        public VoidExecutor(IServiceProvider services)
+        public VoidDispatcher(IServiceProvider services)
             => this.services = services;
 
         public override void Execute(IExecutable command)
             => services.GetRequiredService<ICommandHandler<TCommand>>().Execute((TCommand)command);
     }
 
-    abstract class ResultExecutor
+    abstract class ResultDispatcher
     {
         public abstract object? Execute(IExecutable command);
     }
 
-    class ResultExecutor<TCommand, TResult> : ResultExecutor where TCommand : ICommand<TResult>
+    class ResultDispatcher<TCommand, TResult> : ResultDispatcher where TCommand : ICommand<TResult>
     {
         readonly IServiceProvider services;
 
-        public ResultExecutor(IServiceProvider services)
+        public ResultDispatcher(IServiceProvider services)
             => this.services = services;
 
         public override object? Execute(IExecutable command)
             => services.GetRequiredService<ICommandHandler<TCommand, TResult>>().Execute((TCommand)command);
     }
 
-    abstract class VoidAsyncExecutor
+    abstract class VoidAsyncDispatcher
     {
         public abstract Task ExecuteAsync(IExecutable command, CancellationToken cancellation);
     }
 
-    class VoidAsyncExecutor<TCommand> : VoidAsyncExecutor where TCommand : IAsyncCommand
+    class VoidAsyncDispatcher<TCommand> : VoidAsyncDispatcher where TCommand : IAsyncCommand
     {
         readonly IServiceProvider services;
 
-        public VoidAsyncExecutor(IServiceProvider services)
+        public VoidAsyncDispatcher(IServiceProvider services)
             => this.services = services;
 
         public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation)
             => services.GetRequiredService<IAsyncCommandHandler<TCommand>>().ExecuteAsync((TCommand)command, cancellation);
     }
 
-    abstract class ResultAsyncExecutor
+    abstract class ResultAsyncDispatcher
     {
         public abstract object ExecuteAsync(IExecutable command, CancellationToken cancellation);
     }
 
-    class ResultAsyncExecutor<TCommand, TResult> : ResultAsyncExecutor where TCommand : IAsyncCommand<TResult>
+    class ResultAsyncDispatcher<TCommand, TResult> : ResultAsyncDispatcher where TCommand : IAsyncCommand<TResult>
     {
         readonly IServiceProvider services;
 
-        public ResultAsyncExecutor(IServiceProvider services)
+        public ResultAsyncDispatcher(IServiceProvider services)
             => this.services = services;
 
         public override object ExecuteAsync(IExecutable command, CancellationToken cancellation)
