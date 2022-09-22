@@ -3,8 +3,7 @@
 namespace Merq;
 
 /// <summary>
-/// Marker interface for all command handlers, whether synchronous or asynchronous, 
-/// allowing the <see cref="ICommandBus"/> to receive both.
+/// Marker interface for all command handlers, whether synchronous or asynchronous.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public interface ICommandHandler { }
