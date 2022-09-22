@@ -380,6 +380,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
 
         var results = bus.Execute(new CommandWithResults());
 
+        Assert.NotNull(results);
         Assert.Single(results);
     }
 

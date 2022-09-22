@@ -47,7 +47,7 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
 
         bus.Execute(new Command());
         Assert.NotNull(bus.Execute(new CommandWithResult()));
-        Assert.NotEmpty(bus.Execute(new CommandWithResults()));
+        Assert.NotEmpty(bus.Execute(new CommandWithResults())!);
     }
 
     class IntProducer
