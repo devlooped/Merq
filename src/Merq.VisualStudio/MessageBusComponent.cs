@@ -17,6 +17,11 @@ class MessageBusComponent : MessageBus
     {
     }
 
+    /// <summary>
+    /// An <see cref="IServiceProvider"/> that uses 
+    /// <see cref="IComponentModel.GetService{T}"/> and <see cref="IComponentModel.GetExtensions{T}"/> 
+    /// to retrieve <see cref="IMessageBus"/> components.
+    /// </summary>
     class ComponentModelServiceProvider : IServiceProvider
     {
         static readonly MethodInfo getService = typeof(IComponentModel).GetMethod("GetService");
