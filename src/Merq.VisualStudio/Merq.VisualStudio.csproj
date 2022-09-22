@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.2.32505.173" />
-    <PackageReference Include="NuGetizer" Version="0.8.0" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
