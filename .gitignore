@@ -12,5 +12,6 @@ pack
 *.cache
 .vs
 .*
+!.github
 log.txt
 *.binlog
