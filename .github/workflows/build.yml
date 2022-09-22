@@ -31,7 +31,8 @@ jobs:
       - name: 🤘 checkout
         uses: actions/checkout@v2
         
-      - id: os
+      - name: 🔎 os
+        id: os
         shell: pwsh
         run: |
           $path = './.github/workflows/os-matrix.json'
