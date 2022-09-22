@@ -28,6 +28,9 @@ jobs:
     outputs:
       os: ${{ steps.os.outputs.os }}
     steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+        
       - id: os
         shell: pwsh
         run: |
