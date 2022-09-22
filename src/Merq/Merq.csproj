@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="IFluentInterface" Version="2.1.0" PrivateAssets="all" />
-    <PackageReference Include="NuGetizer" Version="0.8.0" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
   </ItemGroup>
 
