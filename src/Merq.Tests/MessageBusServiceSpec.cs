@@ -25,7 +25,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
 
         var services = collection.BuildServiceProvider();
         var bus = services.GetRequiredService<IMessageBus>();
-        
+
         int? value = default;
 
         bus.Observe<int>().Subscribe(i => value = i);
@@ -346,7 +346,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
         var command = new AsyncCommandWithResult();
         var result = new Result();
         handler.Setup(x => x.ExecuteAsync(command, CancellationToken.None)).Returns(Task.FromResult(result));
-        
+
         var bus = new ServiceCollection()
             .AddMessageBus(false)
             .AddSingleton(handler.Object)

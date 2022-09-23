@@ -101,7 +101,7 @@ public class MessageBus : IMessageBus
             // For public types, we can use the faster dynamic dispatch approach
             ExecuteImpl((dynamic)command);
         else
-            voidExecutors.GetOrAdd(type, type 
+            voidExecutors.GetOrAdd(type, type
                 => (VoidDispatcher)Activator.CreateInstance(
                     typeof(VoidDispatcher<>).MakeGenericType(type),
                     services))
@@ -121,7 +121,7 @@ public class MessageBus : IMessageBus
             // For public types, we can use the faster dynamic dispatch approach
             return WithResult<TResult>().Execute((dynamic)command);
 
-        return (TResult)resultExecutors.GetOrAdd(type, type 
+        return (TResult)resultExecutors.GetOrAdd(type, type
                 => (ResultDispatcher)Activator.CreateInstance(
                    typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                    services))
@@ -140,7 +140,7 @@ public class MessageBus : IMessageBus
             // For public types, we can use the faster dynamic dispatch approach
             return ExecuteAsyncImpl((dynamic)command, cancellation);
 
-        return voidAsyncExecutors.GetOrAdd(type, type 
+        return voidAsyncExecutors.GetOrAdd(type, type
             => (VoidAsyncDispatcher)Activator.CreateInstance(
                 typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
                 services))
@@ -161,7 +161,7 @@ public class MessageBus : IMessageBus
             // For public types, we can use the faster dynamic dispatch approach
             return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
 
-        return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type 
+        return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
             => (ResultAsyncDispatcher)Activator.CreateInstance(
                 typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                 services))
@@ -202,7 +202,7 @@ public class MessageBus : IMessageBus
         // NOTE: in order for the base event subscription to work properly for external
         // producers, they must register the service for each T in the TEvent hierarchy.
         var producers = services.GetServices<IObservable<TEvent>>().ToArray();
-        
+
         var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent).GetTypeInfo(), info =>
         {
             // If we're creating a new subject, we need to clear the cache of compatible subjects
@@ -223,14 +223,14 @@ public class MessageBus : IMessageBus
         {
             if (typeof(ICommand).IsAssignableFrom(commandType))
                 return typeof(ICommandHandler<>).MakeGenericType(type);
-            
+
             if (type.GetInterfaces().FirstOrDefault(i =>
                 i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>)) is Type iface)
                 return typeof(ICommandHandler<,>).MakeGenericType(type, iface.GetGenericArguments()[0]);
 
             if (typeof(IAsyncCommand).IsAssignableFrom(commandType))
                 return typeof(IAsyncCommandHandler<>).MakeGenericType(type);
-            
+
             if (type.GetInterfaces().FirstOrDefault(i =>
                     i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncCommand<>)) is Type iface2)
                 return typeof(IAsyncCommandHandler<,>).MakeGenericType(type, iface2.GetGenericArguments()[0]);

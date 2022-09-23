@@ -21,7 +21,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
 
         var services = collection.BuildServiceProvider();
         var bus = new MessageBus(services);
-        
+
         int? value = default;
 
         bus.Observe<int>().Subscribe(i => value = i);

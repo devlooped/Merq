@@ -78,7 +78,7 @@ class NonPublicCommandHandlerWithResults : ICommandHandler<CommandWithResults, I
 
     [ImportingConstructor]
     public NonPublicCommandHandlerWithResults() => result = new Result();
-    
+
     bool ICanExecute<CommandWithResults>.CanExecute(CommandWithResults command) => true;
 
     IEnumerable<Result> ICommandHandler<CommandWithResults, IEnumerable<Result>>.Execute(CommandWithResults command)

@@ -54,9 +54,9 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
     {
         [Export]
         [Export(typeof(IObservable<int>))]
-        public Subject<int> Observable { get; } = new Subject<int>();   
+        public Subject<int> Observable { get; } = new Subject<int>();
     }
-    
+
     [Fact]
     public async Task when_subscribing_external_producer_then_succeedsAsync()
     {
@@ -133,6 +133,6 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
 
         public ICompositionService DefaultCompositionService => throw new NotImplementedException();
 
-        public ComposablePartCatalog GetCatalog(string catalogName) => throw new NotImplementedException();        
+        public ComposablePartCatalog GetCatalog(string catalogName) => throw new NotImplementedException();
     }
 }

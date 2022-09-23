@@ -13,7 +13,7 @@ static class ServiceProviderExtensions
 
     public static T GetRequiredService<T>(this IServiceProvider provider) where T : notnull
         => (T)(provider ?? throw new ArgumentNullException(nameof(provider))).GetRequiredService(typeof(T));
-    
+
     public static object GetRequiredService(this IServiceProvider provider, Type serviceType)
     {
         object? service = (provider ?? throw new ArgumentNullException(nameof(provider))).GetService(serviceType);
