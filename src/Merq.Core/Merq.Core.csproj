@@ -3,15 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq.Core</PackageId>
-    <Title>Merq: Command Bus + Event Stream (Implementations)</Title>
-    <Summary>Default implementation of core interfaces for ICommandBus and IEventStream</Summary>
-    <Description>Default implementation of core interfaces for ICommandBus and IEventStream</Description>
+    <Title>Merq: Message Bus (Commands + Events) Implementation</Title>
+    <Description>Merq: Message Bus (Commands + Events) Implementation</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="IFluentInterface" Version="2.*" PrivateAssets="all" />
-    <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" Pack="false" />
     <PackageReference Include="RxFree" Version="1.1.1" PrivateAssets="all" />

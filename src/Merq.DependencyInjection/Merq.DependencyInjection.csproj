@@ -1,10 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Merq.DependencyInjection</PackageId>
+    <Title>Merq: Message Bus (Commands + Events) Dependency Injection</Title>
+    <Description>Merq: Message Bus (Commands + Events) Dependency Injection</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="0.9.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 

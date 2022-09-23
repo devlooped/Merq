@@ -1,4 +1,4 @@
-﻿<!-- include ../../readme.md#implementation -->
+﻿<!-- include ../../readme.md#di -->
 
 For usage and authoring of commands and events, see [Merq](https://nuget.org/packages/Merq) readme.
 
