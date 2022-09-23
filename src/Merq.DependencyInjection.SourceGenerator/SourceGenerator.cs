@@ -21,9 +21,8 @@ public class RegistrationsGenerator : IIncrementalGenerator
     {
         var types = context.CompilationProvider.SelectMany((x, c) =>
         {
-            var asm = x.Assembly;
-            var visitor = new TypesVisitor(s => x.IsSymbolAccessibleWithin(s, asm), c);
-            asm.Accept(visitor);
+            var visitor = new TypesVisitor(s => x.IsSymbolAccessibleWithin(s, x.Assembly), c);
+            x.GlobalNamespace.Accept(visitor);
             return visitor.TypeSymbols;
         });
 

@@ -1,11 +1,24 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Merq.Sample;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Merq;
 
 public record GeneratorTests(ITestOutputHelper Output)
 {
+    [Fact]
+    public void CanRegisterProjectReferenceHandler()
+    {
+        var collection = new ServiceCollection();
+
+        collection.AddMessageBus();
+
+        var services = collection.BuildServiceProvider();
+
+        services.GetRequiredService<IMessageBus>().Execute(new MessageCommand("Hello"));
+    }
+
     [Fact]
     public void CanRegisterScopedHandlers()
     {

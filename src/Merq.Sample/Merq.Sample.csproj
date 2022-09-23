@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polyfill.NET" Version="1.0.12" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

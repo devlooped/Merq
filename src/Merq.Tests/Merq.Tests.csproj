@@ -20,12 +20,12 @@
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
-    <!--<PackageReference Include="System.Collections.Immutable" Version="6.0.0" PrivateAssets="all" />-->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
     <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Merq.Sample\Merq.Sample.csproj" />
     <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
     <ProjectReference Include="..\Merq.DependencyInjection.SourceGenerator\Merq.DependencyInjection.SourceGenerator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
