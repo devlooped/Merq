@@ -23,29 +23,29 @@ defaults:
     shell: bash
 
 jobs:
-  os:
+  os-matrix:
     runs-on: ubuntu-latest
     outputs:
-      os: ${{ steps.os.outputs.os }}
+      matrix: ${{ steps.lookup.outputs.matrix }}
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
         
-      - name: 🔎 os
-        id: os
+      - name: 🔎 lookup
+        id: lookup
         shell: pwsh
         run: |
           $path = './.github/workflows/os-matrix.json'
           $os = if (test-path $path) { cat $path } else { '["ubuntu-latest"]' }
-          echo "::set-output name=os::$os"
+          echo "::set-output name=matrix::$os"
 
   build:
-    needs: os
+    needs: os-matrix
     name: build-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ${{ fromJSON(needs.os.outputs.os) }}
+        os: ${{ fromJSON(needs.os-matrix.outputs.matrix) }}
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
