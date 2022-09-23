@@ -3,7 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
@@ -15,6 +20,7 @@
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
+    <!--<PackageReference Include="System.Collections.Immutable" Version="6.0.0" PrivateAssets="all" />-->
   </ItemGroup>
 
   <ItemGroup>
@@ -22,11 +28,13 @@
     <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.csproj" />
     <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\Merq.DependencyInjection.SourceGenerator\Merq.DependencyInjection.SourceGenerator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />
   </ItemGroup>
+
 
 </Project>
