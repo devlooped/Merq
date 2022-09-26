@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Management.Instrumentation;
+using System.Reactive.Subjects;
+using System.Threading;
 using System.Threading.Tasks;
 using Merq.Sample;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,6 +72,30 @@ public record GeneratorTests(ITestOutputHelper Output)
         Assert.Same(first, executable);
         Assert.Same(first, can);
     }
+
+    [Fact]
+    public void CanRegisterObservableEvent()
+    {
+        var collection = new ServiceCollection();
+
+        collection.AddMessageBus();
+
+        var services = collection.BuildServiceProvider();
+
+        Assert.NotNull(services.GetService<IObservable<ConcreteEvent>>());
+        Assert.NotNull(services.GetService<IObservable<BaseEvent>>());
+        Assert.NotNull(services.GetService<IObservable<IBaseEvent>>());
+        Assert.Null(services.GetService<IObservable<object>>());
+
+        var bus = services.GetService<IMessageBus>();
+        IBaseEvent? data = null;
+        bus!.Observe<IBaseEvent>().Subscribe(e => data = e);
+
+        var producer = services.GetService<IObserver<ConcreteEvent>>();
+        producer!.OnNext(new ConcreteEvent());
+
+        Assert.NotNull(data);
+    }
 }
 
 [Service(ServiceLifetime.Scoped)]
@@ -103,4 +130,15 @@ class TransientService2 : IAsyncCommandHandler<AsyncCommandWithResult, Result>
 [Service(ServiceLifetime.Transient)]
 class TransientService3
 {
+}
+
+[Service]
+public class ObservableService : IObservable<ConcreteEvent>, IObserver<ConcreteEvent>
+{
+    Subject<ConcreteEvent> subject = new();
+
+    public void OnCompleted() => subject.OnCompleted();
+    public void OnError(Exception error) => subject.OnError(error);
+    public void OnNext(ConcreteEvent value) => subject.OnNext(value);
+    public IDisposable Subscribe(IObserver<ConcreteEvent> observer) => subject.Subscribe(observer);
 }

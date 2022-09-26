@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Polyfill.NET" Version="1.0.12" PrivateAssets="all" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="42.42.42-main.21" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,13 +15,18 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection.SourceGenerator\Merq.DependencyInjection.SourceGenerator.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageFile Include="Devlooped.Extensions.DependencyInjection.Attributed" 
+                 PackFolder="Dependency" 
+                 Version="42.42.42-main.21"
+                 Visible="false"/>
   </ItemGroup>
 
 </Project>

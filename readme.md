@@ -218,8 +218,16 @@ provides a simple mechanism for registering the message bus:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 ...
+// Automatically add the message bus and all command handlers and 
+// event producers in the current project and any dependencies
 builder.Services.AddMessageBus();
 ```
+
+The `AddMessageBus` extension method leverages compile-time code generation to avoid 
+negatively impacting run-time app startup, via the dependency on 
+[Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
+This also ensures that all proper service interfaces are registered for the various 
+components.
 
 <!-- #di -->
 

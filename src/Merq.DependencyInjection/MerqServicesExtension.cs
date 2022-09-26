@@ -22,27 +22,8 @@ static partial class MerqServicesExtension
         services.AddSingleton<IMessageBus, MessageBus>();
 
         if (addDiscoveredServices)
-        {
-            AddScopedServices(services);
-            AddSingletonServices(services);
-            AddTransientServices(services);
-        }
+            services.AddServices();
 
         return services;
     }
-
-    /// <summary>
-    /// Adds discovered scoped services to the collection.
-    /// </summary>
-    static partial void AddScopedServices(IServiceCollection services);
-
-    /// <summary>
-    /// Adds discovered singleton services to the collection.
-    /// </summary>
-    static partial void AddSingletonServices(IServiceCollection services);
-
-    /// <summary>
-    /// Adds discovered transient services to the collection.
-    /// </summary>
-    static partial void AddTransientServices(IServiceCollection services);
 }

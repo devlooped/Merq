@@ -28,7 +28,6 @@
     <ProjectReference Include="..\Merq.Sample\Merq.Sample.csproj" />
     <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection.SourceGenerator\Merq.DependencyInjection.SourceGenerator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>

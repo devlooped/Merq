@@ -15,6 +15,20 @@ namespace Merq;
 /// external event producers.
 /// </summary>
 /// <remarks>
+/// The default implementation assumes external event producers are registered 
+/// with the service collection with the <see cref="IObservable{TEvent}"/> interfaces 
+/// they implement.
+/// <para>
+/// Command handlers, in turn, need to be registered with:
+/// * <see cref="ICanExecute{TCommand}"/>: to properly respond to invocations of 
+/// <see cref="IMessageBus.CanExecute{TCommand}(TCommand)"/>
+/// * <see cref="ICommandHandler{TCommand}"/>, <see cref="ICommandHandler{TCommand, TResult}"/>, 
+/// <see cref="IAsyncCommandHandler{TCommand}"/> or <see cref="IAsyncCommandHandler{TCommand, TResult}"/> 
+/// according to the corresponding marker interface implemented by the <c>TCommand</c> 
+/// (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, <see cref="IAsyncCommand"/> or 
+/// <see cref="IAsyncCommand{TResult}"/> respectively).
+/// </para>
+/// <para>
 /// There are basically four types of command/handler pairs: 
 /// * void synchronous
 /// * non-void synchronous
@@ -28,6 +42,7 @@ namespace Merq;
 /// so that there is no mismatch between the invocation style and the 
 /// implementation style. This avoids implementing anti-patterns like 
 /// async over sync and sync over async.
+/// </para>
 /// </remarks>
 public class MessageBus : IMessageBus
 {
@@ -63,29 +78,52 @@ public class MessageBus : IMessageBus
     /// <param name="command">The command parameters for the query.</param>
     /// <returns><see langword="true"/> if a command handler is registered and 
     /// the command can be executed. <see langword="false"/> otherwise.</returns>
+    /// <remarks>
+    /// Command handlers need to be registered in the given <see cref="IServiceProvider"/> with the 
+    /// <see cref="ICommandHandler{TCommand}"/>, <see cref="ICommandHandler{TCommand, TResult}"/>, 
+    /// <see cref="IAsyncCommandHandler{TCommand}"/> or <see cref="IAsyncCommandHandler{TCommand, TResult}"/> 
+    /// service interface, according to the corresponding marker interface implemented by their 
+    /// <c>TCommand</c> parameter (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, 
+    /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
+    /// </remarks>
     public bool CanExecute<TCommand>(TCommand command) where TCommand : IExecutable
         => services.GetService(GetHandlerType(GetCommandType(command))) is ICanExecute<TCommand> canExec &&
            canExec.CanExecute(command);
 
     /// <summary>
     /// Determines whether the given command type has handler registered in the 
-    /// <see cref="IServiceProvider"/> as <see cref="IExecutableCommandHandler{TCommand}"/>.
+    /// <see cref="IServiceProvider"/>.
     /// </summary>
     /// <typeparam name="TCommand">The type of command to query.</typeparam>
     /// <returns><see langword="true"/> if the command has a registered handler. 
     /// <see langword="false"/> otherwise.</returns>
+    /// <remarks>
+    /// Command handlers need to be registered in the given <see cref="IServiceProvider"/> with the 
+    /// <see cref="ICommandHandler{TCommand}"/>, <see cref="ICommandHandler{TCommand, TResult}"/>, 
+    /// <see cref="IAsyncCommandHandler{TCommand}"/> or <see cref="IAsyncCommandHandler{TCommand, TResult}"/> 
+    /// service interface, according to the corresponding marker interface implemented by their 
+    /// <c>TCommand</c> parameter (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, 
+    /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
+    /// </remarks>
     public bool CanHandle<TCommand>() where TCommand : IExecutable
         => canHandleMap.GetOrAdd(typeof(TCommand), type
             => services.GetService(GetHandlerType(typeof(TCommand))) != null);
 
     /// <summary>
     /// Determines whether the given command has a handler registered in the
-    /// <see cref="IServiceProvider"/> as <see cref="IExecutableCommandHandler{TCommand}"/> 
-    /// (where <c>TCommand</c> is the runtime-type of the <paramref name="command"/>).
+    /// <see cref="IServiceProvider"/>, according to the runtime-type of the <paramref name="command"/>.
     /// </summary>
     /// <param name="command">The command to query.</param>
     /// <returns><see langword="true"/> if the command has a registered handler. 
     /// <see langword="false"/> otherwise.</returns>
+    /// <remarks>
+    /// Command handlers need to be registered in the given <see cref="IServiceProvider"/> with the 
+    /// <see cref="ICommandHandler{TCommand}"/>, <see cref="ICommandHandler{TCommand, TResult}"/>, 
+    /// <see cref="IAsyncCommandHandler{TCommand}"/> or <see cref="IAsyncCommandHandler{TCommand, TResult}"/> 
+    /// service interface, according to the corresponding marker interface implemented by the 
+    /// <paramref name="command"/> instance (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, 
+    /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
+    /// </remarks>
     public bool CanHandle(IExecutable command)
         => canHandleMap.GetOrAdd(command.GetType(), type
             => services.GetService(GetHandlerType(GetCommandType(command))) != null);
