@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.0" ExcludeAssets="contentFiles" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,11 +23,11 @@
     <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageFile Include="Devlooped.Extensions.DependencyInjection.Attributed" 
-                 PackFolder="Dependency" 
-                 Version="42.42.42-main.21"
-                 Visible="false"/>
-  </ItemGroup>
-
+  <!-- Deal with the amazingly broken analyzer references: https://github.com/NuGet/Home/issues/6279 -->
+  <Target Name="RemoveAnalyzers" AfterTargets="ResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
+    <ItemGroup>
+      <ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
+    </ItemGroup>
+  </Target>
+  
 </Project>
