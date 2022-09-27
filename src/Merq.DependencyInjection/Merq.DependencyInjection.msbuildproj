@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.5.0">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,28 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MerqServicesExtension.cs" />
     <Content Include="MerqServicesExtension.cs" BuildAction="Compile" CodeLanguage="cs" Pack="true" />
-    <!-- We're referencing the dependency just to pack with nugetizer -->
-    <Compile Remove="@(Compile -> WithMetadataValue('NuGetPackageId', 'Devlooped.Extensions.DependencyInjection.Attributed'))" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.0" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
-
-  <!-- Deal with the amazingly broken analyzer references: https://github.com/NuGet/Home/issues/6279 -->
-  <Target Name="RemoveAnalyzers" AfterTargets="ResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
-    <ItemGroup>
-      <ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
-    </ItemGroup>
-  </Target>
   
 </Project>

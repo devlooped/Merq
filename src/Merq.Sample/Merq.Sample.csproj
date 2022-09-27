@@ -7,12 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="Polyfill.NET" Version="1.0.12" PrivateAssets="all" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Merq\Merq.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" />
   </ItemGroup>
 
 </Project>

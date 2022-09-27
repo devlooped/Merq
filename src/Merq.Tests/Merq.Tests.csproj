@@ -4,6 +4,8 @@
     <TargetFramework>net472</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <!-- Since we have our own version of the attribute in Merq.Sample -->
+    <IncludeServiceAttribute>false</IncludeServiceAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" />
     <ProjectReference Include="..\Merq.Sample\Merq.Sample.csproj" />
     <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
