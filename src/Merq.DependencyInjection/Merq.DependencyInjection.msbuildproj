@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.1" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
