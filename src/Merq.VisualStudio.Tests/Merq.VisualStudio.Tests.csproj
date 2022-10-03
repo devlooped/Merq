@@ -1,16 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <!-- Since we have our own version of the attribute in Merq.Sample -->
     <AddServiceAttribute>false</AddServiceAttribute>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
@@ -21,20 +16,16 @@
     <PackageReference Include="Moq" Version="4.18.2" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\Merq.Sample\Merq.Sample.csproj" />
-    <ProjectReference Include="..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\Merq.Tests\Merq.Tests.csproj" />
+    <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />
   </ItemGroup>
-
 
 </Project>

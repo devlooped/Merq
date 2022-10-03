@@ -12,7 +12,6 @@ public class AsyncCommandWithResult : IAsyncCommand<Result> { }
 
 public class Command : ICommand { }
 
-
 [Export(typeof(ICommandHandler<Command>))]
 public class CommandHandler : ICommandHandler<Command>
 {

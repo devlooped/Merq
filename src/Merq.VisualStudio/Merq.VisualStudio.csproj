@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Merq.Tests" />
+    <InternalsVisibleTo Include="Merq.VisualStudio.Tests" />
   </ItemGroup>
 
 </Project>

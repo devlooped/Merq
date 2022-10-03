@@ -15,7 +15,7 @@ namespace Merq;
 public record MessageBusComponentSpec(ITestOutputHelper Output)
 {
     [Fact]
-    public async Task ComposeAsync()
+    public async Task ComposewAsync()
     {
         // Prepare part discovery to support both flavors of MEF attributes.
         var discovery = PartDiscovery.Combine(
@@ -25,6 +25,7 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
         // Build up a catalog of MEF parts
         var catalog = ComposableCatalog.Create(Resolver.DefaultInstance)
             .AddParts(await discovery.CreatePartsAsync(typeof(DefaultExportProvider).Assembly))
+            .AddParts(await discovery.CreatePartsAsync(typeof(CommandHandler).Assembly))
             .AddParts(await discovery.CreatePartsAsync(Assembly.GetExecutingAssembly()));
 
         // Assemble the parts into a valid graph.
@@ -119,7 +120,7 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
     }
 
     [Export(typeof(SComponentModel))]
-    class MockComponentModel : SComponentModel, IComponentModel
+    public class MockComponentModel : SComponentModel, IComponentModel
     {
         public static ExportProvider? Provider { get; set; }
 

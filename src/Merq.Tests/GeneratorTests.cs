@@ -32,9 +32,9 @@ public record GeneratorTests(ITestOutputHelper Output)
         var services = collection.BuildServiceProvider();
 
         Assert.NotNull(services.GetRequiredService<ScopedService>());
-        Assert.NotNull(services.GetRequiredService<ICommandHandler<Command>>());
-        Assert.NotNull(services.GetRequiredService<ICanExecute<Command>>());
-        Assert.NotNull(services.GetRequiredService<IExecutableCommandHandler<Command>>());
+        Assert.NotNull(services.GetRequiredService<ICommandHandler<ScopedCommand>>());
+        Assert.NotNull(services.GetRequiredService<ICanExecute<ScopedCommand>>());
+        Assert.NotNull(services.GetRequiredService<IExecutableCommandHandler<ScopedCommand>>());
     }
 
     [Fact]
@@ -63,9 +63,9 @@ public record GeneratorTests(ITestOutputHelper Output)
 
         var first = services.GetRequiredService<SingletonService>();
         var second = services.GetRequiredService<SingletonService>();
-        var handler = services.GetRequiredService<ICommandHandler<CommandWithResult, Result>>();
-        var executable = services.GetRequiredService<IExecutableCommandHandler<CommandWithResult, Result>>();
-        var can = services.GetRequiredService<ICanExecute<CommandWithResult>>();
+        var handler = services.GetRequiredService<ICommandHandler<SingletonCommand, string>>();
+        var executable = services.GetRequiredService<IExecutableCommandHandler<SingletonCommand, string>>();
+        var can = services.GetRequiredService<ICanExecute<SingletonCommand>>();
 
         Assert.Same(first, second);
         Assert.Same(first, handler);
@@ -98,33 +98,40 @@ public record GeneratorTests(ITestOutputHelper Output)
     }
 }
 
+record ScopedCommand : ICommand { }
+
 [Service(ServiceLifetime.Scoped)]
-class ScopedService : ICommandHandler<Command>
+class ScopedService : ICommandHandler<ScopedCommand>
 {
-    public bool CanExecute(Command command) => throw new System.NotImplementedException();
-    public void Execute(Command command) => throw new System.NotImplementedException();
+    public bool CanExecute(ScopedCommand command) => throw new System.NotImplementedException();
+    public void Execute(ScopedCommand command) => throw new System.NotImplementedException();
 }
 
+record SingletonCommand : ICommand<string> { }
 
 [Service(ServiceLifetime.Singleton)]
-class SingletonService : ICommandHandler<CommandWithResult, Result>
+class SingletonService : ICommandHandler<SingletonCommand, string>
 {
-    public bool CanExecute(CommandWithResult command) => throw new System.NotImplementedException();
-    public Result Execute(CommandWithResult command) => throw new System.NotImplementedException();
+    public bool CanExecute(SingletonCommand command) => throw new System.NotImplementedException();
+    public string Execute(SingletonCommand command) => throw new System.NotImplementedException();
 }
 
-[Service(ServiceLifetime.Transient)]
-class TransientService : IAsyncCommandHandler<AsyncCommand>
-{
-    public bool CanExecute(AsyncCommand command) => throw new System.NotImplementedException();
-    public Task ExecuteAsync(AsyncCommand command, CancellationToken cancellation) => throw new System.NotImplementedException();
-}
+record TransientCommand : IAsyncCommand { }
 
 [Service(ServiceLifetime.Transient)]
-class TransientService2 : IAsyncCommandHandler<AsyncCommandWithResult, Result>
+class TransientService : IAsyncCommandHandler<TransientCommand>
 {
-    public bool CanExecute(AsyncCommandWithResult command) => throw new System.NotImplementedException();
-    public Task<Result> ExecuteAsync(AsyncCommandWithResult command, CancellationToken cancellation) => throw new System.NotImplementedException();
+    public bool CanExecute(TransientCommand command) => throw new System.NotImplementedException();
+    public Task ExecuteAsync(TransientCommand command, CancellationToken cancellation) => throw new System.NotImplementedException();
+}
+
+record TransientResultCommand : IAsyncCommand<string> { }
+
+[Service(ServiceLifetime.Transient)]
+class TransientService2 : IAsyncCommandHandler<TransientResultCommand, string>
+{
+    public bool CanExecute(TransientResultCommand command) => throw new System.NotImplementedException();
+    public Task<string> ExecuteAsync(TransientResultCommand command, CancellationToken cancellation) => throw new System.NotImplementedException();
 }
 
 [Service(ServiceLifetime.Transient)]
