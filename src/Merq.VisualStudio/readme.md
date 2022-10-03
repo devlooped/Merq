@@ -1,6 +1,6 @@
 ﻿This package provides a MEF-ready customization of the `Merq` 
 default implementation, which makes it trivial to consume from 
-a an application that uses [Microsoft.VisualStudio.Composition](https://nuget.org/packages/Microsoft.VisualStudio.Composition) 
+an application that uses [Microsoft.VisualStudio.Composition](https://nuget.org/packages/Microsoft.VisualStudio.Composition) 
 to load MEF-based components.
 
 This is built-in Visual Studio, and you can take a dependency 

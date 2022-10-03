@@ -4,23 +4,34 @@ using System.Linq;
 
 namespace Merq;
 
+/// <summary>
+/// Exports the main <see cref="IMessageBus"/> service.
+/// </summary>
+/// <remarks>
+/// The default message bus provided by <see cref="MessageBusComponent"/> can 
+/// be decorated by exporting a custom message bus with the contract name 
+/// <c>Merq.IMessageBus.Override</c>. The first such exported override will be 
+/// picked instead of the default message bus in that case.
+/// <para>
+/// The decorating message bus can in turn import the default message bus 
+/// by using the contract name <c>Merq.IMessageBus.Default</c>.
+/// </para>
+/// </remarks>
 [PartCreationPolicy(CreationPolicy.Shared)]
-class DefaultExportProvider
+public class DefaultExportProvider
 {
+    /// <summary>
+    /// Creates the export provider.
+    /// </summary>
     [ImportingConstructor]
     public DefaultExportProvider(
-        [Import("Merq.ICommandBus.Default")] ICommandBus defaultCommandBus,
-        [Import("Merq.IEventStream.Default")] IEventStream defaultEventStream,
-        [ImportMany("Merq.ICommandBus.Override")] IEnumerable<ICommandBus> customCommandBus,
-        [ImportMany("Merq.IEventStream.Override")] IEnumerable<IEventStream> customEventStream)
-    {
-        CommandBus = customCommandBus.FirstOrDefault() ?? defaultCommandBus;
-        EventStream = customEventStream.FirstOrDefault() ?? defaultEventStream;
-    }
+        [Import("Merq.IMessageBus.Default")] IMessageBus defaultMessageBus,
+        [ImportMany("Merq.IMessageBus.Override")] IEnumerable<IMessageBus> customMessageBus)
+        => MessageBus = customMessageBus.FirstOrDefault() ?? defaultMessageBus;
 
+    /// <summary>
+    /// Exports the <see cref="IMessageBus"/>
+    /// </summary>
     [Export]
-    public ICommandBus CommandBus { get; }
-
-    [Export]
-    public IEventStream EventStream { get; }
+    public IMessageBus MessageBus { get; }
 }

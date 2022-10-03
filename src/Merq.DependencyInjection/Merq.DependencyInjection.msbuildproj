@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.5.0">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Merq.DependencyInjection</PackageId>
+    <Title>Merq: Message Bus (Commands + Events) Dependency Injection</Title>
+    <Description>Merq: Message Bus (Commands + Events) Dependency Injection</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="MerqServicesExtension.cs" BuildAction="Compile" CodeLanguage="cs" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="0.9.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" TargetFramework="$(TargetFramework)" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
+    <ProjectReference Include="..\Merq\Merq.csproj" />
+  </ItemGroup>
+  
+</Project>

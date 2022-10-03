@@ -1,15 +1,250 @@
 ![Icon](https://raw.github.com/Xamarin/Merq/main/icon/32.png) Merq
 ================
 
-> **Mercury:** messenger of the Roman gods
-
-> *Mercury* > *Merq-ry* > **Merq** 
-
-Internal application architecture based on commands and events represented as 
-messages in a command bus and an event stream respectively, with support for 
-asynchronously executing commands in a main thread deadlock-free way.  
-
 [![Version](https://img.shields.io/nuget/vpre/Merq.svg?color=royalblue)](https://www.nuget.org/packages/Merq)
 [![Downloads](https://img.shields.io/nuget/dt/Merq.svg?color=green)](https://www.nuget.org/packages/Merq)
 [![License](https://img.shields.io/github/license/devlooped/Merq.svg?color=blue)](https://github.com/devlooped/Merq/blob/main/license.txt)
 
+<!-- #core -->
+> **Mercury:** messenger of the Roman gods
+
+> *Mercury* > *Merq-ry* > **Merq** 
+
+
+**Merq** brings the [Message Bus](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/ff647328(v=pandp.10)) pattern together with 
+a [command-oriented interface](https://www.martinfowler.com/bliki/CommandOrientedInterface.html) for an 
+extensible and decoupled in-process application architecture.
+
+These patterns are well established in microservices and service oriented 
+architectures, but their benefits can be applied to apps too, especially 
+extensible ones where multiple teams can contribute extensions which 
+are composed at run-time.
+
+The resulting improved decoupling between components makes it easier to evolve 
+them independently, while improving discoverability of available commands and 
+events. You can see this approach applied in the real world in 
+[VSCode commands](https://code.visualstudio.com/api/extension-guides/command) 
+and various events such as [window events](https://code.visualstudio.com/api/references/vscode-api#window). 
+Clearly, in the case of VSCode, everything is in-process, but the benefits of 
+a clean and predictable API are pretty obvious.
+
+*Merq* provides the same capabilities for .NET apps. 
+
+## Events
+
+Events can be any type, there is no restriction or interfaces you must implement.
+Nowadays, [C# record types](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/types/records) 
+are a perfect fit for event data types. An example event could be a one-liner such as:
+
+```csharp
+public record ItemShipped(string Id, DateTimeOffset Date);
+```
+
+The events-based API surface on the message bus is simple enough:
+
+```csharp
+public interface IMessageBus
+{
+    void Notify<TEvent>(TEvent e);
+    IObservable<TEvent> Observe<TEvent>();
+}
+```
+
+By relying on `IObservable<TEvent>`, *Merq* integrates seamlessly with 
+more powerful event-driven handling via [System.Reactive](http://nuget.org/packages/system.reactive) 
+or the more lightweight [RxFree](https://www.nuget.org/packages/RxFree).
+Subscribing to events with either of those packages is trivial:
+
+```csharp
+IDisposable subscription;
+
+// constructor may use DI to get the dependency
+public CustomerViewModel(IMessageBus bus)
+{
+    subscription = bus.Observe<ItemShipped>().Subscribe(OnItemShipped);
+}
+
+void OnItemShipped(ItemShipped e) => // Refresh item status
+
+public void Dispose() => subscription.Dispose();
+```
+
+
+## Commands
+
+Commands can also be any type, and C# records make for concise definitions:
+
+```csharp
+record CancelOrder(string OrderId) : IAsyncCommand;
+```
+
+Unlike events, command messages need to signal the invocation style they require 
+for execution:
+
+```csharp
+// perhaps a method invoked when a user 
+// clicks/taps a Cancel button next to an order
+async Task OnCancel(string orderId)
+{
+    await bus.ExecuteAsync(new CancelOrder(orderId), CancellationToken.None);
+    // refresh UI for new state.
+}
+```
+
+An example of a synchronous command could be:
+
+```csharp
+// Command declaration
+record SignOut() : ICommand;
+
+// Command invocation
+void OnSignOut() => bus.Execute(new SignOut());
+
+// or alternatively, for void commands that have no additional data:
+void OnSignOut() => bus.Execute<SignOut>();
+```
+
+There are also `ICommand<TResult>` and `IAsyncCommand<TResult>` interfaces 
+to signal that the execution produces a result.
+
+While these marker interfaces on the command messages might seem unnecessary, 
+they are actually quite important. They solve a key problem that execution
+abstractions face: whether a command execution is synchronous or asynchronous 
+(as well as void or value-returning) should *not* be abstracted away since 
+otherwise you can end up in two common anti-patterns (i.e. [async guidelines for ASP.NET](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md)), 
+known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/) and 
+[async over sync](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/).
+
+The marker interfaces on the command messages drive the compiler to only allow 
+the right invocation style on the message bus, as defined by the command author:
+
+```csharp
+public interface IMessageBus
+{
+    // sync void
+    void Execute(ICommand command);
+    // sync value-returning
+    TResult? Execute<TResult>(ICommand<TResult> command);
+    // async void
+    Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
+    // async value-returning
+    Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
+}
+```
+
+For example, to create a value-returning async command that retrieves some 
+value, you would have:
+
+```csharp
+record FindDocuments(string Filter) : IAsyncCommand<IEnumerable<string>>;
+
+class FindDocumentsHandler : IAsyncCommandHandler<FindDocument, IEnumerable<string>>
+{
+    public bool CanExecute(FindDocument command) => !string.IsNullOrEmpty(command.Filter);
+    
+    public Task<IEnumerable<string>> ExecuteAsync(FindDocument command, CancellationToken cancellation)
+        => // evaluate command.Filter across all documents and return matches
+}
+```
+
+In order to execute such command, the only execute method the compiler will allow 
+is:
+
+```csharp
+IEnumerable<string> files = await bus.ExecuteAsync(new FindDocuments("*.json"));
+```
+
+If the consumer tries to use `Execute`, the compiler will complain that the 
+command does not implement `ICommand<TResult>`, which is the synchronous version 
+of the marker interface. Likewise, mistakes cannot be made when implementing the 
+handler, since the handler interfaces define constraints on what the commands must 
+implement:
+
+```csharp
+// sync
+public interface ICommandHandler<in TCommand> : ... where TCommand : ICommand;
+public interface ICommandHandler<in TCommand, out TResult> : ... where TCommand : ICommand<TResult>;
+
+// async
+public interface IAsyncCommandHandler<in TCommand> : ... where TCommand : IAsyncCommand;
+public interface IAsyncCommandHandler<in TCommand, TResult> : ... where TCommand : IAsyncCommand<TResult>
+```
+
+This design choice also makes it impossible to end up executing a command
+implementation improperly.
+
+In addition to execution, the `IMessageBus` also provides a mechanism to determine 
+if a command has a registered handler at all via the `CanHandle<T>` method as well 
+as a validation mechanism via `CanExecute<T>`, as shown above in the `FindDocumentsHandler` example.
+
+Commands can notify new events, and event observers/subscribers can in turn 
+execute commands.
+
+<!-- #core -->
+
+## Message Bus
+
+The default implementation lives in a separate package [Merq.Core](https://www.nuget.org/packages/Merq.Core) 
+so that application components can take a dependency on just the interfaces.
+
+[![Version](https://img.shields.io/nuget/vpre/Merq.Core.svg?color=royalblue)](https://www.nuget.org/packages/Merq.Core)
+[![Downloads](https://img.shields.io/nuget/dt/Merq.Core.svg?color=green)](https://www.nuget.org/packages/Merq.Core)
+
+<!-- #implementation -->
+The default implementation of the message bus interface `IMessageBus` has 
+no external dependencies and can be instantiated via the `MessageBus` constructor 
+directly.
+
+The bus locates command handlers and event producers via the passed-in 
+`IServiceProvider` instance in the constructor:
+
+```csharp
+var bus = new MessageBus(serviceProvider);
+
+// execute a command
+bus.Execute(new MyCommand());
+
+// observe an event from the bus
+bus.Observe<MyEvent>().Subscribe(e => Console.WriteLine(e.Message));
+```
+
+<!-- #implementation -->
+
+When using [dependency injection for .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection), 
+the [Merq.DependencyInjection](https://www.nuget.org/packages/Merq.DependencyInjection) package 
+provides a simple mechanism for registering the message bus:
+
+<!-- #di -->
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+...
+// Automatically add the message bus and all command handlers and 
+// event producers in the current project and any dependencies
+builder.Services.AddMessageBus();
+```
+
+The `AddMessageBus` extension method leverages compile-time code generation to avoid 
+negatively impacting run-time app startup, via the dependency on 
+[Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
+This also ensures that all proper service interfaces are registered for the various 
+components.
+
+<!-- #di -->
+
+
+# Dogfooding
+
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Devlooped.Merq/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![Build](https://github.com/devlooped/Merq/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/Merq/actions)
+
+We also produce CI packages from branches and pull requests so you can dogfood builds as quickly as they are produced. 
+
+The CI feed is `https://pkg.kzu.io/index.json`. 
+
+The versioning scheme for packages is:
+
+- PR builds: *42.42.42-pr*`[NUMBER]`
+- Branch builds: *42.42.42-*`[BRANCH]`.`[COMMITS]`
+
+<!-- #sponsors -->
+<!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->

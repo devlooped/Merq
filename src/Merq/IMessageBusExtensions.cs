@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Merq;
 
 /// <summary>
-/// Usability overloads for <see cref="IEventStream"/>.
+/// Usability overloads for <see cref="IMessageBus"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class IMessageBusExtensions

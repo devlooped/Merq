@@ -23,29 +23,8 @@ defaults:
     shell: bash
 
 jobs:
-  os:
-    runs-on: ubuntu-latest
-    outputs:
-      os: ${{ steps.os.outputs.os }}
-    steps:
-      - name: 🤘 checkout
-        uses: actions/checkout@v2
-        
-      - name: 🔎 os
-        id: os
-        shell: pwsh
-        run: |
-          $path = './.github/workflows/os-matrix.json'
-          $os = if (test-path $path) { cat $path } else { '["ubuntu-latest"]' }
-          echo "::set-output name=os::$os"
-
   build:
-    needs: os
-    name: build-${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: ${{ fromJSON(needs.os.outputs.os) }}
+    runs-on: windows-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
@@ -53,9 +32,6 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: ✓ ensure format
-        run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
-          
       - name: 🙏 build
         run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
 
@@ -65,11 +41,13 @@ jobs:
       - name: 📦 pack
         run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
 
-      # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
-        if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
+        if: env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
+
+      - name: ✓ ensure format
+        run: dotnet format --verify-no-changes -v:diag --exclude ~/.nuget
