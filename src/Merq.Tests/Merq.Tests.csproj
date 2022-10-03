@@ -5,7 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <!-- Since we have our own version of the attribute in Merq.Sample -->
-    <IncludeServiceAttribute>false</IncludeServiceAttribute>
+    <AddServiceAttribute>false</AddServiceAttribute>
   </PropertyGroup>
 
   <ItemGroup>
