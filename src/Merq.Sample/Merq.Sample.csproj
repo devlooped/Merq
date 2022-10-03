@@ -3,11 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Polyfill.NET" Version="1.0.12" PrivateAssets="all" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.0.1" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
