@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Sample", "src\Merq.Sam
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Merq.DependencyInjection", "src\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj", "{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.VisualStudio.Tests", "src\Merq.VisualStudio.Tests\Merq.VisualStudio.Tests.csproj", "{DA774F3B-698B-4BF0-9116-27656BBDA965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.VisualStudio.Tests", "src\Merq.VisualStudio.Tests\Merq.VisualStudio.Tests.csproj", "{DA774F3B-698B-4BF0-9116-27656BBDA965}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
