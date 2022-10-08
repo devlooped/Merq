@@ -213,6 +213,8 @@ public class MessageBus : IMessageBus
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
 
+        OnUsingEvent(type);
+
         // TODO: if we prevent Notify for externally produced events, we won't be 
         // able to notify base event subscribers when those events are produced. 
         //var producer = services.GetService<IObservable<TEvent>>();
@@ -237,11 +239,13 @@ public class MessageBus : IMessageBus
     /// </summary>
     public IObservable<TEvent> Observe<TEvent>()
     {
+        OnUsingEvent(typeof(TEvent));
+
         // NOTE: in order for the base event subscription to work properly for external
         // producers, they must register the service for each T in the TEvent hierarchy.
         var producers = services.GetServices<IObservable<TEvent>>().ToArray();
 
-        var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent).GetTypeInfo(), info =>
+        var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent), type =>
         {
             // If we're creating a new subject, we need to clear the cache of compatible subjects
             compatibleSubjects.Clear();
@@ -254,6 +258,12 @@ public class MessageBus : IMessageBus
         // Merge with any externally-produced observables that are compatible
         return new CompositeObservable<TEvent>(new[] { subject }.Concat(producers).ToArray());
     }
+
+    /// <summary>
+    /// Derived classes can inspect the types of events that are being observed or notified 
+    /// on the message bus.
+    /// </summary>
+    protected virtual void OnUsingEvent(Type eventType) { }
 
     static Type GetHandlerType(Type commandType)
     {
