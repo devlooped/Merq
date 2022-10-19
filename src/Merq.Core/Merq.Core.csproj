@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.0.10" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" Pack="false" />
     <PackageReference Include="RxFree" Version="1.1.2" PrivateAssets="all" />
   </ItemGroup>
