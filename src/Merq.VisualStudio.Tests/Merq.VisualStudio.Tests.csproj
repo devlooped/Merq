@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
-    <PackageReference Include="ThisAssembly.Project" Version="1.0.9" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly.Project" Version="1.0.10" PrivateAssets="all" />
     <PackageReference Include="Moq" Version="4.18.2" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
