@@ -40,8 +40,8 @@
 	weak
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
-	sha = 2fea462dc563923800a7efad24a52aa0541a8864
-	etag = 819e24ed16c1257f3c6ea3c728e1507020bacf32aeb63f5dd56f9a5cb2652275
+	sha = c6f74cea5d6277e750d70886496aa1c84563bb46
+	etag = 89855774fe1c198b2af190cd90b5df27ffe9c2cb5e242182fc9e757a83b23274
 	weak
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
@@ -50,8 +50,8 @@
 	weak
 [file "src/nuget.config"]
 	url = https://github.com/devlooped/oss/blob/main/src/nuget.config
-	sha = 1537aa96d3c999642d678e1143b09950f235b977
-	etag = 754274e682c3523e3ac0a142ada64abff20551dc73bf16edfbd66415dcf87fd0
+	sha = 8b4ce81031117af01ad91bab7a1687a89e5487c3
+	etag = fa04c5448616bf8ed5686f901ebded9f228d481e9b917edf8738afe20991a06b
 	weak
 [file ".github/workflows/release-notes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-notes.yml
