@@ -27,6 +27,10 @@ Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Merq.DependencyInjection", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.VisualStudio.Tests", "src\Merq.VisualStudio.Tests\Merq.VisualStudio.Tests.csproj", "{DA774F3B-698B-4BF0-9116-27656BBDA965}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.CodeAnalysis", "src\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj", "{932B8838-FB30-4861-A7B9-713430F2867A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.CodeFixes", "src\Merq.CodeFixes\Merq.CodeFixes.csproj", "{814DFB6C-01AB-4B9C-B528-CFA2C687858C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,14 @@ Global
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{932B8838-FB30-4861-A7B9-713430F2867A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{932B8838-FB30-4861-A7B9-713430F2867A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{932B8838-FB30-4861-A7B9-713430F2867A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{932B8838-FB30-4861-A7B9-713430F2867A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{814DFB6C-01AB-4B9C-B528-CFA2C687858C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{814DFB6C-01AB-4B9C-B528-CFA2C687858C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{814DFB6C-01AB-4B9C-B528-CFA2C687858C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{814DFB6C-01AB-4B9C-B528-CFA2C687858C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

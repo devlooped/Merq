@@ -56,7 +56,7 @@ public interface IMessageBus : IFluentInterface
     /// </summary>
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
-    Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
+    Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default);
 
     /// <summary>
     /// Executes the given asynchronous command and returns a result from it.
@@ -65,7 +65,7 @@ public interface IMessageBus : IFluentInterface
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
     /// <returns>The result of executing the command.</returns>
-    Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
+    Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default);
 
     /// <summary>
     /// Notifies the bus of an event.
