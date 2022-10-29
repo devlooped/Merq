@@ -50,7 +50,11 @@ public class AsyncToSyncFixer : CodeFixProvider
 
         protected override Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
-            var syncMember = member.WithName(SyntaxFactory.IdentifierName("Execute"));
+            SimpleNameSyntax newName = member.Name is GenericNameSyntax generic ?
+                generic.WithIdentifier(SyntaxFactory.Identifier("Execute")) :
+                SyntaxFactory.IdentifierName("Execute");
+
+            var syncMember = member.WithName(newName);
             var newRoot = root.ReplaceNode(member, syncMember);
             var newMember = newRoot.FindNode(new TextSpan(member.SpanStart, syncMember.Span.Length));
             var awaited = newMember.FirstAncestorOrSelf<AwaitExpressionSyntax>();
@@ -61,8 +65,7 @@ public class AsyncToSyncFixer : CodeFixProvider
                     newRoot.ReplaceNode(awaited, awaited.Expression.WithLeadingTrivia(awaited.GetLeadingTrivia()))));
             }
 
-            return Task.FromResult(document.WithSyntaxRoot(
-                root.ReplaceNode(member, member.WithName(SyntaxFactory.IdentifierName("Execute")))));
+            return Task.FromResult(document.WithSyntaxRoot(newRoot));
         }
     }
 }

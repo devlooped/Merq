@@ -41,7 +41,6 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
     {
         var invocation = (InvocationExpressionSyntax)context.Node;
         var semantic = context.SemanticModel;
-        var target = semantic.GetSymbolInfo(invocation.Expression);
 
         // Overload resolution worked fine, nothing else to do.
         var method = semantic.GetSymbolInfo(invocation);
@@ -67,16 +66,42 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (!isAsync && !isSync)
             return;
 
-        var args = invocation.ArgumentList.Arguments.Select(x => semantic.GetSymbolInfo(x.Expression).Symbol).FirstOrDefault();
-        if (args == null)
+        // When attempting to execute a command passing just the TCommand, instead 
+        // of resolving to the IMessageBusExtensions, the compiler will provide as 
+        // candidate the Execute<TResult> and ExecuteAsync<TResult> methods in IMessageBus 
+        // instead. In this case, we need to get the command type from the return type 
+        // of those methods, even if they are the incorrect compiler resolution.
+        var returnType = method.CandidateSymbols
+            .OfType<IMethodSymbol>()
+            .Where(x => x.IsGenericMethod && !x.ReturnsVoid && x.ReturnType is INamedTypeSymbol)
+            .Select(x => (INamedTypeSymbol)x.ReturnType)
+            // In the async case, we'll get Task<T> as return type
+            .Select(x => isAsync && x.IsGenericType ? x.TypeArguments[0] : x)
+            .FirstOrDefault();
+
+        var arg = invocation.ArgumentList.Arguments.Select(x => semantic.GetSymbolInfo(x.Expression).Symbol).FirstOrDefault();
+        var location = invocation.ArgumentList.Arguments.Select(x => x.GetLocation())
+            // Use either the location of the first argument in the regular case
+            .Concat(invocation.DescendantNodesAndSelf()
+            // Or the generic argument location in the second case
+            .OfType<GenericNameSyntax>()
+            .SelectMany(x => x.TypeArgumentList.Arguments.Select(x => x.GetLocation())))
+            .FirstOrDefault();
+
+        // If we got no command argument, then get the command type from the false match 
+        // on the generic return type.
+        arg ??= returnType;
+
+        if (arg == null)
             return;
 
-        var command = args switch
+        var command = arg switch
         {
             IMethodSymbol m => m.MethodKind == MethodKind.Constructor ? m.ContainingType : !m.ReturnsVoid ? m.ReturnType : null,
             IPropertySymbol p => p.Type,
             IFieldSymbol f => f.Type,
             ILocalSymbol l => l.Type,
+            ITypeSymbol t => t,
             _ => null
         };
 
@@ -85,11 +110,11 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
 
         if (isAsync && IsType(syncCmd, command))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.AsyncOnSyncRule, invocation.ArgumentList.Arguments[0].GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.AsyncOnSyncRule, location));
         }
         else if (isSync && IsType(asyncCmd, command))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.SyncOnAsyncRule, invocation.ArgumentList.Arguments[0].GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.SyncOnAsyncRule, location));
         }
     }
 

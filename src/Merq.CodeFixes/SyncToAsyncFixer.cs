@@ -51,7 +51,11 @@ public class SyncToAsyncFixer : CodeFixProvider
 
         protected override Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
-            var asyncMember = member.WithName(SyntaxFactory.IdentifierName("ExecuteAsync"));
+            SimpleNameSyntax newName = member.Name is GenericNameSyntax generic ?
+                generic.WithIdentifier(SyntaxFactory.Identifier("ExecuteAsync")) :
+                SyntaxFactory.IdentifierName("Execute");
+
+            var asyncMember = member.WithName(newName);
             var newRoot = root.ReplaceNode(member, asyncMember);
             var newMember = newRoot.FindNode(new TextSpan(member.SpanStart, asyncMember.Span.Length));
             var invocation = newMember.FirstAncestorOrSelf<InvocationExpressionSyntax>();
