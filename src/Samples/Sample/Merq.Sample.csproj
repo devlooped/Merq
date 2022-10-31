@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polyfill.NET" Version="1.0.12" PrivateAssets="all" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+</Project>

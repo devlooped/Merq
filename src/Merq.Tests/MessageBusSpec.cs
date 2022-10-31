@@ -8,9 +8,16 @@ using Moq;
 
 namespace Merq;
 
+partial record Foo
+{
+    static Foo Create(dynamic value) => new Foo();
+}
+
+partial record Foo { }
+
 public record MessageBusSpec(ITestOutputHelper Output)
 {
-    IMessageBus bus = new MessageBus(new ServiceCollection().BuildServiceProvider());
+    readonly IMessageBus bus = new MessageBus(new ServiceCollection().BuildServiceProvider());
 
     [Fact]
     public void when_subscribing_external_producer_then_succeeds()
@@ -27,7 +34,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
         bus.Observe<int>().Subscribe(i => value = i);
 
         producer.OnNext(42);
-
+        
         Assert.Equal(42, value);
     }
 

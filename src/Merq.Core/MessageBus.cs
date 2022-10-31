@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,6 +57,9 @@ public class MessageBus : IMessageBus
     // An cache of subjects indexed by the compatible event types, used to quickly lookup the subjects to 
     // invoke in a Notify. Refreshed whenever a new Observe<T> subscription is added.
     readonly ConcurrentDictionary<Type, Subject[]> compatibleSubjects = new();
+    // An cache of subjects indexed by event full name, used to quickly lookup the subjects to 
+    // invoke in a Notify via a factory to perform conversion. 
+    readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, Subject?>> dynamicSubjects = new();
 
     readonly ConcurrentDictionary<Type, bool> canHandleMap = new();
     readonly IServiceProvider services;
@@ -213,8 +219,6 @@ public class MessageBus : IMessageBus
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
 
-        OnUsingEvent(type);
-
         // TODO: if we prevent Notify for externally produced events, we won't be 
         // able to notify base event subscribers when those events are produced. 
         //var producer = services.GetService<IObservable<TEvent>>();
@@ -223,9 +227,14 @@ public class MessageBus : IMessageBus
 
         // We call all subjects that are compatible with
         // the event type, not just concrete event type subscribers.
+        // Also adds as compatible the dynamic conversion ones.
         var compatible = compatibleSubjects.GetOrAdd(type, eventType => subjects.Keys
             .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
             .Select(subjectEventType => subjects[subjectEventType])
+            .Concat(dynamicSubjects
+                .GetOrAdd(type.FullName, _ => new())
+                .Where(pair => pair.Key != type && pair.Value != null)
+                .Select(pair => pair.Value!))
             .ToArray());
 
         foreach (var subject in compatible)
@@ -239,31 +248,60 @@ public class MessageBus : IMessageBus
     /// </summary>
     public IObservable<TEvent> Observe<TEvent>()
     {
-        OnUsingEvent(typeof(TEvent));
+        var eventType = typeof(TEvent);
 
         // NOTE: in order for the base event subscription to work properly for external
         // producers, they must register the service for each T in the TEvent hierarchy.
         var producers = services.GetServices<IObservable<TEvent>>().ToArray();
 
-        var subject = (IObservable<TEvent>)subjects.GetOrAdd(typeof(TEvent), type =>
+        var typedSubject = (IObservable<TEvent>)subjects.GetOrAdd(eventType, type =>
         {
             // If we're creating a new subject, we need to clear the cache of compatible subjects
             compatibleSubjects.Clear();
             return new Subject<TEvent>();
         });
 
+        var dynamicSubject = (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
+        {
+            // First try custom directly declared factory method
+            if (eventType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo createMethod &&
+                createMethod.GetParameters().Length == 1 &&
+                createMethod.ReturnType == eventType &&
+                createMethod.GetParameters()[0].ParameterType == typeof(object))
+            {
+                // If we're creating a new subject, we need to clear the cache of compatible subjects
+                compatibleSubjects.Clear();
+                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), createMethod, true));
+            }
+            // else, if there's a converter in the event type assembly, use that to provide dynamic 
+            // conversion support.
+            else if (eventType.Assembly.GetType($"{eventType.Namespace}.__{eventType.Name}Factory") is Type factoryType &&
+                factoryType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo factoryMethod &&
+                factoryMethod.ReturnType == eventType)
+            {
+                // If we're creating a new subject, we need to clear the cache of compatible subjects
+                compatibleSubjects.Clear();
+                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), factoryMethod, true));
+            }
+
+            // The null value will be added so we don't check the assembly for the factory delegate again.
+            return null;
+        });
+
         if (producers.Length == 0)
-            return subject;
+        {
+            if (dynamicSubject == null)
+                return typedSubject;
+            else
+                return new CompositeObservable<TEvent>(typedSubject, dynamicSubject);
+        }
 
         // Merge with any externally-produced observables that are compatible
-        return new CompositeObservable<TEvent>(new[] { subject }.Concat(producers).ToArray());
+        if (dynamicSubject == null)
+            return new CompositeObservable<TEvent>(new[] { typedSubject }.Concat(producers).ToArray());
+        else
+            return new CompositeObservable<TEvent>(new[] { typedSubject, dynamicSubject }.Concat(producers).ToArray());
     }
-
-    /// <summary>
-    /// Derived classes can inspect the types of events that are being observed or notified 
-    /// on the message bus.
-    /// </summary>
-    protected virtual void OnUsingEvent(Type eventType) { }
 
     static Type GetHandlerType(Type commandType)
     {
@@ -319,7 +357,7 @@ public class MessageBus : IMessageBus
     {
         readonly IObservable<T>[] observables;
 
-        public CompositeObservable(IObservable<T>[] observables)
+        public CompositeObservable(params IObservable<T>[] observables)
             => this.observables = observables;
 
         public IDisposable Subscribe(IObserver<T> observer)
