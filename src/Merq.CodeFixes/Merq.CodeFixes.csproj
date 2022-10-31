@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" Version="4.3.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0"  />
   </ItemGroup>
 
