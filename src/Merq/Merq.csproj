@@ -12,6 +12,7 @@
     <PackageReference Include="IFluentInterface" Version="2.1.0" PrivateAssets="all" />
     <PackageReference Include="NuGetizer" Version="0.9.0" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" Version="1.0.10" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>

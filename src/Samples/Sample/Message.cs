@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Merq.Sample;
+
+public record OnDidMessage(string Message);
 
 public record MessageCommand(string Message) : ICommand;
 

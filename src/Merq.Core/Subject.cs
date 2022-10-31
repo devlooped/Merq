@@ -10,5 +10,16 @@ abstract class Subject
 
 partial class Subject<T> : Subject
 {
-    public override void OnNext(object value) => OnNext((T)value);
+    Func<dynamic, T>? converter;
+    
+    internal Subject(Func<dynamic, T> converter) : this()
+        => this.converter = converter;
+
+    public override void OnNext(object value)
+    {
+        if (converter == null)
+            OnNext((T)value);
+        else
+            OnNext(converter.Invoke(value));
+    }
 }

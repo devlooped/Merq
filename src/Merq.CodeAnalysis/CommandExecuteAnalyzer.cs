@@ -21,7 +21,6 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
         context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.InvocationExpression);
-        //context.RegisterOperationAction(AnalyzeOperation, OperationKind.Invocation);
 
 
 #pragma warning disable RS1012 // Start action has no registered actions
