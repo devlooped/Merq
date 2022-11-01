@@ -53,7 +53,7 @@ public class SyncToAsyncFixer : CodeFixProvider
         {
             SimpleNameSyntax newName = member.Name is GenericNameSyntax generic ?
                 generic.WithIdentifier(SyntaxFactory.Identifier("ExecuteAsync")) :
-                SyntaxFactory.IdentifierName("Execute");
+                SyntaxFactory.IdentifierName("ExecuteAsync");
 
             var asyncMember = member.WithName(newName);
             var newRoot = root.ReplaceNode(member, asyncMember);
