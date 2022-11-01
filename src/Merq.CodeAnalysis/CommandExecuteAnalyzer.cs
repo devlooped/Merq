@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace Merq;
 
@@ -14,26 +13,16 @@ namespace Merq;
 public class CommandExecuteAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Diagnostics.AsyncOnSyncRule, Diagnostics.SyncOnAsyncRule);
+        ImmutableArray.Create(Diagnostics.InvalidAsyncOnSync, Diagnostics.InvalidSyncOnAsync);
 
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.InvocationExpression);
-
-
-#pragma warning disable RS1012 // Start action has no registered actions
         context.RegisterCompilationStartAction(c =>
         {
-            if (c.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.DebugMerqAnalyzer", out var debugValue) &&
-                bool.TryParse(debugValue, out var shouldDebug) &&
-                shouldDebug)
-            {
-                Debugger.Launch();
-            }
-        });
-#pragma warning restore RS1012 // Start action has no registered actions
+            c.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.InvocationExpression);
+        });        
     }
 
     static void AnalyzeSyntax(SyntaxNodeAnalysisContext context)
@@ -45,14 +34,16 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         var method = semantic.GetSymbolInfo(invocation);
         if (method.Symbol != null)
             return;
-
+        
         // First deal with direct invocations on IMessageBus.
         // TODO: consider IMessageBusExtensions too.
         var busType = context.Compilation.GetTypeByMetadataName("Merq.IMessageBus");
         var asyncCmd = context.Compilation.GetTypeByMetadataName("Merq.IAsyncCommand");
+        var asyncCmdRet = context.Compilation.GetTypeByMetadataName("Merq.IAsyncCommand`1");
         var syncCmd = context.Compilation.GetTypeByMetadataName("Merq.ICommand");
+        var syncCmdRet = context.Compilation.GetTypeByMetadataName("Merq.ICommand`1");
 
-        if (busType == null || asyncCmd == null || syncCmd == null)
+        if (busType == null || asyncCmd == null || syncCmd == null || asyncCmdRet == null || syncCmdRet == null)
             return;
 
         if (method.CandidateSymbols.OfType<IMethodSymbol>().All(x => !IsType(busType, x.ContainingType)))
@@ -107,13 +98,13 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (command == null)
             return;
 
-        if (isAsync && IsType(syncCmd, command))
+        if (isAsync && (IsType(syncCmd, command) || IsType(syncCmdRet, command)))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.AsyncOnSyncRule, location));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidAsyncOnSync, location));
         }
-        else if (isSync && IsType(asyncCmd, command))
+        else if (isSync && (IsType(asyncCmd, command) || IsType(asyncCmdRet, command)))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.SyncOnAsyncRule, location));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidSyncOnAsync, location));
         }
     }
 
@@ -125,21 +116,19 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (actual.Equals(expected, SymbolEqualityComparer.Default) == true)
             return true;
 
+        if (expected is INamedTypeSymbol namedExpected &&
+            actual is INamedTypeSymbol namedActual &&
+            namedActual.IsGenericType &&
+            namedActual.ConstructedFrom.Equals(namedExpected, SymbolEqualityComparer.Default))
+            return true;
+
         if (expected.BaseType?.Name.Equals("object", StringComparison.OrdinalIgnoreCase) == true)
             return false;
 
         foreach (var iface in actual.AllInterfaces)
-            if (iface.Equals(expected, SymbolEqualityComparer.Default) == true)
+            if (IsType(expected, iface))
                 return true;
 
         return IsType(expected.BaseType, actual);
-    }
-
-
-    static void AnalyzeOperation(OperationAnalysisContext context)
-    {
-        var invocation = (IInvocationOperation)context.Operation;
-
-        Console.WriteLine(invocation.TargetMethod.Name);
     }
 }
