@@ -15,7 +15,7 @@ namespace Merq;
 public record MessageBusComponentSpec(ITestOutputHelper Output)
 {
     [Fact]
-    public async Task ComposewAsync()
+    public async Task ComposeAsync()
     {
         // Prepare part discovery to support both flavors of MEF attributes.
         var discovery = PartDiscovery.Combine(

@@ -34,7 +34,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
         bus.Observe<int>().Subscribe(i => value = i);
 
         producer.OnNext(42);
-        
+
         Assert.Equal(42, value);
     }
 

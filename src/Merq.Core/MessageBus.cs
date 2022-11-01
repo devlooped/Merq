@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Dynamic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Merq;
 
@@ -50,7 +50,7 @@ namespace Merq;
 public class MessageBus : IMessageBus
 {
     static readonly ConcurrentDictionary<Type, Type> handlerTypeMap = new();
-    static readonly MethodInfo canHandleMethod = typeof(MessageBus).GetMethod(nameof(CanHandle), Type.EmptyTypes);
+    static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute));
 
     // All subjects active in the event stream.
     readonly ConcurrentDictionary<Type, Subject> subjects = new();
@@ -62,7 +62,12 @@ public class MessageBus : IMessageBus
     readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, Subject?>> dynamicSubjects = new();
 
     readonly ConcurrentDictionary<Type, bool> canHandleMap = new();
+    readonly ConcurrentDictionary<Type, ServiceDescriptor?> mappedHandlers = new();
+    readonly ConcurrentDictionary<Type, (Type TargetCommand, Func<dynamic, object> CommandFactory)?> mappedCommands = new();
+
     readonly IServiceProvider services;
+    readonly IServiceCollection? collection;
+    readonly bool enableDynamicMapping;
 
     readonly ConcurrentDictionary<Type, VoidDispatcher> voidExecutors = new();
     readonly ConcurrentDictionary<Type, VoidAsyncDispatcher> voidAsyncExecutors = new();
@@ -73,8 +78,25 @@ public class MessageBus : IMessageBus
     /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
     /// that resolves instances of command handlers and external event producers.
     /// </summary>
-    public MessageBus(IServiceProvider services)
-        => this.services = services;
+    public MessageBus(IServiceProvider services) : this(services, true) { }
+
+    /// <summary>
+    /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
+    /// that resolves instances of command handlers and external event producers.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceProvider"/> that contains the registrations for 
+    /// command handlers and event producers.
+    /// </param>
+    /// <param name="enableDynamicMapping">Whether to support dynamic mapping for command and event type (a.k.a. 'duck typing').</param>
+    protected MessageBus(IServiceProvider services, bool enableDynamicMapping)
+    {
+        this.services = services;
+        if (enableDynamicMapping)
+            // This allows MEF-based services to not throw when we request a non-required service.
+            collection = services.GetServices<IServiceCollection>().FirstOrDefault();
+
+        this.enableDynamicMapping = enableDynamicMapping;
+    }
 
     /// <summary>
     /// Determines whether the given command can be executed by a registered 
@@ -93,8 +115,28 @@ public class MessageBus : IMessageBus
     /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
     /// </remarks>
     public bool CanExecute<TCommand>(TCommand command) where TCommand : IExecutable
-        => services.GetService(GetHandlerType(GetCommandType(command))) is ICanExecute<TCommand> canExec &&
-           canExec.CanExecute(command);
+    {
+        var type = GetCommandType(command);
+        if (services.GetService(GetHandlerType(type)) is ICanExecute<TCommand> canExec)
+            return canExec.CanExecute(command);
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(type, out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is IExecutable converted)
+        {
+            if (commandType.IsPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                return CanExecute((dynamic)converted);
+            else
+                // Cache this as a delegate too?
+                // For non-public types, we need to use the slower reflection approach
+                return (bool?)canExecuteMethod.MakeGenericMethod(commandType).Invoke(this, new[] { converted }) == true;
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Determines whether the given command type has handler registered in the 
@@ -111,9 +153,14 @@ public class MessageBus : IMessageBus
     /// <c>TCommand</c> parameter (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, 
     /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
     /// </remarks>
-    public bool CanHandle<TCommand>() where TCommand : IExecutable
-        => canHandleMap.GetOrAdd(typeof(TCommand), type
-            => services.GetService(GetHandlerType(typeof(TCommand))) != null);
+    public bool CanHandle<TCommand>() where TCommand : IExecutable => canHandleMap.GetOrAdd(typeof(TCommand), type =>
+    {
+        var handler = services.GetService(GetHandlerType(type));
+        if (handler != null)
+            return true;
+
+        return FindCommandMapper(type, out _) is not null;
+    });
 
     /// <summary>
     /// Determines whether the given command has a handler registered in the
@@ -130,9 +177,14 @@ public class MessageBus : IMessageBus
     /// <paramref name="command"/> instance (<see cref="ICommand"/>, <see cref="ICommand{TResult}"/>, 
     /// <see cref="IAsyncCommand"/> or <see cref="IAsyncCommand{TResult}"/> respectively).
     /// </remarks>
-    public bool CanHandle(IExecutable command)
-        => canHandleMap.GetOrAdd(command.GetType(), type
-            => services.GetService(GetHandlerType(GetCommandType(command))) != null);
+    public bool CanHandle(IExecutable command) => canHandleMap.GetOrAdd(GetCommandType(command), type =>
+    {
+        var handler = services.GetService(GetHandlerType(type));
+        if (handler != null)
+            return true;
+
+        return FindCommandMapper(type, out _) is not null;
+    });
 
     /// <summary>
     /// Executes the given synchronous command.
@@ -143,12 +195,12 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
-            ExecuteImpl((dynamic)command);
+            ExecuteCore((dynamic)command);
         else
             voidExecutors.GetOrAdd(type, type
                 => (VoidDispatcher)Activator.CreateInstance(
                     typeof(VoidDispatcher<>).MakeGenericType(type),
-                    services))
+                    this))
             .Execute(command);
     }
 
@@ -168,7 +220,7 @@ public class MessageBus : IMessageBus
         return (TResult)resultExecutors.GetOrAdd(type, type
                 => (ResultDispatcher)Activator.CreateInstance(
                    typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                   services))
+                   this))
             .Execute(command)!;
     }
 
@@ -182,12 +234,12 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
-            return ExecuteAsyncImpl((dynamic)command, cancellation);
+            return ExecuteAsyncCore((dynamic)command, cancellation);
 
         return voidAsyncExecutors.GetOrAdd(type, type
             => (VoidAsyncDispatcher)Activator.CreateInstance(
                 typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
-                services))
+                this))
             .ExecuteAsync(command, cancellation);
     }
 
@@ -208,7 +260,7 @@ public class MessageBus : IMessageBus
         return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
             => (ResultAsyncDispatcher)Activator.CreateInstance(
                 typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                services))
+                this))
             .ExecuteAsync(command, cancellation);
     }
 
@@ -261,32 +313,19 @@ public class MessageBus : IMessageBus
             return new Subject<TEvent>();
         });
 
-        var dynamicSubject = (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
+        var dynamicSubject = enableDynamicMapping ? (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
         {
-            // First try custom directly declared factory method
-            if (eventType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo createMethod &&
-                createMethod.GetParameters().Length == 1 &&
-                createMethod.ReturnType == eventType &&
-                createMethod.GetParameters()[0].ParameterType == typeof(object))
+            var factory = FindFactory(type);
+            if (factory != null)
             {
                 // If we're creating a new subject, we need to clear the cache of compatible subjects
                 compatibleSubjects.Clear();
-                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), createMethod, true));
-            }
-            // else, if there's a converter in the event type assembly, use that to provide dynamic 
-            // conversion support.
-            else if (eventType.Assembly.GetType($"{eventType.Namespace}.__{eventType.Name}Factory") is Type factoryType &&
-                factoryType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo factoryMethod &&
-                factoryMethod.ReturnType == eventType)
-            {
-                // If we're creating a new subject, we need to clear the cache of compatible subjects
-                compatibleSubjects.Clear();
-                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), factoryMethod, true));
+                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), factory, true));
             }
 
             // The null value will be added so we don't check the assembly for the factory delegate again.
             return null;
-        });
+        }) : null;
 
         if (producers.Length == 0)
         {
@@ -328,27 +367,157 @@ public class MessageBus : IMessageBus
     static Type GetCommandType(IExecutable command)
         => command?.GetType() ?? throw new ArgumentNullException(nameof(command));
 
-    void ExecuteImpl<TCommand>(TCommand command) where TCommand : ICommand
-        => services.GetRequiredService<ICommandHandler<TCommand>>().Execute(command);
+    // Tries to locate a command handler service, which by definition will implement 
+    // IExecutableCommandHandler<TCommand>, so we look up a matching TCommand by 
+    // full name against the type parameter. If we find such a handler, we then need 
+    // to locate an appropriate conversion factory method. If neither is found, we 
+    // cannot map.
+    Func<dynamic, object>? FindCommandMapper(Type sourceType, out Type? targetType)
+    {
+        targetType = null;
+        if (collection == null)
+            return null;
 
-    Task ExecuteAsyncImpl<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
-        => services.GetRequiredService<IAsyncCommandHandler<TCommand>>().ExecuteAsync(command, cancellation);
+        var map = mappedCommands.GetOrAdd(sourceType, type =>
+        {
+            // This is obviously not a cheap lookup, but we do it once per bus per type
+            if (collection.FirstOrDefault(x =>
+                x.ServiceType.IsGenericType &&
+                x.ServiceType.GetInterfaces().Any(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() == typeof(IExecutableCommandHandler<>) &&
+                    i.GetGenericArguments()[0] is Type argType &&
+                    argType.FullName == type.FullName)) is ServiceDescriptor descriptor &&
+                descriptor.ServiceType.GetGenericArguments()[0] is Type commandType &&
+                FindFactory(commandType) is MethodInfo factory)
+                return (commandType, (Func<dynamic, object>)Delegate.CreateDelegate(typeof(Func<dynamic, object>), null, factory, true));
+
+            return default;
+        });
+
+        targetType = map?.TargetCommand;
+        return map?.CommandFactory;
+    }
+
+    void ExecuteCore<TCommand>(TCommand command) where TCommand : ICommand
+    {
+        var handler = services.GetService<ICommandHandler<TCommand>>();
+        if (handler != null)
+        {
+            handler.Execute(command);
+            return;
+        }
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(typeof(TCommand), out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is ICommand converted)
+        {
+            Execute(converted);
+            return;
+        }
+
+        throw new InvalidOperationException($"No service for type '{typeof(ICommandHandler<TCommand>)}' has been registered.");
+    }
+
+    Task ExecuteAsyncCore<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
+    {
+        var handler = services.GetService<IAsyncCommandHandler<TCommand>>();
+        if (handler != null)
+        {
+            return handler.ExecuteAsync(command, cancellation);
+        }
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(typeof(TCommand), out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is IAsyncCommand converted)
+        {
+            return ExecuteAsync(converted, cancellation);
+        }
+
+        throw new InvalidOperationException($"No service for type '{typeof(IAsyncCommandHandler<TCommand>)}' has been registered.");
+    }
+
+    TResult ExecuteCore<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
+    {
+        var handler = services.GetService<ICommandHandler<TCommand, TResult>>();
+        if (handler != null)
+            return handler.Execute(command);
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(typeof(TCommand), out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is ICommand<TResult> converted)
+        {
+            return Execute(converted);
+        }
+
+        throw new InvalidOperationException($"No service for type '{typeof(ICommandHandler<TCommand, TResult>)}' has been registered.");
+    }
+
+    Task<TResult> ExecuteAsyncCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
+    {
+        var handler = services.GetService<IAsyncCommandHandler<TCommand, TResult>>();
+        if (handler != null)
+            return handler.ExecuteAsync(command, cancellation);
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(typeof(TCommand), out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is IAsyncCommand<TResult> converted)
+        {
+            return ExecuteAsync(converted, cancellation);
+        }
+
+        throw new InvalidOperationException($"No service for type '{typeof(IAsyncCommandHandler<TCommand, TResult>)}' has been registered.");
+    }
+
+    /// <summary>
+    /// Locates either a generated or custom factory method that can perform conversion from one 
+    /// type to another of the same shape.
+    /// </summary>
+    MethodInfo? FindFactory(Type type)
+    {
+        if (type.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo createMethod &&
+            createMethod.GetParameters().Length == 1 &&
+            createMethod.ReturnType == type &&
+            createMethod.GetParameters()[0].ParameterType == typeof(object))
+        {
+            return createMethod;
+        }
+
+        // else, if there's a converter in the event type assembly, use that to provide dynamic 
+        // conversion support.
+        if (type.Assembly.GetType($"{type.Namespace}.__{type.Name}Factory") is Type factoryType &&
+            factoryType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo factoryMethod &&
+            factoryMethod.ReturnType == type)
+        {
+            return factoryMethod;
+        }
+
+        return null;
+    }
 
     // dynamic dispatch cannot infer TResult from TCommand, so we need to use a generic method
     // that first "sets" the TResult and then use dynamic dispatch on the resulting instance.
-    With<TResult> WithResult<TResult>() => new(services);
+    With<TResult> WithResult<TResult>() => new(this);
 
-    struct With<TResult>
+    readonly struct With<TResult>
     {
-        readonly IServiceProvider services;
+        readonly MessageBus bus;
 
-        public With(IServiceProvider services) => this.services = services;
+        public With(MessageBus bus) => this.bus = bus;
 
         public TResult Execute<TCommand>(TCommand command) where TCommand : ICommand<TResult>
-            => services.GetRequiredService<ICommandHandler<TCommand, TResult>>().Execute(command);
+            => bus.ExecuteCore<TCommand, TResult>(command);
 
         public Task<TResult> ExecuteAsync<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
-            => services.GetRequiredService<IAsyncCommandHandler<TCommand, TResult>>().ExecuteAsync(command, cancellation);
+            => bus.ExecuteAsyncCore<TCommand, TResult>(command, cancellation);
     }
 
     #region Event Helpers
@@ -400,13 +569,11 @@ public class MessageBus : IMessageBus
 
     class VoidDispatcher<TCommand> : VoidDispatcher where TCommand : ICommand
     {
-        readonly IServiceProvider services;
+        readonly MessageBus bus;
 
-        public VoidDispatcher(IServiceProvider services)
-            => this.services = services;
+        public VoidDispatcher(MessageBus bus) => this.bus = bus;
 
-        public override void Execute(IExecutable command)
-            => services.GetRequiredService<ICommandHandler<TCommand>>().Execute((TCommand)command);
+        public override void Execute(IExecutable command) => bus.ExecuteCore((TCommand)command);
     }
 
     abstract class ResultDispatcher
@@ -416,13 +583,11 @@ public class MessageBus : IMessageBus
 
     class ResultDispatcher<TCommand, TResult> : ResultDispatcher where TCommand : ICommand<TResult>
     {
-        readonly IServiceProvider services;
+        readonly MessageBus bus;
 
-        public ResultDispatcher(IServiceProvider services)
-            => this.services = services;
+        public ResultDispatcher(MessageBus bus) => this.bus = bus;
 
-        public override object? Execute(IExecutable command)
-            => services.GetRequiredService<ICommandHandler<TCommand, TResult>>().Execute((TCommand)command);
+        public override object? Execute(IExecutable command) => bus.ExecuteCore<TCommand, TResult>((TCommand)command);
     }
 
     abstract class VoidAsyncDispatcher
@@ -432,13 +597,11 @@ public class MessageBus : IMessageBus
 
     class VoidAsyncDispatcher<TCommand> : VoidAsyncDispatcher where TCommand : IAsyncCommand
     {
-        readonly IServiceProvider services;
+        readonly MessageBus bus;
 
-        public VoidAsyncDispatcher(IServiceProvider services)
-            => this.services = services;
+        public VoidAsyncDispatcher(MessageBus bus) => this.bus = bus;
 
-        public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation)
-            => services.GetRequiredService<IAsyncCommandHandler<TCommand>>().ExecuteAsync((TCommand)command, cancellation);
+        public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation) => bus.ExecuteAsyncCore((TCommand)command, cancellation);
     }
 
     abstract class ResultAsyncDispatcher
@@ -448,13 +611,12 @@ public class MessageBus : IMessageBus
 
     class ResultAsyncDispatcher<TCommand, TResult> : ResultAsyncDispatcher where TCommand : IAsyncCommand<TResult>
     {
-        readonly IServiceProvider services;
+        readonly MessageBus bus;
 
-        public ResultAsyncDispatcher(IServiceProvider services)
-            => this.services = services;
+        public ResultAsyncDispatcher(MessageBus bus) => this.bus = bus;
 
         public override object ExecuteAsync(IExecutable command, CancellationToken cancellation)
-            => services.GetRequiredService<IAsyncCommandHandler<TCommand, TResult>>().ExecuteAsync((TCommand)command, cancellation);
+            => bus.ExecuteAsyncCore<TCommand, TResult>((TCommand)command, cancellation);
     }
 
     #endregion

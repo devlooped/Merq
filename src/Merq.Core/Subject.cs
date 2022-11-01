@@ -11,7 +11,7 @@ abstract class Subject
 partial class Subject<T> : Subject
 {
     Func<dynamic, T>? converter;
-    
+
     internal Subject(Func<dynamic, T> converter) : this()
         => this.converter = converter;
 

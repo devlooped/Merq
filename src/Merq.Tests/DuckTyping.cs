@@ -2,6 +2,8 @@
 extern alias Library2;
 
 using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Merq;
 
@@ -18,7 +20,7 @@ public partial record OtherMessageEvent(string Message)
 public class DuckTyping
 {
     [Fact]
-    public void Convert()
+    public void ConvertEvent()
     {
         var bus = new MessageBus(new MockServiceProvider());
         string? message = null;
@@ -31,8 +33,9 @@ public class DuckTyping
         Assert.Equal("Foo", message);
     }
 
+#if NET6_0_OR_GREATER
     [Fact]
-    public void CustomConvert()
+    public void CustomConvertEvent()
     {
         var bus = new MessageBus(new MockServiceProvider());
         Library2::Library.Line? line = null;
@@ -48,5 +51,87 @@ public class DuckTyping
         Assert.Equal(3, line.End.X);
         Assert.Equal(4, line.End.Y);
     }
+#endif
 
+    [Fact]
+    public void CanHandleDuck()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+
+        Assert.True(bus.CanHandle<Library2::Library.Echo>());
+        Assert.True(bus.CanHandle(new Library2::Library.Echo("Foo")));
+    }
+
+    [Fact]
+    public void CanExecuteDuck()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        var cmd = new Library2::Library.Echo("Foo");
+
+        Assert.True(bus.CanExecute(cmd));
+    }
+
+    [Fact]
+    public void ExecuteCommand()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        var cmd = new Library2::Library.Echo("Foo");
+
+        var msg = bus.Execute(cmd);
+
+        Assert.Equal("Foo", msg);
+    }
+
+    [Fact]
+    public void ExecuteNoOpCommand()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<ICommandHandler<Library1::Library.NoOp>, Library1::Library.NoOpHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        var cmd = new Library2::Library.NoOp();
+
+        bus.Execute(cmd);
+    }
+
+    [Fact]
+    public async Task ExecuteAsyncCommandAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<IAsyncCommandHandler<Library1::Library.EchoAsync, string>, Library1::Library.EchoAsyncHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        var cmd = new Library2::Library.EchoAsync("Foo");
+
+        var msg = await bus.ExecuteAsync(cmd);
+
+        Assert.Equal("Foo", msg);
+    }
+
+    [Fact]
+    public async Task ExecuteNoOpAsyncCommandAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddMessageBus(false);
+        services.AddSingleton<IAsyncCommandHandler<Library1::Library.NoOpAsync>, Library1::Library.NoOpAsyncHandler>();
+
+        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        var cmd = new Library2::Library.NoOpAsync();
+
+        await bus.ExecuteAsync(cmd);
+    }
 }
