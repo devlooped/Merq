@@ -20,6 +20,8 @@ static partial class MerqServicesExtension
     public static IServiceCollection AddMessageBus(this IServiceCollection services, bool addDiscoveredServices = true)
     {
         services.AddSingleton<IMessageBus, MessageBus>();
+        // Enables introspection of service registrations by the message bus.
+        services.AddSingleton(_ => services);
 
         if (addDiscoveredServices)
             services.AddServices();

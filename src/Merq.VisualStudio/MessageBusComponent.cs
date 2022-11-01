@@ -13,7 +13,13 @@ class MessageBusComponent : MessageBus
 {
     [ImportingConstructor]
     public MessageBusComponent([Import(typeof(SVsServiceProvider))] IServiceProvider services)
-        : base(new ComponentModelServiceProvider((IComponentModel)services.GetService(typeof(SComponentModel))))
+        : base(new ComponentModelServiceProvider((IComponentModel)services.GetService(typeof(SComponentModel))),
+            // Under .NET framework, the C# binder doesn't work well with record types, and 
+            // we also cannot attempt to retrieve nullable/optional services from MEF, so 
+            // when attempting to find a duck-typed command/event, we end up causing exception, 
+            // which can seriously affect performance, especially in the IDE. So we instead 
+            // do not support this scenario at all inside VS.
+            enableDynamicMapping: false)
     {
     }
 

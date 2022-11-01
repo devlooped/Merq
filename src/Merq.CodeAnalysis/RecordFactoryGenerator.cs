@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System;
-using Microsoft.CodeAnalysis;
-using System.Text;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Merq;
 
@@ -30,7 +30,7 @@ public class RecordFactoryGenerator : IIncrementalGenerator
                 .OrderByDescending(x => x.Parameters.Length).FirstOrDefault();
             if (ctor == null)
                 return;
-            
+
             var builder = new StringBuilder();
 
             builder.Append(
@@ -74,9 +74,9 @@ public class RecordFactoryGenerator : IIncrementalGenerator
             }
             else
             {
-                builder.AppendLine(";");    
+                builder.AppendLine(";");
             }
-            
+
             builder.AppendLine(
                 """
                     }
@@ -92,11 +92,11 @@ public class RecordFactoryGenerator : IIncrementalGenerator
             // in another project
             types.Where(x => x.DeclaringSyntaxReferences.Any() && x.DeclaringSyntaxReferences.All(
                 r => r.GetSyntax() is RecordDeclarationSyntax c && c.Modifiers.Any(
-                    m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))) && 
+                    m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))) &&
                 // Don't generate duplicate method names. We also don't generate if there's already a Create with 
                 // a single parameter.
                 !x.GetMembers().OfType<IMethodSymbol>().Where(
-                    x => x.Name == "Create" && x.IsStatic && x.Parameters.Length == 1 && 
+                    x => x.Name == "Create" && x.IsStatic && x.Parameters.Length == 1 &&
                          (x.Parameters[0].Type.SpecialType == SpecialType.System_Object ||
                           x.Parameters[0].Type.TypeKind == TypeKind.Dynamic)).Any()),
             (ctx, data) =>
