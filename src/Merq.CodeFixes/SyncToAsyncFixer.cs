@@ -17,7 +17,7 @@ namespace Merq.CodeFixes;
 public class SyncToAsyncFixer : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-        Diagnostics.SyncOnAsyncRule.Id);
+        Diagnostics.InvalidSyncOnAsync.Id);
 
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
