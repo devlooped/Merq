@@ -22,7 +22,7 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         context.RegisterCompilationStartAction(c =>
         {
             c.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.InvocationExpression);
-        });        
+        });
     }
 
     static void AnalyzeSyntax(SyntaxNodeAnalysisContext context)
@@ -34,7 +34,7 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         var method = semantic.GetSymbolInfo(invocation);
         if (method.Symbol != null)
             return;
-        
+
         // First deal with direct invocations on IMessageBus.
         // TODO: consider IMessageBusExtensions too.
         var busType = context.Compilation.GetTypeByMetadataName("Merq.IMessageBus");
