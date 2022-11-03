@@ -39,4 +39,13 @@ public static class Diagnostics
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Command handlers must specify the same return type as the command they handle.");
+
+    public static DiagnosticDescriptor WrongCommandInterface { get; } = new(
+        "MERQ005",
+        "Command interface mismatch",
+        "Command '{0}' does not implement interface '{1}' required by command handler.",
+        "Build",
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Commands must implement the interface that matches the handler's.");
 }

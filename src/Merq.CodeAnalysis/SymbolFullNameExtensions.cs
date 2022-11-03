@@ -30,8 +30,9 @@ public static class SymbolFullNameExtensions
     /// <summary>
     /// Resolves a symbol given its full name, as returned by <see cref="ToFullName(ITypeSymbol)"/>.
     /// </summary>
-    public static ITypeSymbol? GetTypeByFullName(this Compilation compilation, string symbolFullName)
-        => new SymbolResolver(compilation).Resolve(symbolFullName ?? throw new ArgumentNullException(nameof(symbolFullName)));
+    public static ITypeSymbol? GetTypeByFullName(this Compilation compilation, string? symbolFullName)
+        => symbolFullName == null ? null :
+            new SymbolResolver(compilation).Resolve(symbolFullName);
 
     class SymbolResolver
     {

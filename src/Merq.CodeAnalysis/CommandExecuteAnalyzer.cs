@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -46,7 +44,7 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (busType == null || asyncCmd == null || syncCmd == null || asyncCmdRet == null || syncCmdRet == null)
             return;
 
-        if (method.CandidateSymbols.OfType<IMethodSymbol>().All(x => !IsType(busType, x.ContainingType)))
+        if (method.CandidateSymbols.OfType<IMethodSymbol>().All(x => !x.ContainingType.Is(busType)))
             return;
 
         var isAsync = method.CandidateSymbols.All(x => x.Name == "ExecuteAsync");
@@ -98,37 +96,13 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (command == null)
             return;
 
-        if (isAsync && (IsType(syncCmd, command) || IsType(syncCmdRet, command)))
+        if (isAsync && (command.Is(syncCmd) || command.Is(syncCmdRet)))
         {
             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidAsyncOnSync, location));
         }
-        else if (isSync && (IsType(asyncCmd, command) || IsType(asyncCmdRet, command)))
+        else if (isSync && (command.Is(asyncCmd) || command.Is(asyncCmdRet)))
         {
             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidSyncOnAsync, location));
         }
-    }
-
-    static bool IsType(ITypeSymbol? expected, ITypeSymbol? actual)
-    {
-        if (expected == null || actual == null)
-            return false;
-
-        if (actual.Equals(expected, SymbolEqualityComparer.Default) == true)
-            return true;
-
-        if (expected is INamedTypeSymbol namedExpected &&
-            actual is INamedTypeSymbol namedActual &&
-            namedActual.IsGenericType &&
-            namedActual.ConstructedFrom.Equals(namedExpected, SymbolEqualityComparer.Default))
-            return true;
-
-        if (expected.BaseType?.Name.Equals("object", StringComparison.OrdinalIgnoreCase) == true)
-            return false;
-
-        foreach (var iface in actual.AllInterfaces)
-            if (IsType(expected, iface))
-                return true;
-
-        return IsType(expected.BaseType, actual);
     }
 }
