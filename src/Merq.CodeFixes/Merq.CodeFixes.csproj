@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackFolder>analyzers/dotnet</PackFolder>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

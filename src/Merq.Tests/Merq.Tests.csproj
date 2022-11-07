@@ -6,6 +6,8 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <!-- Since we have our own version of the attribute in Merq.Sample -->
     <AddServiceAttribute>false</AddServiceAttribute>
+    <SignAssembly>false</SignAssembly>
+    <LangVersion>Preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +25,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Scriban" Version="5.5.0" />
+    <PackageReference Include="SharpYaml" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
