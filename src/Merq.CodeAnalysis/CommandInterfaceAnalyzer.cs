@@ -35,6 +35,7 @@ public class CommandInterfaceAnalyzer : DiagnosticAnalyzer
             .Select(x => (x.Type, Symbol: semantic.GetSymbolInfo(x.Type).Symbol as INamedTypeSymbol))
             .Where(x => x.Symbol is not null && x.Symbol.IsGenericType)
             .FirstOrDefault(x => x.Symbol!.Name == "ICommandHandler" || x.Symbol.Name == "IAsyncCommandHandler") is not var (typeSyntax, handlerSymbol) ||
+            typeSyntax == null || handlerSymbol == null ||
             typeSyntax.DescendantNodesAndSelf().OfType<GenericNameSyntax>().FirstOrDefault() is not GenericNameSyntax handlerName ||
             !handlerSymbol.IsGenericType ||
             handlerSymbol.TypeArguments[0] is not INamedTypeSymbol commandSymbol ||

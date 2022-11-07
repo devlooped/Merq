@@ -42,6 +42,9 @@ public class CommandHandlerAnalyzer : DiagnosticAnalyzer
             return;
 
         (var handlerName, var handlerSymbol) = (type, symbol);
+        if (handlerName == null || handlerSymbol == null)
+            return;
+
         var asyncCmd = context.Compilation.GetTypeByMetadataName("Merq.IAsyncCommand`1");
         var syncCmd = context.Compilation.GetTypeByMetadataName("Merq.ICommand`1");
 
