@@ -11,9 +11,14 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Merq.CodeFixes;
 
+/// <summary>
+/// Unlike <see cref="CommandInterfaceFixer"/>, this fixer instead offers to 
+/// fix the handler interface implementation return type instead of changing 
+/// the command.
+/// </summary>
 [Shared]
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class SetCommandReturnTypeFixer : CodeFixProvider
+public class CommandHandlerReturnFixer : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
         Diagnostics.MissingCommandReturnType.Id,
@@ -40,7 +45,7 @@ public class SetCommandReturnTypeFixer : CodeFixProvider
             compilation.GetTypeByFullName(returnType) is not INamedTypeSymbol returnSymbol)
             return;
 
-        context.RegisterCodeFix(new SetCommandReturnTypeAction(
+        context.RegisterCodeFix(new FixHandlerReturnTypeAction(
                 compilation,
                 context.Document,
                 root, typeSyntax,
@@ -49,7 +54,7 @@ public class SetCommandReturnTypeFixer : CodeFixProvider
             context.Diagnostics);
     }
 
-    class SetCommandReturnTypeAction : CodeAction
+    class FixHandlerReturnTypeAction : CodeAction
     {
         readonly Document document;
         readonly SyntaxNode root;
@@ -57,7 +62,7 @@ public class SetCommandReturnTypeFixer : CodeFixProvider
         readonly string commandType;
         readonly string returnType;
 
-        public SetCommandReturnTypeAction(Compilation compilation, Document document, SyntaxNode root, SimpleBaseTypeSyntax typeSyntax, string commandType, string returnType)
+        public FixHandlerReturnTypeAction(Compilation compilation, Document document, SyntaxNode root, SimpleBaseTypeSyntax typeSyntax, string commandType, string returnType)
             => (this.document, this.root, baseType, this.commandType, this.returnType)
             = (document, root, typeSyntax, commandType, returnType);
 
