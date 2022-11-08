@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -95,11 +94,11 @@ public class CommandInterfaceFixer : CodeFixProvider
                 root.GetAnnotatedNodes("CommandSyntax").OfType<TypeDeclarationSyntax>().FirstOrDefault() is not TypeDeclarationSyntax commandSyntax ||
                 await document.GetSemanticModelAsync(cancellationToken) is not SemanticModel semantic ||
                 await document.Project.GetCompilationAsync(cancellationToken) is not Compilation compilation ||
-                compilation.GetTypeByFullName(args.ReturnType) is not INamedTypeSymbol returnType ||
                 compilation.GetTypeByFullName(args.CommandType) is not INamedTypeSymbol commandSymbol)
                 return args.CommandDocument.Project.Solution;
 
             if (args.ReturnType != null &&
+                compilation.GetTypeByFullName(args.ReturnType) is INamedTypeSymbol returnType &&
                 document.Project.GetDocument(args.HandlerDocument.Id) is Document handlerDoc &&
                 await handlerDoc.GetSemanticModelAsync(cancellationToken) is SemanticModel handlerSemantic &&
                 await handlerDoc.GetSyntaxRootAsync(cancellationToken) is SyntaxNode handlerRoot)

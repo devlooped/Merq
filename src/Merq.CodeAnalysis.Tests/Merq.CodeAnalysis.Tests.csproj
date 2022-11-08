@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Scriban" Version="5.5.0" />
     <PackageReference Include="SharpYaml" Version="2.1.0" />
+    <PackageReference Include="Superpower" Version="3.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
