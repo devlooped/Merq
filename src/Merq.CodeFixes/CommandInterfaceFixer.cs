@@ -60,15 +60,8 @@ public class CommandInterfaceFixer : CodeFixProvider
         Document CommandDocument, TextSpan Span, string Title, Compilation Compilation, SemanticModel Semantic,
         TypeDeclarationSyntax CommandSyntax,
         INamedTypeSymbol CommandSymbol, string CommandType,
-        INamedTypeSymbol InterfaceSymbol, string InterfaceTypeName, string? ReturnType)
-    {
-        // It makes sense for the command + interface names used in the code fix action title to be minimal 
-        // with regards to the codefix action context, rather than the command declaration context which could 
-        // be an entirely different file with different usings.
-        //public string CommandName { get; } = CommandSymbol.ToMinimalDisplayString(Semantic, Span.Start);
-        //public string InterfaceName { get; } = InterfaceSymbol.ToMinimalDisplayString(Semantic, Span.Start);
-    }
-
+        INamedTypeSymbol InterfaceSymbol, string InterfaceTypeName, string? ReturnType);
+    
     class SetCommandInterfaceAction : CodeAction
     {
         readonly Args args;
