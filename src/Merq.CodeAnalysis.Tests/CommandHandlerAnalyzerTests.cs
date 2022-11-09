@@ -1,9 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using Analyzer = Merq.CSharpAnalyzerVerifier<Merq.CommandHandlerAnalyzer>;
-using AnalyzerTest = Merq.CSharpAnalyzerVerifier<Merq.CommandHandlerAnalyzer>.Test;
+using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
 namespace Merq;
 
@@ -26,7 +25,7 @@ public class CommandHandlerAnalyzerTests
                 public void Execute(Command command) { }
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.MissingCommandReturnType).WithLocation(1).WithArguments("bool");
 
@@ -55,7 +54,7 @@ public class CommandHandlerAnalyzerTests
                 public Task ExecuteAsync(Command command, CancellationToken cancellation) => Task.CompletedTask;
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.MissingCommandReturnType).WithLocation(1).WithArguments("bool");
 
@@ -82,7 +81,7 @@ public class CommandHandlerAnalyzerTests
                 public string Execute(Command command) => "";
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandReturnType).WithLocation(1)
             .WithArguments("string", "Command", "bool");
@@ -113,7 +112,7 @@ public class CommandHandlerAnalyzerTests
                 public Task<string> ExecuteAsync(Command command, CancellationToken cancellation) => Task.FromResult("");
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandReturnType).WithLocation(1)
             .WithArguments("string", "Command", "bool");

@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using Analyzer = Merq.CSharpAnalyzerVerifier<Merq.CommandExecuteAnalyzer>;
-using AnalyzerTest = Merq.CSharpAnalyzerVerifier<Merq.CommandExecuteAnalyzer>.Test;
+using Test = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandExecuteAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandExecuteAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+
 
 namespace Merq;
 
@@ -12,7 +12,7 @@ public class CommandExecuteAnalyzerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncCommand()
     {
-        var test = new AnalyzerTest
+        var test = new Test
         {
             TestCode = """
             using Merq;
@@ -29,9 +29,9 @@ public class CommandExecuteAnalyzerTests
                 }
             }
             """
-        };
+        }.WithMerq();
 
-        var expected = Analyzer.Diagnostic(Diagnostics.InvalidSyncOnAsync).WithLocation(0);
+        var expected = Verifier.Diagnostic(Diagnostics.InvalidSyncOnAsync).WithLocation(0);
 
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -42,7 +42,7 @@ public class CommandExecuteAnalyzerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncReturnCommand()
     {
-        var test = new AnalyzerTest
+        var test = new Test
         {
             TestCode = """
             using Merq;
@@ -72,7 +72,7 @@ public class CommandExecuteAnalyzerTests
             }
         };
 
-        var expected = Analyzer.Diagnostic(Diagnostics.InvalidSyncOnAsync).WithLocation(0);
+        var expected = Verifier.Diagnostic(Diagnostics.InvalidSyncOnAsync).WithLocation(0);
 
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -83,7 +83,7 @@ public class CommandExecuteAnalyzerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncCommand()
     {
-        var test = new AnalyzerTest
+        var test = new Test
         {
             TestCode = """
             using Merq;
@@ -115,7 +115,7 @@ public class CommandExecuteAnalyzerTests
             }
         };
 
-        var expected = Analyzer.Diagnostic(Diagnostics.InvalidAsyncOnSync).WithLocation(0);
+        var expected = Verifier.Diagnostic(Diagnostics.InvalidAsyncOnSync).WithLocation(0);
 
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -126,7 +126,7 @@ public class CommandExecuteAnalyzerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncReturnCommand()
     {
-        var test = new AnalyzerTest
+        var test = new Test
         {
             TestCode = """
             using Merq;
@@ -158,7 +158,7 @@ public class CommandExecuteAnalyzerTests
             }
         };
 
-        var expected = Analyzer.Diagnostic(Diagnostics.InvalidAsyncOnSync).WithLocation(0);
+        var expected = Verifier.Diagnostic(Diagnostics.InvalidAsyncOnSync).WithLocation(0);
 
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));

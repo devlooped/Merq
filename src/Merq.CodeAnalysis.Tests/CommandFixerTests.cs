@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -11,7 +13,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingCommandInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -39,7 +41,7 @@ public class CommandFixerTests
                 public void Execute(Command command) { }
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "ICommand"));
@@ -57,7 +59,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingCommandReturnInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -85,7 +87,7 @@ public class CommandFixerTests
                 public bool Execute(Command command) => true;
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "ICommand<bool>"));
@@ -104,7 +106,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingAsyncCommandInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -136,7 +138,7 @@ public class CommandFixerTests
                 public Task ExecuteAsync(Command command, CancellationToken cancellation) => Task.CompletedTask;
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "IAsyncCommand"));
@@ -154,7 +156,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingAsyncCommandReturnInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -186,7 +188,7 @@ public class CommandFixerTests
                 public Task<bool> ExecuteAsync(Command command, CancellationToken cancellation) => Task.FromResult(true);
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "IAsyncCommand<bool>"));
@@ -205,7 +207,7 @@ public class CommandFixerTests
     [Fact]
     public async Task FixCommandReturnTypeInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -233,7 +235,7 @@ public class CommandFixerTests
                 public bool Execute(Command command) => true;
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "ICommand<bool>"));
@@ -250,7 +252,7 @@ public class CommandFixerTests
     [Fact]
     public async Task FixAsyncCommandReturnTypeInterface()
     {
-        var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -282,7 +284,7 @@ public class CommandFixerTests
                 public Task<bool> ExecuteAsync(Command command, CancellationToken cancellation) => Task.FromResult(true);
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "IAsyncCommand<bool>"));
