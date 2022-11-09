@@ -33,7 +33,7 @@ public class CommandHandlerAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class CommandHandlerAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class CommandHandlerAnalyzerTests
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class CommandHandlerAnalyzerTests
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
 }

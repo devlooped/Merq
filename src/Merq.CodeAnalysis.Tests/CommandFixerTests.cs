@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Merq.CodeFixes;
-using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
-using System.Threading;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Merq;
 
@@ -13,7 +13,7 @@ public class CommandFixerTests
     {
         var test = new CSharpCodeFixVerifier<CommandInterfaceAnalyzer, CommandInterfaceFixer>.Test
         {
-            TestCode = 
+            TestCode =
             """
             using Merq;
             using System;
@@ -43,7 +43,7 @@ public class CommandFixerTests
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandInterface)
             .WithLocation(1).WithArguments("Command", "ICommand"));
-        
+
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS0311", DiagnosticSeverity.Error).WithLocation(0));
@@ -51,7 +51,7 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -293,6 +293,6 @@ public class CommandFixerTests
         // Don't propagate the expected diagnostics to the fixed code, it will have none of them
         test.FixedState.InheritanceMode = StateInheritanceMode.Explicit;
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 }

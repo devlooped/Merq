@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Merq.CodeFixes;
-using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
-using System.Threading;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Merq;
 
@@ -51,7 +51,7 @@ public class CommandHandlerFixerTests
         // NOTE: we don't fix the code in the Execute handler, we just fix the return type.
         test.FixedState.ExpectedDiagnostics.Add(new DiagnosticResult("CS0161", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class CommandHandlerFixerTests
         // NOTE: we don't fix the code in the Execute handler, we just fix the return type.
         test.FixedState.ExpectedDiagnostics.Add(new DiagnosticResult("CS0266", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class CommandHandlerFixerTests
         // NOTE: we don't fix the code in the Execute handler, we just fix the return type.
         test.FixedState.ExpectedDiagnostics.Add(new DiagnosticResult("CS0029", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -199,6 +199,6 @@ public class CommandHandlerFixerTests
         // NOTE: we don't fix the code in the Execute handler, we just fix the return type.
         test.FixedState.ExpectedDiagnostics.Add(new DiagnosticResult("CS0029", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 }

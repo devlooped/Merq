@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
+using Microsoft.VisualStudio.Composition;
 
 namespace Merq;
 
@@ -19,13 +20,13 @@ public static partial class CSharpAnalyzerVerifier<TAnalyzer>
                     .AddMetadataReference(MetadataReference.CreateFromFile(typeof(IAsyncCommand).Assembly.Location))
                     .AddMetadataReference(MetadataReference.CreateFromFile(typeof(MessageBus).Assembly.Location));
 
-                var compilationOptions = project.CompilationOptions;
-                compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
-                    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+                //var compilationOptions = project.CompilationOptions;
+                //compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
+                //    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
                 
-                solution = project.Solution.WithProjectCompilationOptions(projectId, compilationOptions);
-
-                return solution;
+                //solution = project.Solution.WithProjectCompilationOptions(projectId, compilationOptions);
+                
+                return project.Solution;
             });
         }
     }
