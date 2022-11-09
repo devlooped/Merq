@@ -11,18 +11,29 @@ public record TemplateTests(ITestOutputHelper Output)
         Namespace: MyProject.MyNamespace
         Name: MyRecord
         Parameters: 
-        - Message
-        - Format
+        - Name: Message
+        - Name: Format
+          Factory: Format.Create
+        """)]
+    [InlineData("../../../../Merq.CodeAnalysis/RecordFactory.sbntxt",
+     """
+        Namespace: MyProject.MyNamespace
+        Name: MyRecord
+        Factory: MyRecord.Create 
         """)]
     [InlineData("../../../../Merq.CodeAnalysis/RecordFactory.sbntxt",
      """
         Namespace: MyProject.MyNamespace
         Name: MyRecord
         Parameters: 
-        - Message
+        - Name: Message
+        - Name: Format
+          Factory: Format.Create
         HasProperties: true
         Properties: 
-        - Timestamp
+        - Name: Timestamp
+          Factory: Timestamp.Create
+        - Name: Id
         """)]
     [Theory]
     public void RenderTemplate(string templateFile, string modelYaml)

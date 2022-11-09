@@ -8,9 +8,9 @@ using Moq;
 
 namespace Merq;
 
-partial record Foo
+partial record Foo(string Message, string Format)
 {
-    static Foo Create(dynamic value) => new Foo();
+    internal static Foo Create(dynamic value) => new(value.Message, value.Format);
 }
 
 partial record Foo { }
