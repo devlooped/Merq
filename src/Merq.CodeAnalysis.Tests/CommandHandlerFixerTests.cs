@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -11,7 +13,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task AddHandlerReturnType()
     {
-        var test = new CSharpCodeFixVerifier<CommandHandlerAnalyzer, CommandHandlerReturnFixer>.Test
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -39,7 +41,7 @@ public class CommandHandlerFixerTests
                 public string {|#0:Execute|}(Command command) { }
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.MissingCommandReturnType)
             .WithLocation(1).WithArguments("string"));
@@ -57,7 +59,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task AddAsyncHandlerReturnType()
     {
-        var test = new CSharpCodeFixVerifier<CommandHandlerAnalyzer, CommandHandlerReturnFixer>.Test
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -89,7 +91,7 @@ public class CommandHandlerFixerTests
                 public Task<string> ExecuteAsync(Command command, CancellationToken cancellation) => {|#0:Task.CompletedTask|};
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.MissingCommandReturnType)
             .WithLocation(1).WithArguments("string"));
@@ -107,7 +109,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task FixHandlerReturnType()
     {
-        var test = new CSharpCodeFixVerifier<CommandHandlerAnalyzer, CommandHandlerReturnFixer>.Test
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -135,7 +137,7 @@ public class CommandHandlerFixerTests
                 public string Execute(Command command) => {|#0:true|};
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandReturnType)
             .WithLocation(1).WithArguments("bool", "Command", "string"));
@@ -154,7 +156,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task FixAsyncHandlerReturnType()
     {
-        var test = new CSharpCodeFixVerifier<CommandHandlerAnalyzer, CommandHandlerReturnFixer>.Test
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -186,7 +188,7 @@ public class CommandHandlerFixerTests
                 public Task<string> ExecuteAsync(Command command, CancellationToken cancellation) => {|#0:Task.FromResult(true)|};
             }
             """,
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.WrongCommandReturnType)
             .WithLocation(1).WithArguments("bool", "Command", "string"));

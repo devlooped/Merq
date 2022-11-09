@@ -1,9 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using Analyzer = Merq.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer>;
-using AnalyzerTest = Merq.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer>.Test;
+using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
 namespace Merq;
 
@@ -26,7 +25,7 @@ public class CommandInterfaceTests
                 public void Execute(Command command) { }
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "ICommand");
@@ -56,7 +55,7 @@ public class CommandInterfaceTests
                 public bool Execute(Command command) => true;
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "ICommand<bool>");
@@ -89,7 +88,7 @@ public class CommandInterfaceTests
                 public Task ExecuteAsync(Command command, CancellationToken cancellation) => Task.CompletedTask;
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "IAsyncCommand");
@@ -121,7 +120,7 @@ public class CommandInterfaceTests
                 public Task<bool> ExecuteAsync(Command command, CancellationToken cancellation) => Task.FromResult(true);
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "IAsyncCommand<bool>");
@@ -154,7 +153,7 @@ public class CommandInterfaceTests
                 public Task ExecuteAsync(Command command, CancellationToken cancellation) => Task.CompletedTask;
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "IAsyncCommand");
@@ -184,7 +183,7 @@ public class CommandInterfaceTests
                 public void Execute(Command command) { }
             }
             """
-        };
+        }.WithMerq();
 
         var expected = Analyzer.Diagnostic(Diagnostics.WrongCommandInterface).WithLocation(1)
             .WithArguments("Command", "ICommand");

@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -10,7 +12,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncCommand()
     {
-        var test = new CSharpCodeFixVerifier<CommandExecuteAnalyzer, SyncToAsyncFixer>.Test
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -44,7 +46,7 @@ public class CommandExecuteFixerTests
                 }
             }
             """
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.InvalidSyncOnAsync).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -60,7 +62,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncReturnCommand()
     {
-        var test = new CSharpCodeFixVerifier<CommandExecuteAnalyzer, SyncToAsyncFixer>.Test
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -94,7 +96,7 @@ public class CommandExecuteFixerTests
                 }
             }
             """
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.InvalidSyncOnAsync).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -110,7 +112,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncCommand()
     {
-        var test = new CSharpCodeFixVerifier<CommandExecuteAnalyzer, AsyncToSyncFixer>.Test
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -146,7 +148,7 @@ public class CommandExecuteFixerTests
                 }
             }
             """
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.InvalidAsyncOnSync).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
@@ -160,7 +162,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncReturnCommand()
     {
-        var test = new CSharpCodeFixVerifier<CommandExecuteAnalyzer, AsyncToSyncFixer>.Test
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, XUnitVerifier>
         {
             TestCode =
             """
@@ -196,7 +198,7 @@ public class CommandExecuteFixerTests
                 }
             }
             """
-        };
+        }.WithMerq();
 
         test.ExpectedDiagnostics.Add(new DiagnosticResult(Diagnostics.InvalidAsyncOnSync).WithLocation(0));
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
