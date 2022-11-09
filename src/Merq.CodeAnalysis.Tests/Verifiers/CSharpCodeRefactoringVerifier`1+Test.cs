@@ -19,12 +19,12 @@ public static partial class CSharpCodeRefactoringVerifier<TCodeRefactoring>
                     .AddMetadataReference(MetadataReference.CreateFromFile(typeof(IAsyncCommand).Assembly.Location))
                     .AddMetadataReference(MetadataReference.CreateFromFile(typeof(MessageBus).Assembly.Location));
 
-                var compilationOptions = project.CompilationOptions;
-                compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
-                    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
-                solution = project.Solution.WithProjectCompilationOptions(projectId, compilationOptions);
+                //var compilationOptions = project.CompilationOptions;
+                //compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
+                //    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+                //solution = project.Solution.WithProjectCompilationOptions(projectId, compilationOptions);
 
-                return solution;
+                return project.Solution;
             });
         }
     }

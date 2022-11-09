@@ -36,7 +36,7 @@ public class CommandExecuteAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class CommandExecuteAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class CommandExecuteAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 
     [Fact]
@@ -163,6 +163,6 @@ public class CommandExecuteAnalyzerTests
         test.ExpectedDiagnostics.Add(expected);
         test.ExpectedDiagnostics.Add(new DiagnosticResult("CS1503", DiagnosticSeverity.Error).WithLocation(0));
 
-        await test.RunAsync(CancellationToken.None);
+        await test.RunAsync();
     }
 }

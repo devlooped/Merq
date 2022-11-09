@@ -229,7 +229,7 @@ public class MessageBus : IMessageBus
     /// </summary>
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
-    public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation)
+    public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
         if (type.IsPublic)
@@ -250,7 +250,7 @@ public class MessageBus : IMessageBus
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
     /// <returns>The result of executing the command.</returns>
-    public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation)
+    public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
         if (type.IsPublic)

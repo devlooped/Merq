@@ -61,7 +61,7 @@ public class CommandInterfaceFixer : CodeFixProvider
         TypeDeclarationSyntax CommandSyntax,
         INamedTypeSymbol CommandSymbol, string CommandType,
         INamedTypeSymbol InterfaceSymbol, string InterfaceTypeName, string? ReturnType);
-    
+
     class SetCommandInterfaceAction : CodeAction
     {
         readonly Args args;
