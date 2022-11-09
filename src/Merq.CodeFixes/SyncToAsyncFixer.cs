@@ -1,13 +1,13 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Merq.CodeFixes;
 
@@ -27,45 +27,76 @@ public class SyncToAsyncFixer : CodeFixProvider
             return;
 
         var invocation = root.FindNode(context.Span).FirstAncestorOrSelf<InvocationExpressionSyntax>();
-        if (invocation == null || invocation.Expression is not MemberAccessExpressionSyntax member)
+        if (invocation == null || invocation.Expression is not MemberAccessExpressionSyntax member ||
+            await context.Document.GetSemanticModelAsync(context.CancellationToken) is not SemanticModel semantic ||
+            context.Diagnostics.FirstOrDefault() is not Diagnostic diagnostic ||
+            !diagnostic.Properties.TryGetValue("TCommand", out var commandType) ||
+            commandType is null ||
+            await context.Document.Project.GetCompilationAsync(context.CancellationToken) is not Compilation compilation ||
+            compilation.GetTypeByFullName(commandType) is not INamedTypeSymbol commandSymbol)
             return;
 
+        var commandTypeName = commandSymbol.ToMinimalDisplayString(semantic, context.Span.Start);
+
         context.RegisterCodeFix(
-            new SyncToAsyncAction(context.Document, root, member),
+            new SyncToAsyncAction(context.Document, member, commandTypeName,
+                diagnostic.Properties.TryGetValue("Parameterless", out var value) &&
+                bool.TryParse(value, out var parameterless) && parameterless),
             context.Diagnostics);
     }
 
     class SyncToAsyncAction : CodeAction
     {
         readonly Document document;
-        readonly SyntaxNode root;
         readonly MemberAccessExpressionSyntax member;
+        readonly string command;
+        readonly bool parameterless;
 
-        public SyncToAsyncAction(Document document, SyntaxNode root, MemberAccessExpressionSyntax member)
-            => (this.document, this.root, this.member)
-            = (document, root, member);
+        public SyncToAsyncAction(Document document, MemberAccessExpressionSyntax member, string command, bool parameterless)
+            => (this.document, this.member, this.command, this.parameterless)
+            = (document, member, command, parameterless);
 
         public override string Title => $"Replace Execute with ExecuteAsync";
         public override string EquivalenceKey => Title;
 
-        protected override Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
+        protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
-            SimpleNameSyntax newName = member.Name is GenericNameSyntax generic ?
-                generic.WithIdentifier(SyntaxFactory.Identifier("ExecuteAsync")) :
-                SyntaxFactory.IdentifierName("ExecuteAsync");
+            var root = await document.GetSyntaxRootAsync(cancellationToken);
+            if (root == null)
+                return document;
 
-            var asyncMember = member.WithName(newName);
-            var newRoot = root.ReplaceNode(member, asyncMember);
-            var newMember = newRoot.FindNode(new TextSpan(member.SpanStart, asyncMember.Span.Length));
+            var isGeneric = member.Name is GenericNameSyntax;
+            var newName = IdentifierName("ExecuteAsync");
+
+            root = root.ReplaceNode(member, member.WithName(newName).WithAdditionalAnnotations(new SyntaxAnnotation("Member")));
+
+            if (root.GetAnnotatedNodes("Member").FirstOrDefault() is not MemberAccessExpressionSyntax newMember)
+                return document;
+
             var invocation = newMember.FirstAncestorOrSelf<InvocationExpressionSyntax>();
+            if (invocation == null)
+                return document;
 
-            if (invocation != null)
+            root = root.ReplaceNode(invocation, invocation.WithAdditionalAnnotations(new SyntaxAnnotation("Invocation")));
+            invocation = (InvocationExpressionSyntax)root.GetAnnotatedNodes("Invocation").FirstOrDefault();
+
+            if (isGeneric && parameterless)
             {
-                return Task.FromResult(document.WithSyntaxRoot(
-                    newRoot.ReplaceNode(invocation, SyntaxFactory.AwaitExpression(invocation.WithoutLeadingTrivia()).WithLeadingTrivia(invocation.GetLeadingTrivia()))));
+                // Turn Execute<Command> to ExecuteAsync(new Command())
+                root = root.ReplaceNode(invocation, invocation.WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList(
+                            Argument(
+                                ObjectCreationExpression(
+                                    IdentifierName(command))
+                                .WithArgumentList(
+                                    ArgumentList()))))));
+
+                invocation = (InvocationExpressionSyntax)root.GetAnnotatedNodes("Invocation").First();
             }
 
-            return Task.FromResult(document.WithSyntaxRoot(newRoot));
+            return document.WithSyntaxRoot(
+                root.ReplaceNode(invocation, AwaitExpression(invocation.WithoutLeadingTrivia()).WithLeadingTrivia(invocation.GetLeadingTrivia())));
         }
     }
 }

@@ -81,6 +81,36 @@ public class CommandExecuteAnalyzerTests
     }
 
     [Fact]
+    public async Task ExecuteGenericSyncWithAsyncCommand()
+    {
+        var test = new Test
+        {
+            TestCode = """
+            using Merq;
+            using System;
+            
+            public record Command : IAsyncCommand;
+            
+            public static class Program
+            {
+                public static void Main()
+                {
+                    var bus = new MessageBus(null);
+                    bus.Execute<{|#0:Command|}>();
+                }
+            }
+            """
+        }.WithMerq();
+
+        var expected = Verifier.Diagnostic(Diagnostics.InvalidSyncOnAsync).WithLocation(0);
+
+        test.ExpectedDiagnostics.Add(expected);
+        test.ExpectedDiagnostics.Add(new DiagnosticResult("CS7036", DiagnosticSeverity.Error).WithLocation(11, 13));
+
+        await test.RunAsync();
+    }
+
+    [Fact]
     public async Task ExecuteAsyncWithSyncCommand()
     {
         var test = new Test

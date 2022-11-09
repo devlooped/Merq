@@ -83,7 +83,7 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
         if (arg == null)
             return;
 
-        var command = arg switch
+        var commandSymbol = arg switch
         {
             IMethodSymbol m => m.MethodKind == MethodKind.Constructor ? m.ContainingType : !m.ReturnsVoid ? m.ReturnType : null,
             IPropertySymbol p => p.Type,
@@ -93,16 +93,22 @@ public class CommandExecuteAnalyzer : DiagnosticAnalyzer
             _ => null
         };
 
-        if (command == null)
+        if (commandSymbol == null)
             return;
 
-        if (isAsync && (command.Is(syncCmd) || command.Is(syncCmdRet)))
+        var properties = ImmutableDictionary<string, string?>.Empty
+            .Add("TCommand", commandSymbol.ToFullName());
+
+        if (invocation.ArgumentList.Arguments.Count == 0)
+            properties = properties.Add("Parameterless", "true");
+
+        if (isAsync && (commandSymbol.Is(syncCmd) || commandSymbol.Is(syncCmdRet)))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidAsyncOnSync, location));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidAsyncOnSync, location, properties: properties));
         }
-        else if (isSync && (command.Is(asyncCmd) || command.Is(asyncCmdRet)))
+        else if (isSync && (commandSymbol.Is(asyncCmd) || commandSymbol.Is(asyncCmdRet)))
         {
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidSyncOnAsync, location));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.InvalidSyncOnAsync, location, properties: properties));
         }
     }
 }
