@@ -63,4 +63,16 @@ public static class Diagnostics
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Commands must implement the interface that matches the handler's.");
+
+    /// <summary>
+    /// MERQ006: Factory method is not accessible
+    /// </summary>
+    public static DiagnosticDescriptor CreateMethodNotAccessible { get; } = new(
+        "MERQ006",
+        "Factory method is not accessible",
+        "Factory method '{0}.Create' is not accessible within the current compilation to support hierarchical dynamic conversion.",
+        "Build",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "In order to support automatic hierarchical dynamic conversion for records, the Create method must be accessible within the compilation.");
 }

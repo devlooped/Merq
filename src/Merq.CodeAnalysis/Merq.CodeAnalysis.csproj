@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Scriban" Version="5.5.0" Pack="false" IncludeAssets="build" />
     <PackageReference Include="Superpower" Version="3.0.0" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Version="1.7.1" Pack="false" />
   </ItemGroup>
 
 </Project>
