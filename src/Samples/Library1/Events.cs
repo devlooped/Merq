@@ -1,9 +1,15 @@
-﻿namespace Library;
+﻿using System.Collections.Generic;
 
-public record DuckEvent(string Message);
+namespace Library;
 
-public record Point(int X, int Y);
+public partial record DuckEvent(string Message);
 
-public record Line(Point Start, Point End);
+public partial record Point(int X, int Y);
+
+public partial record Line(Point Start, Point End);
+
+public partial record Buffer(IReadOnlyCollection<Line> Lines);
+
+public partial record OnDidEdit(Buffer Buffer);
 
 public record OnDidDrawLine(Line Line);

@@ -70,7 +70,7 @@ public static class Diagnostics
     public static DiagnosticDescriptor CreateMethodNotAccessible { get; } = new(
         "MERQ006",
         "Factory method is not accessible",
-        "Factory method '{0}.Create' is not accessible within the current compilation to support hierarchical dynamic conversion.",
+        "Factory method '{0}.{1}' is not accessible within the current compilation to support hierarchical dynamic conversion.",
         "Build",
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
