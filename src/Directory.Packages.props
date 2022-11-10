@@ -9,7 +9,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
     <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
