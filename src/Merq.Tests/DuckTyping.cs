@@ -2,6 +2,7 @@
 extern alias Library2;
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ public partial record OtherMessageEvent(string Message)
 
 public class DuckTyping
 {
+#if NET6_0_OR_GREATER
     [Fact]
     public void ConvertEvent()
     {
@@ -33,7 +35,25 @@ public class DuckTyping
         Assert.Equal("Foo", message);
     }
 
-#if NET6_0_OR_GREATER
+    [Fact]
+    public void ConvertEventHierarchy()
+    {
+        var bus = new MessageBus(new MockServiceProvider());
+        int sumstarts = 0;
+
+        bus.Observe<Library1::Library.OnDidEdit>()
+            .Subscribe(e => sumstarts = e.Buffer.Lines.Select(l => l.Start).Sum(p => p.X));
+
+        bus.Notify(new Library2::Library.OnDidEdit(
+            new Library2::Library.Buffer(new[]
+            {
+                new Library2::Library.Line(new Library2::Library.Point(1, 2), new Library2::Library.Point(3, 4)) ,
+                new Library2::Library.Line(new Library2::Library.Point(5, 6), new Library2::Library.Point(7, 8))
+            })));
+
+        Assert.Equal(6, sumstarts);
+    }
+
     [Fact]
     public void CustomConvertEvent()
     {

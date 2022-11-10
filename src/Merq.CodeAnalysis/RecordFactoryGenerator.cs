@@ -42,32 +42,57 @@ public class RecordFactoryGenerator : IIncrementalGenerator
             using var reader = new StreamReader(resource!);
             var template = Template.Parse(reader.ReadToEnd());
             var compilation = data.Right;
+            var listType = compilation.GetTypeByMetadataName("System.Collections.Generic.List`1")!;
+
+            string? GetConvert(ITypeSymbol type)
+            {
+                if (type.SpecialType != SpecialType.None ||
+                    type is not IArrayTypeSymbol arrayType ||
+                    arrayType.Rank != 1)
+                    return null;
+
+                return ".ToArray()";
+            }
 
             string? GetFactory(ITypeSymbol type)
             {
                 if (type.SpecialType != SpecialType.None)
                     return null;
 
-                var ns = type.ContainingNamespace.Equals(data.Left.ContainingNamespace, SymbolEqualityComparer.Default) ?
+                ITypeSymbol? elementType = default;
+                if (type is IArrayTypeSymbol arrayType)
+                    elementType = arrayType.ElementType;
+                else if (listType.AllInterfaces.Any(iface => type.Is(iface)) &&
+                    type is INamedTypeSymbol named &&
+                    named.IsGenericType && named.TypeParameters.Length == 1)
+                {
+                    elementType = named.TypeArguments[0];
+                }
+
+                var factoryName = elementType != null ? "CreateMany" : "Create";
+                if (elementType != null)
+                    type = elementType;
+
+                var prefix = type.ContainingNamespace.Equals(data.Left.ContainingNamespace, SymbolEqualityComparer.Default) ?
                     "" : $"{type.ContainingNamespace.ToDisplayString(fullNameFormat)}.";
 
-                if (FindCreate(type) is IMethodSymbol create &&
+                if (FindCreate(type, factoryName) is IMethodSymbol create &&
                     compilation.IsSymbolAccessibleWithin(create, compilation.Assembly))
                 {
                     // We either had a custom Create factory method, or the type is partial, 
                     // and we'll generate it ourselves.
-                    return ns + type.Name + ".Create";
+                    return prefix + type.Name + "." + factoryName;
                 }
-                else if (!HasCreate(type) && IsPartial(type) && type.IsRecord)
+                else if (!HasCreate(type, factoryName) && IsPartial(type) && type.IsRecord)
                 {
                     // We'll generate a Create factory method.
-                    return ns + type.Name + ".Create";
+                    return prefix + type.Name + "." + factoryName;
                 }
                 else if (type.IsRecord)
                 {
                     // If the type isn't partial or has a Create method, we will 
                     // generate a factory class for it.
-                    return ns + $"__{type.Name}Factory.Create";
+                    return prefix + $"__{type.Name}Factory.{factoryName}";
                 }
 
                 return null;
@@ -79,7 +104,8 @@ public class RecordFactoryGenerator : IIncrementalGenerator
                 .Select(x => new
                 {
                     x.Name,
-                    Factory = GetFactory(x.Type)
+                    Convert = GetConvert(x.Type),
+                    Factory = GetFactory(x.Type),
                 })
                 .OrderBy(x => x.Name)
                 .ToImmutableArray();
@@ -93,7 +119,8 @@ public class RecordFactoryGenerator : IIncrementalGenerator
                 Parameters = ctor.Parameters.Select(x => new
                 {
                     x.Name,
-                    Factory = GetFactory(x.Type)
+                    Convert = GetConvert(x.Type),
+                    Factory = GetFactory(x.Type),
                 }).ToArray(),
                 HasProperties = !properties.IsDefaultOrEmpty,
                 Properties = properties,
@@ -108,7 +135,16 @@ public class RecordFactoryGenerator : IIncrementalGenerator
                 ctx.ReportDiagnostic(Diagnostic.Create(
                     Diagnostics.CreateMethodNotAccessible,
                     factory.Locations.FirstOrDefault(),
-                    data.Left.Name));
+                    data.Left.Name, "Create"));
+            }
+
+            if (FindCreate(data.Left, "CreateMany") is IMethodSymbol factoryMany &&
+                !compilation.IsSymbolAccessibleWithin(factoryMany, compilation.Assembly))
+            {
+                ctx.ReportDiagnostic(Diagnostic.Create(
+                    Diagnostics.CreateMethodNotAccessible,
+                    factoryMany.Locations.FirstOrDefault(),
+                    data.Left.Name, "CreateMany"));
             }
         });
 
@@ -132,6 +168,29 @@ public class RecordFactoryGenerator : IIncrementalGenerator
                     }
                     """.Replace("\r\n", "\n").Replace("\n", Environment.NewLine));
             });
+
+        context.RegisterSourceOutput(
+            // Only generate a partial factory method for partial records
+            // Don't generate duplicate method names. We also don't generate if there's already a CreateMany with 
+            // a single parameter.
+            types.Where(x => IsPartial(x) && !HasCreate(x, "CreateMany")),
+            (ctx, data) =>
+            {
+                ctx.AddSource(data.Name + ".CreateMany.g",
+                    $$"""
+                    // <auto-generated />
+                    using System.Collections.Generic;
+
+                    namespace {{data.ContainingNamespace.ToDisplayString(fullNameFormat)}}
+                    {
+                        partial record {{data.Name}}
+                        {
+                            public static List<{{data.Name}}> CreateMany(dynamic value)
+                                => __{{data.Name}}Factory.CreateMany(value);
+                        }
+                    }
+                    """.Replace("\r\n", "\n").Replace("\n", Environment.NewLine));
+            });
     }
 
     /// <summary>
@@ -143,12 +202,12 @@ public class RecordFactoryGenerator : IIncrementalGenerator
             r => r.GetSyntax() is RecordDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)));
 
-    static bool HasCreate(ITypeSymbol type) => FindCreate(type) is IMethodSymbol;
+    static bool HasCreate(ITypeSymbol type, string name = "Create") => FindCreate(type, name) is IMethodSymbol;
 
-    static IMethodSymbol? FindCreate(ITypeSymbol type)
+    static IMethodSymbol? FindCreate(ITypeSymbol type, string name = "Create")
         => type.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(x => x.Name == "Create" && x.IsStatic && x.Parameters.Length == 1 &&
+            .Where(x => x.Name == name && x.IsStatic && x.Parameters.Length == 1 &&
                 (x.Parameters[0].Type.SpecialType == SpecialType.System_Object || x.Parameters[0].Type.TypeKind == TypeKind.Dynamic))
             .FirstOrDefault();
 
