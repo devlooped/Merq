@@ -8,6 +8,7 @@
     <!-- See https://github.com/scriban/scriban#source-embedding -->
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
     <SignAssembly>false</SignAssembly>
+    <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
 
   <ItemGroup>

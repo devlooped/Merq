@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Merq.CodeAnalysis": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Merq.Tests\\Merq.Tests.csproj"
+    }
+  }
+}
