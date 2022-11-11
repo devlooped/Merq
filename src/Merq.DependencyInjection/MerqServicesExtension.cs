@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
+using Merq;
 
-namespace Merq;
+namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Contains extension methods to register the <see cref="IMessageBus"/> 
