@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Content Include="MerqServicesExtension.cs" BuildAction="Compile" CodeLanguage="cs" Pack="true" />
+    <Content Include="Merq.DependencyInjection.targets" PackFolder="build" />
   </ItemGroup>
 
   <ItemGroup>
