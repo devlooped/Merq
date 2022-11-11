@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="NuGetizer" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
     <PackageReference Include="RxFree" PrivateAssets="all" />
   </ItemGroup>

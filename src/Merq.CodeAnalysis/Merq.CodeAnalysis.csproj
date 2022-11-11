@@ -20,8 +20,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
-    <PackageReference Include="NuGetizer" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Scriban" Pack="false" IncludeAssets="build" />

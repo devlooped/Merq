@@ -14,8 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGetizer" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" TargetFramework="$(TargetFramework)" />
   </ItemGroup>
 

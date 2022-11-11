@@ -8,11 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="System.ComponentModel.Composition" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" />
     <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost" />
-    <PackageReference Include="NuGetizer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

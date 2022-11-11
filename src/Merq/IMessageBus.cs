@@ -9,7 +9,7 @@ namespace Merq;
 /// and connecting them with event subscribers and command 
 /// handlers.
 /// </summary>
-public interface IMessageBus : IFluentInterface
+public interface IMessageBus
 {
     /// <summary>
     /// Determines whether the given command type has a registered handler.
