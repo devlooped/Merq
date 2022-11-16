@@ -2,7 +2,11 @@
 
 ## [v2.0.0-alpha](https://github.com/devlooped/Merq/tree/v2.0.0-alpha) (2022-11-16)
 
-[Full Changelog](https://github.com/devlooped/Merq/compare/v1.3.0...v2.0.0-alpha)
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta...v2.0.0-alpha)
+
+## [v2.0.0-beta](https://github.com/devlooped/Merq/tree/v2.0.0-beta) (2022-11-16)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.3.0...v2.0.0-beta)
 
 :sparkles: Implemented enhancements:
 
