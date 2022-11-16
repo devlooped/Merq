@@ -1,4 +1,6 @@
-﻿namespace System.Reactive.Subjects;
+﻿using System.Collections.Concurrent;
+
+namespace System.Reactive.Subjects;
 
 // We introduce this new base class for Subject so we can invoke all compatible 
 // subjects passing an untyped object that is down-casted directly by each typed 
@@ -10,16 +12,24 @@ abstract class Subject
 
 partial class Subject<T> : Subject
 {
-    Func<dynamic, T>? converter;
+    static readonly ConcurrentDictionary<Type, Func<object, T>?> maps = new();
+    readonly Func<Type, Type, Func<object, object>?>? mapper;
 
-    internal Subject(Func<dynamic, T> converter) : this()
-        => this.converter = converter;
+    internal Subject(Func<Type, Type, Func<object, object>?> mapper) : this()
+        => this.mapper = mapper;
 
     public override void OnNext(object value)
     {
-        if (converter == null)
+        if (mapper == null)
+        {
             OnNext((T)value);
-        else
-            OnNext(converter.Invoke(value));
+        }
+        else if (maps.GetOrAdd(value.GetType(),
+            type => mapper(type, typeof(T)) is Func<object, object> map ?
+                obj => (T)map(value) : null)
+            is Func<object, T> map)
+        {
+            OnNext(map(value));
+        }
     }
 }

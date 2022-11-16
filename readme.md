@@ -220,7 +220,9 @@ var builder = WebApplication.CreateBuilder(args);
 ...
 // Automatically add the message bus and all command handlers and 
 // event producers in the current project and any dependencies
-builder.Services.AddMessageBus();
+// The enableAutoMapping parameter enables duck typing for events and commands
+// across assemblies
+builder.Services.AddMessageBus(enableAutoMapping: false);
 ```
 
 The `AddMessageBus` extension method leverages compile-time code generation to avoid 
@@ -229,8 +231,26 @@ negatively impacting run-time app startup, via the dependency on
 This also ensures that all proper service interfaces are registered for the various 
 components.
 
-<!-- #di -->
+## Duck Typing Support
 
+<!-- #duck -->
+Being able to loosely couple both events (and their consumers) and command execution (from their 
+command handler implementations) is a key feature of Merq. To take this decoupling to the extreme, 
+Merq allows a similar capability as allowed by the TypeScript/JavaScript in VSCode: you can just 
+copy/paste an event/command definition as *source* into your assembly, and perform the regular 
+operations with it (like `Observe` an event and `Execute` a command), in a "duck typing" manner.
+
+As long as the types' full name match, the conversion will happen automatically. Since this 
+functionality isn't required in many scenarios, and since there are a myriad ways to implement 
+such an object mapping functionality, the `Merq.Core` package only provides the hooks to enable 
+this, but does not provide any built-in implementation for it.
+
+The [Merq.AutoMapper](https://www.nuget.org/packages/Merq.AutoMapper) package provides one such 
+implementation, based on the excelent [AutoMapper](https://automapper.org/) library.
+
+<!-- #duck -->
+
+<!-- #ci -->
 
 # Dogfooding
 

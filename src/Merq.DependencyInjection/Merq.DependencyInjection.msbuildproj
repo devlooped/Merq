@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.Build.NoTargets/3.6.0">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq.DependencyInjection</PackageId>
@@ -7,19 +6,16 @@
     <Description>Merq: Message Bus (Commands + Events) Dependency Injection</Description>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="MerqServicesExtension.cs" BuildAction="Compile" CodeLanguage="cs" Pack="true" />
     <Content Include="Merq.DependencyInjection.targets" PackFolder="build" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" TargetFramework="$(TargetFramework)" />
   </ItemGroup>
-
   <ItemGroup>
+    <ProjectReference Include="..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
-  
 </Project>

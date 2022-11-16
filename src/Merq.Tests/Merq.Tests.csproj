@@ -7,7 +7,9 @@
     <!-- Since we have our own version of the attribute in Merq.Sample -->
     <AddServiceAttribute>false</AddServiceAttribute>
     <SignAssembly>false</SignAssembly>
-    <LangVersion>Preview</LangVersion>
+    <LangVersion>preview</LangVersion>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <GenerateRequiresPreviewFeaturesAttribute>false</GenerateRequiresPreviewFeaturesAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Devlooped.Dynamically" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
@@ -30,11 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
     <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
     <ProjectReference Include="..\Samples\Library1\Library1.csproj" Aliases="Library1" />
     <ProjectReference Include="..\Samples\Library2\Library2.csproj" Aliases="Library2" />
+    <ProjectReference Include="..\Samples\Merq.Dynamically\Merq.Dynamically.csproj" />
     <ProjectReference Include="..\Samples\Sample\Merq.Sample.csproj" />
     <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />

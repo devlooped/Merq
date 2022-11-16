@@ -8,6 +8,8 @@ public record NoOp() : ICommand;
 
 public record Echo(string Message) : ICommand<string>;
 
+public record Echo2(string Message, int Times = 5) : ICommand<string>;
+
 public record NoOpAsync() : IAsyncCommand;
 
 public record EchoAsync(string Message) : IAsyncCommand<string>;

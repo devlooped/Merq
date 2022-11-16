@@ -8,7 +8,7 @@ public partial record Point(int X, int Y);
 
 public partial record Line(Point Start, Point End);
 
-public partial record Buffer(IReadOnlyCollection<Line> Lines);
+public partial record Buffer(ICollection<Line> Lines);
 
 public partial record OnDidEdit(Buffer Buffer);
 
