@@ -3,6 +3,7 @@
     <PackageVersion Include="AutoMapper" Version="12.0.0" />
     <PackageVersion Include="Devlooped.Dynamically" Version="1.0.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.TestPlatform.ObjectModel" Version="17.3.2" />
     <PackageVersion Include="NuGetizer" Version="0.9.0" />
     <PackageVersion Include="IFluentInterface" Version="2.1.0" />
     <PackageVersion Include="ThisAssembly.Project" Version="1.0.10" />

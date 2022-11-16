@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing.XUnit" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
     <PackageReference Include="PolySharp" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
     <PackageReference Include="Moq" />
