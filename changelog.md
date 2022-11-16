@@ -1,5 +1,41 @@
 # Changelog
 
+## [v2.0.0-alpha](https://github.com/devlooped/Merq/tree/v2.0.0-alpha) (2022-11-16)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.3.0...v2.0.0-alpha)
+
+:sparkles: Implemented enhancements:
+
+- Make duck-typing support pluggable with no built-in implementation [\#57](https://github.com/devlooped/Merq/issues/57)
+- Support hierarchical record creation from generated dynamic factory   [\#47](https://github.com/devlooped/Merq/issues/47)
+- Provide analyzer + code fix for turning sync command to async and viceversa [\#38](https://github.com/devlooped/Merq/issues/38)
+- Provide analyzers + code fixes for common command authoring errors  [\#37](https://github.com/devlooped/Merq/issues/37)
+- Add support for duck typing of commands [\#33](https://github.com/devlooped/Merq/issues/33)
+- Add support for duck typing on events [\#31](https://github.com/devlooped/Merq/issues/31)
+- Allow derived message bus implementation to monitor used event contracts [\#19](https://github.com/devlooped/Merq/issues/19)
+
+:hammer: Other:
+
+- Upgrade to centrally managed package versions [\#51](https://github.com/devlooped/Merq/issues/51)
+- Add support for dynamic record creation including list-like properties [\#49](https://github.com/devlooped/Merq/issues/49)
+- Add unit tests for analyzers [\#45](https://github.com/devlooped/Merq/issues/45)
+
+:twisted_rightwards_arrows: Merged:
+
+- Add pages and oss artifacts [\#62](https://github.com/devlooped/Merq/pull/62) (@kzu)
+- Update to modern color [\#61](https://github.com/devlooped/Merq/pull/61) (@kzu)
+- Make duck-typing support pluggable [\#60](https://github.com/devlooped/Merq/pull/60) (@kzu)
+- Upgrade to centrally managed package versions [\#52](https://github.com/devlooped/Merq/pull/52) (@kzu)
+- Add support for collections in dynamic record creation factories [\#50](https://github.com/devlooped/Merq/pull/50) (@kzu)
+- Add support for hierarchical record creation from generated factories [\#48](https://github.com/devlooped/Merq/pull/48) (@kzu)
+- Add comprehensive tests for analyzers and code fixes [\#46](https://github.com/devlooped/Merq/pull/46) (@kzu)
+- Provide analyzer + code fix for turning sync command to async and viceversa [\#39](https://github.com/devlooped/Merq/pull/39) (@kzu)
+- Support sync/async execute fixer on returning commands too [\#35](https://github.com/devlooped/Merq/pull/35) (@kzu)
+- Duck typing of events and commands [\#34](https://github.com/devlooped/Merq/pull/34) (@kzu)
+- Allow derived message bus implementation to monitor used event contracts [\#20](https://github.com/devlooped/Merq/pull/20) (@kzu)
+- Unified IMessageBus interface [\#16](https://github.com/devlooped/Merq/pull/16) (@kzu)
+- Add dynamic OS matrix [\#15](https://github.com/devlooped/Merq/pull/15) (@kzu)
+
 ## [v1.3.0](https://github.com/devlooped/Merq/tree/v1.3.0) (2022-07-28)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v1.2.0-beta...v1.3.0)
