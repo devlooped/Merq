@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.0.0-beta.1](https://github.com/devlooped/Merq/tree/v2.0.0-beta.1) (2022-11-16)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-alpha...v2.0.0-beta.1)
+
 ## [v2.0.0-alpha](https://github.com/devlooped/Merq/tree/v2.0.0-alpha) (2022-11-16)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta...v2.0.0-alpha)
