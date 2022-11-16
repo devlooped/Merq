@@ -5,23 +5,13 @@
 	weak
 [file ".github/workflows/changelog.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/changelog.yml
-	sha = 5406d907e0bf87dd1b4375f2ae2279dd775ed672
-	etag = 034c69fefe727b412a52e49964646131b899d6e7bb1576fe9d4a4db9208675ff
+	sha = a4b66eb5f4dfb9704502f19f59ba33cb4855188c
+	etag = 54c0b571648b1055beb3ddac180b34e93a9869b9f0277de306901b2c1dbe0b2c
 	weak
 [file ".github/dependabot.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/dependabot.yml
 	sha = 4f070a477b4162a280f02722ae666376ae4fcc71
 	etag = 35f2134fff3b0235ff8dac8618a76198c8ef533ad2f29628bbb435cd1134d638
-	weak
-[file ".github/FUNDING.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/FUNDING.yml
-	sha = 4c91539ec08a3f9c14ff1e8c6a7c4ae88795f5f1
-	etag = f4d02805592d1f86c29acc9da3a40e817fb3611d6ff0f6409f547137f38f65df
-	weak
-[file ".github/.github_changelog_generator"]
-	url = https://github.com/devlooped/oss/blob/main/.github/.github_changelog_generator
-	sha = b7ce2bedba3fe467b8bc252c372cd36bbde259a5
-	etag = 28145d505ce95b57628ab368bb12744300d5f539d3651c346e3c0c3f772ffa7b
 	weak
 [file ".github/workflows/dotnet-file.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
@@ -55,6 +45,6 @@
 	weak
 [file ".github/workflows/release-notes.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release-notes.yml
-	sha = a922d0300a188bbd872bcf8ca48c6b7a13dee5df
-	etag = 5db902d761d80de182417cfbece00cbb6d1fa4b99a945b3a97c57f58f7043b5d
+	sha = ee813ef00359fc14b7ee263a02d863407c179b10
+	etag = 420e07d6529a14d2007347a626a26246acee2f4301eb34cfa9b3ce55761f9f46
 	weak
