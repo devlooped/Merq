@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
@@ -13,13 +15,7 @@ class MessageBusComponent : MessageBus
 {
     [ImportingConstructor]
     public MessageBusComponent([Import(typeof(SVsServiceProvider))] IServiceProvider services)
-        : base(new ComponentModelServiceProvider((IComponentModel)services.GetService(typeof(SComponentModel))),
-            // Under .NET framework, the C# binder doesn't work well with record types, and 
-            // we also cannot attempt to retrieve nullable/optional services from MEF, so 
-            // when attempting to find a duck-typed command/event, we end up causing exception, 
-            // which can seriously affect performance, especially in the IDE. So we instead 
-            // do not support this scenario at all inside VS.
-            enableDynamicMapping: false)
+        : base(new ComponentModelServiceProvider((IComponentModel)services.GetService(typeof(SComponentModel))))
     {
     }
 
@@ -32,16 +28,31 @@ class MessageBusComponent : MessageBus
     {
         static readonly MethodInfo getService = typeof(IComponentModel).GetMethod("GetService");
         static readonly MethodInfo getExtensions = typeof(IComponentModel).GetMethod("GetExtensions");
+        static readonly ConcurrentDictionary<Type, Func<IComponentModel, object>> getServiceCache = new();
         readonly IComponentModel componentModel;
 
         public ComponentModelServiceProvider(IComponentModel componentModel) => this.componentModel = componentModel;
 
         public object GetService(Type serviceType)
         {
-            if (serviceType.IsGenericType && serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                return getExtensions.MakeGenericMethod(serviceType.GetGenericArguments()[0]).Invoke(componentModel, null);
-            else
-                return getService.MakeGenericMethod(serviceType).Invoke(componentModel, null);
+            var getService = getServiceCache.GetOrAdd(serviceType, type =>
+            {
+                var many = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                var method = getExtensions.MakeGenericMethod(
+                    many ? type.GetGenericArguments()[0] : type);
+
+                if (many)
+                    return components => method.Invoke(components, null);
+
+                // NOTE: the behavior of IServiceProvider.GetService is to *not* fail when requesting 
+                // a service, and instead return null. This is the opposite of what the export provider 
+                // does, which throws instead. But the equivalent behavior can be had by requesting many 
+                // and picking first if any. The ServiceProviderExtensions in Merq will take care of 
+                // throwing when using GetRequiredService instead of GetService.
+                return components => ((IEnumerable<object>)method.Invoke(components, null)).FirstOrDefault();
+            });
+
+            return getService(componentModel);
         }
     }
 }

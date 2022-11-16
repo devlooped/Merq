@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq.Core</PackageId>
     <Title>Merq: Message Bus (Commands + Events) Implementation</Title>
-    <Description>Merq: Message Bus (Commands + Events) Implementation</Description>
+    <Description>$(Title)</Description>
   </PropertyGroup>
 
   <ItemGroup>

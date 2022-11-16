@@ -10,10 +10,6 @@
     <SignAssembly>false</SignAssembly>
     <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="RecordFactory.sbntxt" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />

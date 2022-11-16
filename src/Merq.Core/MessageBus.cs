@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,8 +65,9 @@ public class MessageBus : IMessageBus
 
     readonly IServiceProvider services;
     readonly IServiceCollection? collection;
-    readonly bool enableDynamicMapping;
 
+    // These executors are needed when the commadn types involved are not public. 
+    // For the public cases, we just rely on the built-in dynamic dispatching
     readonly ConcurrentDictionary<Type, VoidDispatcher> voidExecutors = new();
     readonly ConcurrentDictionary<Type, VoidAsyncDispatcher> voidAsyncExecutors = new();
     readonly ConcurrentDictionary<Type, ResultDispatcher> resultExecutors = new();
@@ -78,24 +77,14 @@ public class MessageBus : IMessageBus
     /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
     /// that resolves instances of command handlers and external event producers.
     /// </summary>
-    public MessageBus(IServiceProvider services) : this(services, true) { }
-
-    /// <summary>
-    /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
-    /// that resolves instances of command handlers and external event producers.
-    /// </summary>
     /// <param name="services">The <see cref="IServiceProvider"/> that contains the registrations for 
     /// command handlers and event producers.
     /// </param>
-    /// <param name="enableDynamicMapping">Whether to support dynamic mapping for command and event type (a.k.a. 'duck typing').</param>
-    protected MessageBus(IServiceProvider services, bool enableDynamicMapping)
+    public MessageBus(IServiceProvider services)
     {
         this.services = services;
-        if (enableDynamicMapping)
-            // This allows MEF-based services to not throw when we request a non-required service.
-            collection = services.GetServices<IServiceCollection>().FirstOrDefault();
-
-        this.enableDynamicMapping = enableDynamicMapping;
+        // This allows MEF-based services to not throw when we request a non-required service.
+        collection = services.GetServices<IServiceCollection>().FirstOrDefault();
     }
 
     /// <summary>
@@ -119,6 +108,10 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         if (services.GetService(GetHandlerType(type)) is ICanExecute<TCommand> canExec)
             return canExec.CanExecute(command);
+
+        // Mapping requires a service collection to instrospect registrations.
+        if (collection is null)
+            return false;
 
         // See if we can convert from the TCommand to a compatible type with 
         // a registered command handler
@@ -313,19 +306,13 @@ public class MessageBus : IMessageBus
             return new Subject<TEvent>();
         });
 
-        var dynamicSubject = enableDynamicMapping ? (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
-        {
-            var factory = FindFactory(type);
-            if (factory != null)
+        var dynamicSubject = GetMapper() is Func<Type, Type, Func<object, object>?> mapper ?
+            (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
             {
                 // If we're creating a new subject, we need to clear the cache of compatible subjects
                 compatibleSubjects.Clear();
-                return new Subject<TEvent>((Func<dynamic, TEvent>)Delegate.CreateDelegate(typeof(Func<dynamic, TEvent>), factory, true));
-            }
-
-            // The null value will be added so we don't check the assembly for the factory delegate again.
-            return null;
-        }) : null;
+                return new Subject<TEvent>(mapper);
+            }) : null;
 
         if (producers.Length == 0)
         {
@@ -341,6 +328,24 @@ public class MessageBus : IMessageBus
         else
             return new CompositeObservable<TEvent>(new[] { typedSubject, dynamicSubject }.Concat(producers).ToArray());
     }
+
+    /// <summary>
+    /// Derived classes can override this method to introduce support for "duck-typed" events 
+    /// and commands. The returned mapper must be able to convert from types that are deemed 
+    /// compatible by the mapper.
+    /// </summary>
+    /// <returns>A function that can return a mapping function for a given pair of 
+    /// source and target types. If the mapping between the types is not supported, 
+    /// the mapper can return null in turn. 
+    /// </returns>
+    /// <remarks>
+    /// Signature of the mapper: <c>Func&lt;object, object&gt;? Map(Type source, Type target)</c>
+    /// <para>
+    /// Some mappers will only support certain conversions, others might return converting anything 
+    /// (or attempt to, anyway).
+    /// </para>
+    /// </remarks>
+    protected virtual Func<Type, Type, Func<object, object>?>? GetMapper() => null;
 
     static Type GetHandlerType(Type commandType)
     {
@@ -375,7 +380,7 @@ public class MessageBus : IMessageBus
     Func<dynamic, object>? FindCommandMapper(Type sourceType, out Type? targetType)
     {
         targetType = null;
-        if (collection == null)
+        if (GetMapper() is null || collection is null)
             return null;
 
         var map = mappedCommands.GetOrAdd(sourceType, type =>
@@ -389,8 +394,8 @@ public class MessageBus : IMessageBus
                     i.GetGenericArguments()[0] is Type argType &&
                     argType.FullName == type.FullName)) is ServiceDescriptor descriptor &&
                 descriptor.ServiceType.GetGenericArguments()[0] is Type commandType &&
-                FindFactory(commandType) is MethodInfo factory)
-                return (commandType, (Func<dynamic, object>)Delegate.CreateDelegate(typeof(Func<dynamic, object>), null, factory, true));
+                GetMapper()?.Invoke(type, commandType) is Func<dynamic, object> map)
+                return (commandType, map);
 
             return default;
         });
@@ -475,32 +480,6 @@ public class MessageBus : IMessageBus
         }
 
         throw new InvalidOperationException($"No service for type '{typeof(IAsyncCommandHandler<TCommand, TResult>)}' has been registered.");
-    }
-
-    /// <summary>
-    /// Locates either a generated or custom factory method that can perform conversion from one 
-    /// type to another of the same shape.
-    /// </summary>
-    MethodInfo? FindFactory(Type type)
-    {
-        if (type.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo createMethod &&
-            createMethod.GetParameters().Length == 1 &&
-            createMethod.ReturnType == type &&
-            createMethod.GetParameters()[0].ParameterType == typeof(object))
-        {
-            return createMethod;
-        }
-
-        // else, if there's a converter in the event type assembly, use that to provide dynamic 
-        // conversion support.
-        if (type.Assembly.GetType($"{type.Namespace}.__{type.Name}Factory") is Type factoryType &&
-            factoryType.GetMethod("Create", BindingFlags.Public | BindingFlags.Static) is MethodInfo factoryMethod &&
-            factoryMethod.ReturnType == type)
-        {
-            return factoryMethod;
-        }
-
-        return null;
     }
 
     // dynamic dispatch cannot infer TResult from TCommand, so we need to use a generic method

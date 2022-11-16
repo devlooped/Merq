@@ -40,6 +40,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library2", "src\Samples\Lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.CodeAnalysis.Tests", "src\Merq.CodeAnalysis.Tests\Merq.CodeAnalysis.Tests.csproj", "{99CFA229-6FF3-4E93-8FDF-82743E18271A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.AutoMapper", "src\Merq.AutoMapper\Merq.AutoMapper.csproj", "{BFC65DE8-43FC-4764-8B15-7B5C89D8C589}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merq.Dynamically", "src\Samples\Merq.Dynamically\Merq.Dynamically.csproj", "{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +98,14 @@ Global
 		{99CFA229-6FF3-4E93-8FDF-82743E18271A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99CFA229-6FF3-4E93-8FDF-82743E18271A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99CFA229-6FF3-4E93-8FDF-82743E18271A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC65DE8-43FC-4764-8B15-7B5C89D8C589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC65DE8-43FC-4764-8B15-7B5C89D8C589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC65DE8-43FC-4764-8B15-7B5C89D8C589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC65DE8-43FC-4764-8B15-7B5C89D8C589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +114,7 @@ Global
 		{735421A5-28A5-4D86-AF29-ED59B049183B} = {9856158D-721E-4B4C-84CA-1FB3BB19B532}
 		{E72D5F5F-4A8B-4C00-9111-B7CCC9A33C09} = {9856158D-721E-4B4C-84CA-1FB3BB19B532}
 		{1D273A2C-E197-485B-82DC-82755D94C1D4} = {9856158D-721E-4B4C-84CA-1FB3BB19B532}
+		{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E} = {9856158D-721E-4B4C-84CA-1FB3BB19B532}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F401F53-1497-4C3F-BA2B-915F7560AF17}

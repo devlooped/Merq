@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace Merq;
 
@@ -18,13 +19,43 @@ public partial record OtherMessageEvent(string Message)
     public bool IsHandled { get; init; }
 }
 
-public class DuckTyping
+public class DynamicDuckTyping : DuckTyping
 {
+    protected override IMessageBus CreateMessageBus(IServiceProvider? services = null) =>
+        new DynamicallyMessageBus(services ?? new MockServiceProvider());
+}
+
+public class AutoMapperDuckTyping : DuckTyping
+{
+    protected override IMessageBus CreateMessageBus(IServiceProvider? services = null) =>
+        new AutoMapperMessageBus(services ?? new MockServiceProvider());
+
+    [Fact]
+    public void ExecuteWithExtraCtorArg()
+    {
+        var handler = new Mock<ICommandHandler<Library1::Library.Echo2, string>>();
+        var services = new ServiceCollection();
+        services.AddSingleton(handler.Object);
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
+
+        var cmd = new Library2::Library.Echo2("Foo");
+
+        var msg = bus.Execute(cmd);
+
+        handler.Verify(x => x.Execute(It.Is<Library1::Library.Echo2>(cmd => cmd.Times == 5)));
+    }
+}
+
+public abstract class DuckTyping
+{
+    protected abstract IMessageBus CreateMessageBus(IServiceProvider? services = null);
+
 #if NET6_0_OR_GREATER
     [Fact]
     public void ConvertEvent()
     {
-        var bus = new MessageBus(new MockServiceProvider());
+        var bus = CreateMessageBus();
         string? message = null;
 
         bus.Observe<Library1::Library.DuckEvent>()
@@ -38,7 +69,7 @@ public class DuckTyping
     [Fact]
     public void ConvertEventHierarchy()
     {
-        var bus = new MessageBus(new MockServiceProvider());
+        var bus = CreateMessageBus();
         int sumstarts = 0;
 
         bus.Observe<Library1::Library.OnDidEdit>()
@@ -57,7 +88,7 @@ public class DuckTyping
     [Fact]
     public void CustomConvertEvent()
     {
-        var bus = new MessageBus(new MockServiceProvider());
+        var bus = CreateMessageBus();
         Library2::Library.Line? line = null;
 
         bus.Observe<Library2::Library.OnDidDrawLine>()
@@ -77,10 +108,9 @@ public class DuckTyping
     public void CanHandleDuck()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
-
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         Assert.True(bus.CanHandle<Library2::Library.Echo>());
         Assert.True(bus.CanHandle(new Library2::Library.Echo("Foo")));
@@ -90,10 +120,10 @@ public class DuckTyping
     public void CanExecuteDuck()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
         var cmd = new Library2::Library.Echo("Foo");
 
         Assert.True(bus.CanExecute(cmd));
@@ -103,10 +133,10 @@ public class DuckTyping
     public void ExecuteCommand()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
         var cmd = new Library2::Library.Echo("Foo");
 
         var msg = bus.Execute(cmd);
@@ -118,10 +148,10 @@ public class DuckTyping
     public void ExecuteNoOpCommand()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<ICommandHandler<Library1::Library.NoOp>, Library1::Library.NoOpHandler>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
         var cmd = new Library2::Library.NoOp();
 
         bus.Execute(cmd);
@@ -131,10 +161,10 @@ public class DuckTyping
     public async Task ExecuteAsyncCommandAsync()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<IAsyncCommandHandler<Library1::Library.EchoAsync, string>, Library1::Library.EchoAsyncHandler>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
         var cmd = new Library2::Library.EchoAsync("Foo");
 
         var msg = await bus.ExecuteAsync(cmd);
@@ -146,10 +176,10 @@ public class DuckTyping
     public async Task ExecuteNoOpAsyncCommandAsync()
     {
         var services = new ServiceCollection();
-        services.AddMessageBus(false);
         services.AddSingleton<IAsyncCommandHandler<Library1::Library.NoOpAsync>, Library1::Library.NoOpAsyncHandler>();
+        services.AddSingleton(typeof(IServiceCollection), _ => services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
-        var bus = services.BuildServiceProvider().GetRequiredService<IMessageBus>();
         var cmd = new Library2::Library.NoOpAsync();
 
         await bus.ExecuteAsync(cmd);

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net472</TargetFrameworks>
+    <PackageId>Merq.AutoMapper</PackageId>
+    <Title>A specialized Message Bus that allows cross observing and executing of events and commands from structurally compatible types even if they are from disparate assemblies, as long as their full name is the same.</Title>
+    <Description>$(Title)</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="AutoMapper" VersionOverride="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net472'">
+    <PackageReference Include="AutoMapper" VersionOverride="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="readme.md">
+      <PackagePath>%(Filename)%(Extension)</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
