@@ -13,7 +13,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
-    <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
+    <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.4.255" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="6.0.0" />
     <PackageVersion Include="PolySharp" Version="1.7.1" />
     <PackageVersion Include="SharpYaml" Version="2.1.0" />
