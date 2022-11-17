@@ -19,10 +19,4 @@
     <PackageReference Include="AutoMapper" VersionOverride="12.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="readme.md">
-      <PackagePath>%(Filename)%(Extension)</PackagePath>
-    </None>
-  </ItemGroup>
-
 </Project>
