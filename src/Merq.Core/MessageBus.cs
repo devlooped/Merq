@@ -394,7 +394,7 @@ public class MessageBus : IMessageBus
                 var generic = descriptor.ServiceType.GetGenericTypeDefinition();
                 // Consider both void and non-void handlers
                 if (generic != typeof(IExecutableCommandHandler<>) &&
-                    generic != typeof(IExecutableCommandHandler<,>) && 
+                    generic != typeof(IExecutableCommandHandler<,>) &&
                     generic != typeof(ICommandHandler<>) &&
                     generic != typeof(ICommandHandler<,>) &&
                     generic != typeof(IAsyncCommandHandler<>) &&
