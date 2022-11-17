@@ -49,7 +49,7 @@ public interface IMessageBus
     /// <typeparam name="TResult">The return type of the command execution.</typeparam>
     /// <param name="command">The command parameters for the execution.</param>
     /// <returns>The result of executing the command.</returns>
-    TResult? Execute<TResult>(ICommand<TResult> command);
+    TResult Execute<TResult>(ICommand<TResult> command);
 
     /// <summary>
     /// Executes the given asynchronous command.
