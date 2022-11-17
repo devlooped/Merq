@@ -386,16 +386,31 @@ public class MessageBus : IMessageBus
         var map = mappedCommands.GetOrAdd(sourceType, type =>
         {
             // This is obviously not a cheap lookup, but we do it once per bus per type
-            if (collection.FirstOrDefault(x =>
-                x.ServiceType.IsGenericType &&
-                x.ServiceType.GetInterfaces().Any(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IExecutableCommandHandler<>) &&
-                    i.GetGenericArguments()[0] is Type argType &&
-                    argType.FullName == type.FullName)) is ServiceDescriptor descriptor &&
-                descriptor.ServiceType.GetGenericArguments()[0] is Type commandType &&
-                GetMapper()?.Invoke(type, commandType) is Func<dynamic, object> map)
-                return (commandType, map);
+            foreach (var descriptor in collection)
+            {
+                if (!descriptor.ServiceType.IsGenericType)
+                    continue;
+
+                var generic = descriptor.ServiceType.GetGenericTypeDefinition();
+                // Consider both void and non-void handlers
+                if (generic != typeof(IExecutableCommandHandler<>) &&
+                    generic != typeof(IExecutableCommandHandler<,>) && 
+                    generic != typeof(ICommandHandler<>) &&
+                    generic != typeof(ICommandHandler<,>) &&
+                    generic != typeof(IAsyncCommandHandler<>) &&
+                    generic != typeof(IAsyncCommandHandler<,>))
+                    continue;
+
+                var arg = descriptor.ServiceType.GetGenericArguments()[0];
+                // We match by full name only
+                if (arg.FullName == type.FullName)
+                {
+                    var mapper = GetMapper()?.Invoke(type, arg);
+                    // If we find a mapper, we can apply duck typing behavior.
+                    if (mapper is Func<dynamic, object> result)
+                        return (arg, result);
+                }
+            }
 
             return default;
         });
