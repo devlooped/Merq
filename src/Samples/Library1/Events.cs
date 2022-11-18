@@ -13,3 +13,5 @@ public partial record Buffer(ICollection<Line> Lines);
 public partial record OnDidEdit(Buffer Buffer);
 
 public record OnDidDrawLine(Line Line);
+
+public partial record OnDidSay(string Message);

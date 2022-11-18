@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using AutoMapper;
 #if NET6_0_OR_GREATER
 using TypePair = AutoMapper.Internal.TypePair;
@@ -16,6 +18,8 @@ namespace Merq;
 /// </summary>
 public class AutoMapperMessageBus : MessageBus
 {
+    static readonly ActivitySource tracer = new(ThisAssembly.Project.AssemblyName, ThisAssembly.Project.Version);
+
     readonly ConcurrentDictionary<TypePair, bool> mappedTypes = new();
     readonly object sync = new();
     IMapper? mapper;
@@ -39,6 +43,7 @@ public class AutoMapperMessageBus : MessageBus
     {
         lock (sync)
         {
+            using var activity = StartActivity();
             return new MapperConfiguration(cfg =>
             {
                 foreach (var key in mappedTypes.Keys)
@@ -87,4 +92,10 @@ public class AutoMapperMessageBus : MessageBus
             }
         };
     }
+
+    static Activity? StartActivity([CallerMemberName] string? member = default, [CallerFilePath] string? file = default, [CallerLineNumber] int? line = default)
+        => tracer.StartActivity(ActivityKind.Internal, name: member ?? "")
+            ?.SetTag("code.function", member)
+            ?.SetTag("code.filepath", file)
+            ?.SetTag("code.lineno", line);
 }

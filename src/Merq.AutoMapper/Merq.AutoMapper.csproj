@@ -11,6 +11,11 @@
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
     <PackageReference Include="AutoMapper" VersionOverride="10.1.1" />
   </ItemGroup>

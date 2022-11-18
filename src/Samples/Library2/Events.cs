@@ -16,3 +16,5 @@ public partial record OnDidDrawLine(Line Line)
 {
     //public static OnDidDrawLine Create(dynamic value) => new(Line.Create(value.Line));
 }
+
+public partial record OnDidSay(string Message);
