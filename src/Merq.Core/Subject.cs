@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using static Merq.Telemetry;
 
 namespace System.Reactive.Subjects;
 
@@ -22,6 +23,7 @@ partial class Subject<T> : Subject
     {
         if (mapper == null)
         {
+            using var activity = StartActivity(typeof(T), "send");
             OnNext((T)value);
         }
         else if (maps.GetOrAdd(value.GetType(),
@@ -29,6 +31,7 @@ partial class Subject<T> : Subject
                 obj => (T)map(value) : null)
             is Func<object, T> map)
         {
+            using var activity = StartActivity(typeof(T), "send");
             OnNext(map(value));
         }
     }

@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Merq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Library;
 
@@ -14,27 +16,56 @@ public record NoOpAsync() : IAsyncCommand;
 
 public record EchoAsync(string Message) : IAsyncCommand<string>;
 
+[Service]
 public class NoOpHandler : ICommandHandler<NoOp>
 {
     public bool CanExecute(NoOp command) => true;
     public void Execute(NoOp command) { }
 }
 
+[Service]
 public class EchoHandler : ICommandHandler<Echo, string>
 {
-    public bool CanExecute(Echo command) => true;
+    readonly IMessageBus? bus;
 
-    public string Execute(Echo command) => command.Message;
+    public EchoHandler() { }
+    
+    public EchoHandler(IMessageBus bus) => this.bus = bus;
+
+    public bool CanExecute(Echo command) => !string.IsNullOrEmpty(command.Message);
+
+    public string Execute(Echo command)
+    {
+        if (string.IsNullOrEmpty(command.Message))
+            throw new NotSupportedException("Cannot echo an empty or null message");
+        
+        bus?.Notify(new OnDidSay(command.Message));
+        return command.Message;
+    }
 }
 
+[Service]
+public class EchoAsyncHandler : IAsyncCommandHandler<EchoAsync, string>
+{
+    readonly IMessageBus? bus;
+
+    public EchoAsyncHandler() { }
+
+    public EchoAsyncHandler(IMessageBus bus) => this.bus = bus;
+
+
+    public bool CanExecute(EchoAsync command) => true;
+
+    public Task<string> ExecuteAsync(EchoAsync command, CancellationToken cancellation = default)
+    {
+        bus?.Notify(new OnDidSay(command.Message));
+        return Task.FromResult(command.Message);
+    }
+}
+
+[Service]
 public class NoOpAsyncHandler : IAsyncCommandHandler<NoOpAsync>
 {
     public bool CanExecute(NoOpAsync command) => true;
     public Task ExecuteAsync(NoOpAsync command, CancellationToken cancellation = default) => Task.CompletedTask;
-}
-
-public class EchoAsyncHandler : IAsyncCommandHandler<EchoAsync, string>
-{
-    public bool CanExecute(EchoAsync command) => true;
-    public Task<string> ExecuteAsync(EchoAsync command, CancellationToken cancellation = default) => Task.FromResult(command.Message);
 }

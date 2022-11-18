@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>true</ImplicitUsings>
+    <!-- Allow inspection of generated code under obj -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
+    <PackageReference Include="RxFree">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Spectre.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
+    <ProjectReference Include="..\Library1\Library1.csproj" Aliases="Library1" />
+    <ProjectReference Include="..\Library2\Library2.csproj" Aliases="Library2" />
+  </ItemGroup>
+
+  <!-- Item fixes to support project references vs package references -->
+  <ItemGroup Label="All items in this group aren't needed when referencing the nuget packages instead of project references">    
+    <!-- Analyzers and code fixes otherwise automatically added by Merq package -->
+    <ProjectReference Include="..\..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <!-- Source included in Merq.DependencyInjection package to register message bus. -->
+    <Compile Include="..\..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" Visible="false" />
+    <!-- Dependency otherwise brought-in by Merq.DependencyInjection for automated service discovery and registration at compile-time. -->
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" />
+  </ItemGroup>
+
+</Project>

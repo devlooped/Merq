@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -21,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Samples\Library1\Library1.csproj" Aliases="Library1" />
+    <ProjectReference Include="..\Samples\Library2\Library2.csproj" Aliases="Library2" />
     <ProjectReference Include="..\Merq.Tests\Merq.Tests.csproj" />
     <ProjectReference Include="..\Merq.VisualStudio\Merq.VisualStudio.csproj" />
   </ItemGroup>

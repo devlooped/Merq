@@ -19,7 +19,6 @@ static partial class MerqServicesExtension
     /// <param name="enableAutoMapping">Enables duck-typing behavior for events and commands, where 
     /// instances of disparate assemblies can observe and execute each other's events and commands 
     /// as long as their full type name matches.</param>
-    /// </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddMessageBus(this IServiceCollection services, bool addDiscoveredServices = true, bool enableAutoMapping = false)
     {

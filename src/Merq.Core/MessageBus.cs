@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using static Merq.Telemetry;
 
 namespace Merq;
 
@@ -186,6 +187,8 @@ public class MessageBus : IMessageBus
     public void Execute(ICommand command)
     {
         var type = GetCommandType(command);
+        using var activity = StartActivity(type);
+
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
             ExecuteCore((dynamic)command);
@@ -206,6 +209,8 @@ public class MessageBus : IMessageBus
     public TResult Execute<TResult>(ICommand<TResult> command)
     {
         var type = GetCommandType(command);
+        using var activity = StartActivity(type);
+
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
             return WithResult<TResult>().Execute((dynamic)command);
@@ -225,6 +230,8 @@ public class MessageBus : IMessageBus
     public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
+        using var activity = StartActivity(type);
+
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
             return ExecuteAsyncCore((dynamic)command, cancellation);
@@ -246,6 +253,8 @@ public class MessageBus : IMessageBus
     public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
+        using var activity = StartActivity(type);
+
         if (type.IsPublic)
             // For public types, we can use the faster dynamic dispatch approach
             return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
@@ -263,6 +272,7 @@ public class MessageBus : IMessageBus
     public void Notify<TEvent>(TEvent e)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
+        using var activity = StartActivity(type, "send");
 
         // TODO: if we prevent Notify for externally produced events, we won't be 
         // able to notify base event subscribers when those events are produced. 
@@ -294,6 +304,7 @@ public class MessageBus : IMessageBus
     public IObservable<TEvent> Observe<TEvent>()
     {
         var eventType = typeof(TEvent);
+        using var activity = StartActivity(eventType, "observe");
 
         // NOTE: in order for the base event subscription to work properly for external
         // producers, they must register the service for each T in the TEvent hierarchy.
@@ -380,7 +391,7 @@ public class MessageBus : IMessageBus
     Func<dynamic, object>? FindCommandMapper(Type sourceType, out Type? targetType)
     {
         targetType = null;
-        if (GetMapper() is null || collection is null)
+        if (collection is null || GetMapper() is null)
             return null;
 
         var map = mappedCommands.GetOrAdd(sourceType, type =>
