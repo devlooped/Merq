@@ -1,16 +1,16 @@
 # Changelog
 
-## [v2.0.0-beta.1](https://github.com/devlooped/Merq/tree/v2.0.0-beta.1) (2022-11-16)
+## [v2.0.0-beta.2](https://github.com/devlooped/Merq/tree/v2.0.0-beta.2) (2022-11-18)
 
-[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-alpha...v2.0.0-beta.1)
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-alpha...v2.0.0-beta.2)
+
+:sparkles: Implemented enhancements:
+
+- Fix support for non-void command handlers in duck typing [\#69](https://github.com/devlooped/Merq/issues/69)
 
 ## [v2.0.0-alpha](https://github.com/devlooped/Merq/tree/v2.0.0-alpha) (2022-11-16)
 
-[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta...v2.0.0-alpha)
-
-## [v2.0.0-beta](https://github.com/devlooped/Merq/tree/v2.0.0-beta) (2022-11-16)
-
-[Full Changelog](https://github.com/devlooped/Merq/compare/v1.3.0...v2.0.0-beta)
+[Full Changelog](https://github.com/devlooped/Merq/compare/v1.3.0...v2.0.0-alpha)
 
 :sparkles: Implemented enhancements:
 
