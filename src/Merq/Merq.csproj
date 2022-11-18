@@ -3,8 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq</PackageId>
-    <Title>Merq: Message Bus (Commands + Events) Interfaces</Title>
-    <Description>Merq: Message Bus (Commands + Events) Interfaces</Description>
+    <Title>
+      Merq: Message Bus (Commands + Events) Interfaces, for internal application architecture via command and event messages.
+    </Title>
+    <Description>
+      Interfaces for authoring loosely coupled components that communicate via command and event messages within an application.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,8 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq.Core</PackageId>
-    <Title>Merq: Message Bus (Commands + Events) Implementation</Title>
-    <Description>$(Title)</Description>
+    <Title>
+      Merq: Default Message Bus (Commands + Events) Implementation, for internal application architecture via command and event messages.
+    </Title>
+    <Description>
+      $(Title)
+      Only the main application assembly needs to reference this package. Components and extensions can simply reference the interfaces in Merq.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
