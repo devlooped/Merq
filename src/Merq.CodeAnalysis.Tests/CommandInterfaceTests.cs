@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
@@ -8,6 +10,34 @@ namespace Merq;
 
 public class CommandInterfaceTests
 {
+    [Fact]
+    public async Task NonPublicCommand()
+    {
+        var test = new CSharpAnalyzerTest<PublicCommandAnalyzer, XUnitVerifier>
+        {
+            TestCode = """
+            using Merq;
+            using System;
+            
+            record {|#0:Command|} : ICommand;
+            
+            class Handler : ICommandHandler<Command>
+            {
+                public bool CanExecute(Command command) => true;
+                public void Execute(Command command) { }
+            }
+            """
+        }.WithMerq();
+
+        var expected = Analyzer.Diagnostic(Diagnostics.CommandTypesShouldBePublic)
+            .WithLocation(0)
+            .WithArguments("Command");
+
+        test.ExpectedDiagnostics.Add(expected);
+
+        await test.RunAsync();
+    }
+
     [Fact]
     public async Task CommandMissingInterface()
     {

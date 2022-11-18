@@ -75,4 +75,16 @@ public static class Diagnostics
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "In order to support automatic hierarchical dynamic conversion for records, the Create method must be accessible within the compilation.");
+
+    /// <summary>
+    /// MERQ007: Consider making command types public.
+    /// </summary>
+    public static DiagnosticDescriptor CommandTypesShouldBePublic { get; } = new(
+        "MERQ007",
+        "Consider making command types public",
+        "Consider making command '{0}' public.",
+        "Design",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Public commands have better performance characteristics when dynamic conversion (aka 'duck-typing') is used.");
 }
