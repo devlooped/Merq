@@ -1,5 +1,21 @@
 # Changelog
 
+## [v2.0.0-beta.3](https://github.com/devlooped/Merq/tree/v2.0.0-beta.3) (2022-11-19)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta.2...v2.0.0-beta.3)
+
+:sparkles: Implemented enhancements:
+
+- Add exception telemetry recording [\#76](https://github.com/devlooped/Merq/issues/76)
+- Add basic telemetry support in core message bus implementation  [\#73](https://github.com/devlooped/Merq/issues/73)
+- Issue a warning for non-public commands [\#71](https://github.com/devlooped/Merq/issues/71)
+- Issue a warning for non-public commands [\#72](https://github.com/devlooped/Merq/pull/72) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Set activity status to error when an exception is recorded [\#78](https://github.com/devlooped/Merq/pull/78) (@kzu)
+- Add basic telemetry support in core message bus implementation [\#74](https://github.com/devlooped/Merq/pull/74) (@kzu)
+
 ## [v2.0.0-beta.2](https://github.com/devlooped/Merq/tree/v2.0.0-beta.2) (2022-11-18)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-alpha...v2.0.0-beta.2)
@@ -15,6 +31,7 @@
 :sparkles: Implemented enhancements:
 
 - Make duck-typing support pluggable with no built-in implementation [\#57](https://github.com/devlooped/Merq/issues/57)
+- Add support for dynamic record creation including list-like properties [\#49](https://github.com/devlooped/Merq/issues/49)
 - Support hierarchical record creation from generated dynamic factory   [\#47](https://github.com/devlooped/Merq/issues/47)
 - Provide analyzer + code fix for turning sync command to async and viceversa [\#38](https://github.com/devlooped/Merq/issues/38)
 - Provide analyzers + code fixes for common command authoring errors  [\#37](https://github.com/devlooped/Merq/issues/37)
@@ -25,7 +42,6 @@
 :hammer: Other:
 
 - Upgrade to centrally managed package versions [\#51](https://github.com/devlooped/Merq/issues/51)
-- Add support for dynamic record creation including list-like properties [\#49](https://github.com/devlooped/Merq/issues/49)
 - Add unit tests for analyzers [\#45](https://github.com/devlooped/Merq/issues/45)
 
 :twisted_rightwards_arrows: Merged:
