@@ -29,7 +29,7 @@ public class EchoHandler : ICommandHandler<Echo, string>
     readonly IMessageBus? bus;
 
     public EchoHandler() { }
-    
+
     public EchoHandler(IMessageBus bus) => this.bus = bus;
 
     public bool CanExecute(Echo command) => !string.IsNullOrEmpty(command.Message);
@@ -38,7 +38,7 @@ public class EchoHandler : ICommandHandler<Echo, string>
     {
         if (string.IsNullOrEmpty(command.Message))
             throw new NotSupportedException("Cannot echo an empty or null message");
-        
+
         bus?.Notify(new OnDidSay(command.Message));
         return command.Message;
     }

@@ -1,11 +1,20 @@
 ﻿extern alias Library1;
 extern alias Library2;
+using System.Diagnostics;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using Merq;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using static Spectre.Console.AnsiConsole;
+
+var source = new ActivitySource("ConsoleApp");
+var config = new ConfigurationBuilder()
+    .AddUserSecrets(ThisAssembly.Project.UserSecretsId)
+    .AddEnvironmentVariables()
+    .Build();
 
 // Initialize services
 var collection = new ServiceCollection();
@@ -19,10 +28,12 @@ var bus = services.GetRequiredService<IMessageBus>();
 using var tracer = Sdk
     .CreateTracerProviderBuilder()
     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("ConsoleApp"))
+    .AddSource(source.Name)
     .AddSource("Merq.Core")
     .AddSource("Merq.AutoMapper")
     .AddConsoleExporter()
     .AddZipkinExporter()
+    .AddAzureMonitorTraceExporter(o => o.ConnectionString = config["AppInsights"])
     .Build();
 
 MarkupLine("[yellow]Executing with command from same assembly[/]");
@@ -47,6 +58,16 @@ MarkupLine("[yellow]Executing with command from different assembly[/]");
 message = bus.Execute(new Library2::Library.Echo("Hello World"));
 
 WriteLine(message);
+
+try
+{
+    using var _ = source.StartActivity("Error");
+    // Showcase error telemetry
+    bus.Execute(new Library1::Library.Echo(""));
+}
+catch (NotSupportedException)
+{
+}
 
 // Test rapid fire messages
 //Parallel.For(0, 10, i 
