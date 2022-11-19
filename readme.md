@@ -1,4 +1,4 @@
-![Icon](https://raw.github.com/devlooped/Merq/main/icon/32.png) Merq
+![Icon](https://raw.github.com/devlooped/Merq/main/assets/img/32.png) Merq
 ================
 
 [![Version](https://img.shields.io/nuget/vpre/Merq.svg?color=royalblue)](https://www.nuget.org/packages/Merq)
