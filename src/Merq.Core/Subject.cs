@@ -21,7 +21,9 @@ partial class Subject<T> : Subject
 
     public override void OnNext(object value)
     {
-        if (mapper == null)
+        // Never attempt to map compatible types.
+        if (mapper == null || 
+            typeof(T).IsAssignableFrom(value.GetType()))
         {
             using var activity = StartActivity(typeof(T), "send");
             OnNext((T)value);

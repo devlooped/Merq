@@ -466,7 +466,7 @@ public class MessageBus : IMessageBus
 
                 var arg = descriptor.ServiceType.GetGenericArguments()[0];
                 // We match by full name only
-                if (arg.FullName == type.FullName)
+                if (arg != type && arg.FullName == type.FullName)
                 {
                     var mapper = GetMapper()?.Invoke(type, arg);
                     // If we find a mapper, we can apply duck typing behavior.
