@@ -10,6 +10,7 @@
     <LangVersion>preview</LangVersion>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
     <GenerateRequiresPreviewFeaturesAttribute>false</GenerateRequiresPreviewFeaturesAttribute>
+    <NoWarn>MERQ007;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
