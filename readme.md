@@ -124,7 +124,7 @@ public interface IMessageBus
     // sync void
     void Execute(ICommand command);
     // sync value-returning
-    TResult? Execute<TResult>(ICommand<TResult> command);
+    TResult Execute<TResult>(ICommand<TResult> command);
     // async void
     Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
     // async value-returning
