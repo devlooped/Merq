@@ -22,12 +22,17 @@ static class Telemetry
 
     public static void RecordException(this Activity? activity, Exception e)
     {
-        // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/exceptions.md
-        activity?.AddEvent(new ActivityEvent("exception", tags: new()
+        if (activity != null)
         {
-            { "exception.message", e.Message },
-            { "exception.type", e.GetType().FullName },
-            { "exception.stacktrace", e.ToString() },
-        }));
+            activity.SetStatus(ActivityStatusCode.Error, e.Message);
+
+            // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/exceptions.md
+            activity.AddEvent(new ActivityEvent("exception", tags: new()
+            {
+                { "exception.message", e.Message },
+                { "exception.type", e.GetType().FullName },
+                { "exception.stacktrace", e.ToString() },
+            }));
+        }
     }
 }
