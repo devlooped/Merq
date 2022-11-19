@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -204,6 +205,8 @@ public class MessageBus : IMessageBus
         catch (Exception e)
         {
             activity.RecordException(e);
+            // Rethrow original exception to preserve stacktrace.
+            ExceptionDispatchInfo.Capture(e).Throw();
             throw;
         }
     }
@@ -234,6 +237,8 @@ public class MessageBus : IMessageBus
         catch (Exception e)
         {
             activity.RecordException(e);
+            // Rethrow original exception to preserve stacktrace.
+            ExceptionDispatchInfo.Capture(e).Throw();
             throw;
         }
     }
@@ -263,6 +268,8 @@ public class MessageBus : IMessageBus
         catch (Exception e)
         {
             activity.RecordException(e);
+            // Rethrow original exception to preserve stacktrace.
+            ExceptionDispatchInfo.Capture(e).Throw();
             throw;
         }
     }
@@ -294,6 +301,8 @@ public class MessageBus : IMessageBus
         catch (Exception e)
         {
             activity.RecordException(e);
+            // Rethrow original exception to preserve stacktrace.
+            ExceptionDispatchInfo.Capture(e).Throw();
             throw;
         }
     }
@@ -335,6 +344,8 @@ public class MessageBus : IMessageBus
                 activity.RecordException(ex);
                 // TODO: should we swallow the exception and remove the 
                 // failing subscribers?
+                // Rethrow original exception to preserve stacktrace.
+                ExceptionDispatchInfo.Capture(ex).Throw();
                 throw;
             }
         }
