@@ -7,23 +7,28 @@
     <!-- Allow inspection of generated code under obj -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <UserSecretsId>55E4443F-538A-4BBF-898D-26F7E13F8508</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
     <PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
-    <PackageReference Include="RxFree">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="RxFree" />
     <PackageReference Include="Spectre.Console" />
+    <PackageReference Include="ThisAssembly.Project" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
     <ProjectReference Include="..\Library1\Library1.csproj" Aliases="Library1" />
     <ProjectReference Include="..\Library2\Library2.csproj" Aliases="Library2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectProperty Include="UserSecretsId" />
   </ItemGroup>
 
   <!-- Item fixes to support project references vs package references -->

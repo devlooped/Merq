@@ -189,15 +189,23 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         using var activity = StartActivity(type);
 
-        if (type.IsPublic)
-            // For public types, we can use the faster dynamic dispatch approach
-            ExecuteCore((dynamic)command);
-        else
-            voidExecutors.GetOrAdd(type, type
-                => (VoidDispatcher)Activator.CreateInstance(
-                    typeof(VoidDispatcher<>).MakeGenericType(type),
-                    this))
-            .Execute(command);
+        try
+        {
+            if (type.IsPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                ExecuteCore((dynamic)command);
+            else
+                voidExecutors.GetOrAdd(type, type
+                    => (VoidDispatcher)Activator.CreateInstance(
+                        typeof(VoidDispatcher<>).MakeGenericType(type),
+                        this))
+                .Execute(command);
+        }
+        catch (Exception e)
+        {
+            activity.RecordException(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -211,15 +219,23 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         using var activity = StartActivity(type);
 
-        if (type.IsPublic)
-            // For public types, we can use the faster dynamic dispatch approach
-            return WithResult<TResult>().Execute((dynamic)command);
+        try
+        {
+            if (type.IsPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                return WithResult<TResult>().Execute((dynamic)command);
 
-        return (TResult)resultExecutors.GetOrAdd(type, type
-                => (ResultDispatcher)Activator.CreateInstance(
-                   typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                   this))
-            .Execute(command)!;
+            return (TResult)resultExecutors.GetOrAdd(type, type
+                    => (ResultDispatcher)Activator.CreateInstance(
+                       typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
+                       this))
+                .Execute(command)!;
+        }
+        catch (Exception e)
+        {
+            activity.RecordException(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -232,15 +248,23 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         using var activity = StartActivity(type);
 
-        if (type.IsPublic)
-            // For public types, we can use the faster dynamic dispatch approach
-            return ExecuteAsyncCore((dynamic)command, cancellation);
+        try
+        {
+            if (type.IsPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                return ExecuteAsyncCore((dynamic)command, cancellation);
 
-        return voidAsyncExecutors.GetOrAdd(type, type
-            => (VoidAsyncDispatcher)Activator.CreateInstance(
-                typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
-                this))
-            .ExecuteAsync(command, cancellation);
+            return voidAsyncExecutors.GetOrAdd(type, type
+                => (VoidAsyncDispatcher)Activator.CreateInstance(
+                    typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
+                    this))
+                .ExecuteAsync(command, cancellation);
+        }
+        catch (Exception e)
+        {
+            activity.RecordException(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -255,15 +279,23 @@ public class MessageBus : IMessageBus
         var type = GetCommandType(command);
         using var activity = StartActivity(type);
 
-        if (type.IsPublic)
-            // For public types, we can use the faster dynamic dispatch approach
-            return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
+        try
+        {
+            if (type.IsPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
 
-        return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
-            => (ResultAsyncDispatcher)Activator.CreateInstance(
-                typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                this))
-            .ExecuteAsync(command, cancellation);
+            return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
+                => (ResultAsyncDispatcher)Activator.CreateInstance(
+                    typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
+                    this))
+                .ExecuteAsync(command, cancellation);
+        }
+        catch (Exception e)
+        {
+            activity.RecordException(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -294,7 +326,17 @@ public class MessageBus : IMessageBus
 
         foreach (var subject in compatible)
         {
-            subject.OnNext(e);
+            try
+            {
+                subject.OnNext(e);
+            }
+            catch (Exception ex)
+            {
+                activity.RecordException(ex);
+                // TODO: should we swallow the exception and remove the 
+                // failing subscribers?
+                throw;
+            }
         }
     }
 
@@ -304,7 +346,6 @@ public class MessageBus : IMessageBus
     public IObservable<TEvent> Observe<TEvent>()
     {
         var eventType = typeof(TEvent);
-        using var activity = StartActivity(eventType, "observe");
 
         // NOTE: in order for the base event subscription to work properly for external
         // producers, they must register the service for each T in the TEvent hierarchy.

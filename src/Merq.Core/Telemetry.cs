@@ -19,4 +19,15 @@ static class Telemetry
             ?.SetTag("messaging.operation", operation)
             ?.SetTag("messaging.protocol", type.Assembly.GetName().Name)
             ?.SetTag("messaging.protocol_version", type.Assembly.GetName().Version?.ToString() ?? "unknown");
+
+    public static void RecordException(this Activity? activity, Exception e)
+    {
+        // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/exceptions.md
+        activity?.AddEvent(new ActivityEvent("exception", tags: new()
+        {
+            { "exception.message", e.Message },
+            { "exception.type", e.GetType().FullName },
+            { "exception.stacktrace", e.ToString() },
+        }));
+    }
 }
