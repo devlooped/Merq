@@ -23,7 +23,7 @@
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
     <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="6.0.0" />
-    <PackageVersion Include="PolySharp" Version="1.7.1" />
+    <PackageVersion Include="PolySharp" Version="1.8.2" />
     <PackageVersion Include="SharpYaml" Version="2.1.0" />
     <PackageVersion Include="Scriban" Version="5.5.0" />
     <PackageVersion Include="Superpower" Version="3.0.0" />
