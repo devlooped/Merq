@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="PolySharp" PrivateAssets="all" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" />
-    <PackageReference Include="Devlooped.Dynamically" PrivateAssets="all"/>
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" PrivateAssets="all" />
+    <PackageReference Include="Devlooped.Dynamically" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

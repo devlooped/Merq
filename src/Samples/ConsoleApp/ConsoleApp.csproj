@@ -8,6 +8,7 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <UserSecretsId>55E4443F-538A-4BBF-898D-26F7E13F8508</UserSecretsId>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
