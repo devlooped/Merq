@@ -2,9 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Merq.DependencyInjection</PackageId>
-    <Title>Merq: Microsoft Dependency Injection support, with automatic IMessageBus registration and compile-time service discovery and automatic registration.</Title>
+    <Title>Merq: Microsoft Dependency Injection support, with automatic IMessageBus registration and compile-time service discovery and registration.</Title>
     <Description>$(Title)</Description>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="MerqServicesExtension.cs" BuildAction="Compile" CodeLanguage="cs" Pack="true" />
