@@ -8,9 +8,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.netconfig = .netconfig
 		.github\workflows\build.yml = .github\workflows\build.yml
-		src\Directory.Packages.props = src\Directory.Packages.props
 		src\Directory.props = src\Directory.props
+		src\Directory.targets = src\Directory.targets
 		.github\workflows\publish.yml = .github\workflows\publish.yml
+		src\Packages.props = src\Packages.props
 		readme.md = readme.md
 	EndProjectSection
 EndProject
@@ -44,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.AutoMapper", "src\Merq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Dynamically", "src\Samples\Merq.Dynamically\Merq.Dynamically.csproj", "{2CA2D2DD-20EC-4BB8-B641-196BDBFB8D6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "src\Samples\ConsoleApp\ConsoleApp.csproj", "{9D458376-9F9A-4F71-B659-0DA2C6B9A9B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "src\Samples\ConsoleApp\ConsoleApp.csproj", "{9D458376-9F9A-4F71-B659-0DA2C6B9A9B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

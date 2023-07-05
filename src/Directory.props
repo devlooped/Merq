@@ -1,6 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <PackageProjectUrl>https://github.com/devlooped/Merq</PackageProjectUrl>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <PropertyGroup Label="StrongName">
