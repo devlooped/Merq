@@ -25,7 +25,7 @@ partial class Subject<T> : Subject
         if (mapper == null ||
             typeof(T).IsAssignableFrom(value.GetType()))
         {
-            using var activity = StartActivity(typeof(T), "send");
+            using var activity = StartActivity(typeof(T), Notify);
             OnNext((T)value);
         }
         else if (maps.GetOrAdd(value.GetType(),
@@ -33,7 +33,7 @@ partial class Subject<T> : Subject
                 obj => (T)map(value) : null)
             is Func<object, T> map)
         {
-            using var activity = StartActivity(typeof(T), "send");
+            using var activity = StartActivity(typeof(T), Notify);
             OnNext(map(value));
         }
     }
