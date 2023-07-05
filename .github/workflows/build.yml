@@ -56,7 +56,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🙏 build
-        run: dotnet build -m:1 -v:${{ runner.debug && 'd' || 'm' }}
+        run: dotnet build -m:1 -bl:build.binlog
 
       - name: ⚙ GNU grep
         if: matrix.os == 'macOS-latest'
@@ -68,7 +68,7 @@ jobs:
         uses: ./.github/workflows/test
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -v:${{ runner.debug && 'd' || 'm' }}
+        run: dotnet pack -m:1 -bl:pack.binlog
 
       # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
@@ -78,6 +78,13 @@ jobs:
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
+
+      - name: 🐛 logs
+        uses: actions/upload-artifact@v3
+        if: runner.debug && always()
+        with:
+          name: logs
+          path: '*.binlog'
 
   dotnet-format:
     runs-on: ubuntu-latest
