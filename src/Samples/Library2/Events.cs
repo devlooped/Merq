@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Library;
+﻿namespace Library;
 
 public partial record DuckEvent(string Message);
 
