@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="PolySharp" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
