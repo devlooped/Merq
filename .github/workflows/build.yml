@@ -19,6 +19,7 @@ env:
   DOTNET_NOLOGO: true
   VersionPrefix: 42.42.${{ github.run_number }}
   VersionLabel: ${{ github.ref }}
+  Verbosity: ${{ runner.debug && 'detailed' || 'minimal' }}
 
 defaults:
   run:
@@ -56,7 +57,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🙏 build
-        run: dotnet build -m:1
+        run: dotnet build -m:1 -v:${{ env.Verbosity }}
 
       - name: ⚙ GNU grep
         if: matrix.os == 'macOS-latest'
@@ -68,7 +69,7 @@ jobs:
         uses: ./.github/workflows/test
 
       - name: 📦 pack
-        run: dotnet pack -m:1
+        run: dotnet pack -m:1 -v:${{ env.Verbosity }}
 
       # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
