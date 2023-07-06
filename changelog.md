@@ -1,6 +1,6 @@
 # Changelog
 
-## [v2.0.0-beta.4](https://github.com/devlooped/Merq/tree/v2.0.0-beta.4) (2023-07-05)
+## [v2.0.0-beta.4](https://github.com/devlooped/Merq/tree/v2.0.0-beta.4) (2023-07-06)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta.3...v2.0.0-beta.4)
 
