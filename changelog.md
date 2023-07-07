@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.0-rc.1](https://github.com/devlooped/Merq/tree/v2.0.0-rc.1) (2023-07-07)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta.4...v2.0.0-rc.1)
+
+:sparkles: Implemented enhancements:
+
+- Improve observability [\#99](https://github.com/devlooped/Merq/issues/99)
+- Add command and event payloads to activity [\#101](https://github.com/devlooped/Merq/pull/101) (@kzu)
+- Improve observability [\#100](https://github.com/devlooped/Merq/pull/100) (@kzu)
+
 ## [v2.0.0-beta.4](https://github.com/devlooped/Merq/tree/v2.0.0-beta.4) (2023-07-06)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta.3...v2.0.0-beta.4)
