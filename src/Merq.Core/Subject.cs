@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using static Merq.Telemetry;
 
 namespace System.Reactive.Subjects;
@@ -25,7 +26,7 @@ partial class Subject<T> : Subject
         if (mapper == null ||
             typeof(T).IsAssignableFrom(value.GetType()))
         {
-            using var activity = StartActivity(typeof(T), Notify);
+            using var activity = StartActivity(typeof(T), Receive);
             OnNext((T)value);
         }
         else if (maps.GetOrAdd(value.GetType(),
@@ -33,7 +34,7 @@ partial class Subject<T> : Subject
                 obj => (T)map(value) : null)
             is Func<object, T> map)
         {
-            using var activity = StartActivity(typeof(T), Notify);
+            using var activity = StartActivity(typeof(T), Receive);
             OnNext(map(value));
         }
     }
