@@ -44,7 +44,12 @@ static class Telemetry
     //          NOTE: this is not an entirely satisfactory way to tell events from commands apart.
     public const string Process = nameof(Process);
 
-    public static Activity? StartActivity(Type type, string operation, [CallerMemberName] string? member = default, [CallerFilePath] string? file = default, [CallerLineNumber] int? line = default)
+    public static Activity? StartCommandActivity(Type type, object command) => StartActivity(type, Process, "Command", command);
+
+    public static Activity? StartEventActivity(Type type, object @event) => StartActivity(type, Publish, "Event", @event);
+
+    public static Activity? StartActivity(Type type, string operation, string? property = default, object? value = default,
+        [CallerMemberName] string? member = default, [CallerFilePath] string? file = default, [CallerLineNumber] int? line = default)
     {
         if (operation == Publish)
             events.Add(1, new KeyValuePair<string, object?>("Name", type.FullName));
@@ -55,7 +60,7 @@ static class Telemetry
         // Requirement is that the destination has low cardinality. In our case, the destination is 
         // the logical operation being performed, such as "Execute", "Notify" or "Deliver". The 
         // operation is actually the type being acted on (such as CreateUser -a command- or UserCreated -event).
-        return tracer.StartActivity(ActivityKind.Producer, name: $"{operation}/{type.FullName}")
+        var activity = tracer.CreateActivity($"{operation}/{type.FullName}", ActivityKind.Producer)
             ?.SetTag("code.function", member)
             ?.SetTag("code.filepath", file)
             ?.SetTag("code.lineno", line)
@@ -65,6 +70,13 @@ static class Telemetry
             ?.SetTag("messaging.operation", operation.ToLowerInvariant())
             ?.SetTag("messaging.protocol.name", type.Assembly.GetName().Name)
             ?.SetTag("messaging.protocol.version", type.Assembly.GetName().Version?.ToString() ?? "unknown");
+
+        if (property != null && value != null)
+            activity?.SetCustomProperty(property, value);
+
+        activity?.Start();
+
+        return activity;
     }
 
     public static void RecordException(this Activity? activity, Exception e)

@@ -36,12 +36,14 @@ var services = collection.BuildServiceProvider();
 var bus = services.GetRequiredService<IMessageBus>();
 
 // .NET-style activity listening
-//using var listener = new ActivityListener
-//{
-//    ActivityStarted = activity => MarkupLine($"[red]Activity started: {activity.OperationName}[/]"),
-//    ActivityStopped = activity => MarkupLine($"[red]Activity stopped: {activity.OperationName}[/]"),
-//    ShouldListenTo = source => source.Name == "Merq.Core",
-//};
+using var listener = new ActivityListener
+{
+    ActivityStarted = activity => MarkupLine($"[grey]Activity started: {activity.OperationName}[/]"),
+    ActivityStopped = activity => MarkupLine($"[grey]Activity stopped: {activity.OperationName}[/]"),
+    ShouldListenTo = source => source.Name == "Merq",
+};
+
+ActivitySource.AddActivityListener(listener);
 
 // Setup OpenTelemetry: https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs
 using var tracer = Sdk
