@@ -190,7 +190,7 @@ public class MessageBus : IMessageBus
     public void Execute(ICommand command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Process);
+        using var activity = StartCommandActivity(type, command);
 
         try
         {
@@ -222,7 +222,7 @@ public class MessageBus : IMessageBus
     public TResult Execute<TResult>(ICommand<TResult> command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Process);
+        using var activity = StartCommandActivity(type, command);
 
         try
         {
@@ -253,7 +253,7 @@ public class MessageBus : IMessageBus
     public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Process);
+        using var activity = StartCommandActivity(type, command);
 
         try
         {
@@ -286,7 +286,7 @@ public class MessageBus : IMessageBus
     public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Process);
+        using var activity = StartCommandActivity(type, command);
 
         try
         {
@@ -315,7 +315,7 @@ public class MessageBus : IMessageBus
     public void Notify<TEvent>(TEvent e)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
-        using var activity = StartActivity(type, Publish);
+        using var activity = StartEventActivity(type, e);
         var watch = Stopwatch.StartNew();
 
         try

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
@@ -441,6 +442,62 @@ public record MessageBusSpec(ITestOutputHelper Output)
             .BuildServiceProvider());
 
         Assert.Equal(42, await bus.ExecuteAsync(new NonPublicAsyncCommandResult(), CancellationToken.None));
+    }
+
+    [Fact]
+    public void when_notifying_can_access_event_from_activity_stop()
+    {
+        object? e = default;
+        using var listener = new ActivityListener
+        {
+            ActivityStopped = activity => e = activity.GetCustomProperty("Event"),
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            ShouldListenTo = source => source.Name == "Merq",
+        };
+
+        ActivitySource.AddActivityListener(listener);
+
+        bus.Notify(new ConcreteEvent());
+
+        Assert.NotNull(e);
+        Assert.IsType<ConcreteEvent>(e);
+    }
+
+    [Fact]
+    public void when_executing_can_access_event_from_activity_stop()
+    {
+        object? c = default;
+        using var listener = new ActivityListener
+        {
+            ActivityStopped = activity => c = activity.GetCustomProperty("Command"),
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            ShouldListenTo = source => source.Name == "Merq",
+        };
+
+        ActivitySource.AddActivityListener(listener);
+
+        Assert.Throws<InvalidOperationException>(() => bus.Execute(new Command()));
+
+        Assert.NotNull(c);
+    }
+
+    [Fact]
+    public void when_execute_throws_activity_has_error_status()
+    {
+        Activity? activity = default;
+        using var listener = new ActivityListener
+        {
+            ActivityStarted = x => activity = x,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            ShouldListenTo = source => source.Name == "Merq",
+        };
+
+        ActivitySource.AddActivityListener(listener);
+
+        Assert.Throws<InvalidOperationException>(() => bus.Execute(new Command()));
+
+        Assert.NotNull(activity);
+        Assert.Equal(ActivityStatusCode.Error, activity.Status);
     }
 
     class NestedEvent { }
