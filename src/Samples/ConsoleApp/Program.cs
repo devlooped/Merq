@@ -5,6 +5,7 @@ using Azure.Monitor.OpenTelemetry.Exporter;
 using Merq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -21,15 +22,33 @@ var collection = new ServiceCollection();
 // Library1 contains [Service]-annotated classes, which will be automatically registered here.
 collection.AddMessageBus(addDiscoveredServices: true, enableAutoMapping: true);
 
+// Showcase collecting telemetry from external process
+// Usage:
+// - dotnet counters monitor --process-id [ID] --counters Merq
+// - dotnet trace collect --name ConsoleApp --providers="Microsoft-Diagnostics-DiagnosticSource:::FilterAndPayloadSpecs=[AS]Merq,System.Diagnostics.Metrics:::Metrics=Merq"
+collection.AddLogging(builder =>
+{
+    // This is added automatically in the default ASP.NET Core template
+    builder.AddEventSourceLogger();
+});
+
 var services = collection.BuildServiceProvider();
 var bus = services.GetRequiredService<IMessageBus>();
+
+// .NET-style activity listening
+//using var listener = new ActivityListener
+//{
+//    ActivityStarted = activity => MarkupLine($"[red]Activity started: {activity.OperationName}[/]"),
+//    ActivityStopped = activity => MarkupLine($"[red]Activity stopped: {activity.OperationName}[/]"),
+//    ShouldListenTo = source => source.Name == "Merq.Core",
+//};
 
 // Setup OpenTelemetry: https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs
 using var tracer = Sdk
     .CreateTracerProviderBuilder()
     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("ConsoleApp"))
     .AddSource(source.Name)
-    .AddSource("Merq.Core")
+    .AddSource("Merq")
     .AddSource("Merq.AutoMapper")
     .AddConsoleExporter()
     .AddZipkinExporter()
@@ -67,6 +86,13 @@ try
 }
 catch (NotSupportedException)
 {
+}
+
+// Simulate long-running to collect telemetry from external process
+while (true)
+{
+    bus.Execute(new Library2::Library.Echo($"Hello World {Random.Shared.Next(0, 100)}"));
+    await Task.Delay(500);
 }
 
 // Test rapid fire messages
