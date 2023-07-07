@@ -188,7 +188,7 @@ public class MessageBus : IMessageBus
     public void Execute(ICommand command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Execute);
+        using var activity = StartActivity(type, Process);
 
         try
         {
@@ -220,7 +220,7 @@ public class MessageBus : IMessageBus
     public TResult Execute<TResult>(ICommand<TResult> command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Execute);
+        using var activity = StartActivity(type, Process);
 
         try
         {
@@ -251,7 +251,7 @@ public class MessageBus : IMessageBus
     public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Execute);
+        using var activity = StartActivity(type, Process);
 
         try
         {
@@ -284,7 +284,7 @@ public class MessageBus : IMessageBus
     public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Telemetry.Execute);
+        using var activity = StartActivity(type, Process);
 
         try
         {
@@ -313,7 +313,7 @@ public class MessageBus : IMessageBus
     public void Notify<TEvent>(TEvent e)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
-        using var activity = StartActivity(type, Telemetry.Notify);
+        using var activity = StartActivity(type, Publish);
 
         // TODO: if we prevent Notify for externally produced events, we won't be 
         // able to notify base event subscribers when those events are produced. 
