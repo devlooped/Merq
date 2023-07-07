@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using static Merq.Telemetry;
+using Tag = System.Collections.Generic.KeyValuePair<string, object?>;
 
 namespace Merq;
 
@@ -188,7 +190,7 @@ public class MessageBus : IMessageBus
     public void Execute(ICommand command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Process);
+        using var activity = StartActivity(type, Telemetry.Process);
 
         try
         {
@@ -220,7 +222,7 @@ public class MessageBus : IMessageBus
     public TResult Execute<TResult>(ICommand<TResult> command)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Process);
+        using var activity = StartActivity(type, Telemetry.Process);
 
         try
         {
@@ -251,7 +253,7 @@ public class MessageBus : IMessageBus
     public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Process);
+        using var activity = StartActivity(type, Telemetry.Process);
 
         try
         {
@@ -284,7 +286,7 @@ public class MessageBus : IMessageBus
     public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartActivity(type, Process);
+        using var activity = StartActivity(type, Telemetry.Process);
 
         try
         {
@@ -314,40 +316,48 @@ public class MessageBus : IMessageBus
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
         using var activity = StartActivity(type, Publish);
+        var watch = Stopwatch.StartNew();
 
-        // TODO: if we prevent Notify for externally produced events, we won't be 
-        // able to notify base event subscribers when those events are produced. 
-        //var producer = services.GetService<IObservable<TEvent>>();
-        //if (producer != null)
-        //    throw new NotSupportedException($"Cannot explicitly notify event {type} because it is externally produced by {producer.GetType()}.");
-
-        // We call all subjects that are compatible with
-        // the event type, not just concrete event type subscribers.
-        // Also adds as compatible the dynamic conversion ones.
-        var compatible = compatibleSubjects.GetOrAdd(type, eventType => subjects.Keys
-            .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
-            .Select(subjectEventType => subjects[subjectEventType])
-            .Concat(dynamicSubjects
-                .GetOrAdd(type.FullName, _ => new())
-                .Where(pair => pair.Key != type && pair.Value != null)
-                .Select(pair => pair.Value!))
-            .ToArray());
-
-        foreach (var subject in compatible)
+        try
         {
-            try
+            // TODO: if we prevent Notify for externally produced events, we won't be 
+            // able to notify base event subscribers when those events are produced. 
+            //var producer = services.GetService<IObservable<TEvent>>();
+            //if (producer != null)
+            //    throw new NotSupportedException($"Cannot explicitly notify event {type} because it is externally produced by {producer.GetType()}.");
+
+            // We call all subjects that are compatible with
+            // the event type, not just concrete event type subscribers.
+            // Also adds as compatible the dynamic conversion ones.
+            var compatible = compatibleSubjects.GetOrAdd(type, eventType => subjects.Keys
+                .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
+                .Select(subjectEventType => subjects[subjectEventType])
+                .Concat(dynamicSubjects
+                    .GetOrAdd(type.FullName, _ => new())
+                    .Where(pair => pair.Key != type && pair.Value != null)
+                    .Select(pair => pair.Value!))
+                .ToArray());
+
+            foreach (var subject in compatible)
             {
-                subject.OnNext(e);
+                try
+                {
+                    subject.OnNext(e);
+                }
+                catch (Exception ex)
+                {
+                    activity.RecordException(ex);
+                    // TODO: should we swallow the exception and remove the 
+                    // failing subscribers?
+                    // Rethrow original exception to preserve stacktrace.
+                    ExceptionDispatchInfo.Capture(ex).Throw();
+                    throw;
+                }
             }
-            catch (Exception ex)
-            {
-                activity.RecordException(ex);
-                // TODO: should we swallow the exception and remove the 
-                // failing subscribers?
-                // Rethrow original exception to preserve stacktrace.
-                ExceptionDispatchInfo.Capture(ex).Throw();
-                throw;
-            }
+        }
+        finally
+        {
+            Publishing.Record(watch.ElapsedMilliseconds, new Tag("Event", type.FullName));
         }
     }
 
@@ -487,8 +497,18 @@ public class MessageBus : IMessageBus
         var handler = services.GetService<ICommandHandler<TCommand>>();
         if (handler != null)
         {
-            handler.Execute(command);
-            return;
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                handler.Execute(command);
+                return;
+            }
+            finally
+            {
+                Processing.Record(watch.ElapsedMilliseconds,
+                    new Tag("Command", typeof(TCommand).FullName),
+                    new Tag("Handler", handler.GetType().FullName));
+            }
         }
 
         // See if we can convert from the TCommand to a compatible type with 
@@ -509,7 +529,17 @@ public class MessageBus : IMessageBus
         var handler = services.GetService<IAsyncCommandHandler<TCommand>>();
         if (handler != null)
         {
-            return handler.ExecuteAsync(command, cancellation);
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                return handler.ExecuteAsync(command, cancellation);
+            }
+            finally
+            {
+                Processing.Record(watch.ElapsedMilliseconds,
+                    new Tag("Command", typeof(TCommand).FullName),
+                    new Tag("Handler", handler.GetType().FullName));
+            }
         }
 
         // See if we can convert from the TCommand to a compatible type with 
@@ -528,7 +558,19 @@ public class MessageBus : IMessageBus
     {
         var handler = services.GetService<ICommandHandler<TCommand, TResult>>();
         if (handler != null)
-            return handler.Execute(command);
+        {
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                return handler.Execute(command);
+            }
+            finally
+            {
+                Processing.Record(watch.ElapsedMilliseconds,
+                    new Tag("Command", typeof(TCommand).FullName),
+                    new Tag("Handler", handler.GetType().FullName));
+            }
+        }
 
         // See if we can convert from the TCommand to a compatible type with 
         // a registered command handler
@@ -546,7 +588,19 @@ public class MessageBus : IMessageBus
     {
         var handler = services.GetService<IAsyncCommandHandler<TCommand, TResult>>();
         if (handler != null)
-            return handler.ExecuteAsync(command, cancellation);
+        {
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                return handler.ExecuteAsync(command, cancellation);
+            }
+            finally
+            {
+                Processing.Record(watch.ElapsedMilliseconds,
+                    new Tag("Command", typeof(TCommand).FullName),
+                    new Tag("Handler", handler.GetType().FullName));
+            }
+        }
 
         // See if we can convert from the TCommand to a compatible type with 
         // a registered command handler

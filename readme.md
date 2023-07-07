@@ -231,6 +231,41 @@ negatively impacting run-time app startup, via the dependency on
 This also ensures that all proper service interfaces are registered for the various 
 components.
 
+### Telemetry and Monitoring
+
+The core implementation of the `IMessageBus` is instrumented with `ActivitySource` and 
+`Metric`, providing out of the box support for [Open Telemetry](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs)-based monitoring, as well 
+as via [dotnet trace](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace) 
+and [dotnet counters](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters).
+
+To export telemetry using [Open Telemetry](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs), 
+for example:
+
+```csharp
+using var tracer = Sdk
+    .CreateTracerProviderBuilder()
+    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("ConsoleApp"))
+    .AddSource(source.Name)
+    .AddSource("Merq.Core")
+    .AddSource("Merq.AutoMapper")
+    .AddConsoleExporter()
+    .AddZipkinExporter()
+    .AddAzureMonitorTraceExporter(o => o.ConnectionString = config["AppInsights"])
+    .Build();
+```
+
+Collecting traces via [dotnet-trace](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace):
+
+```shell
+dotnet trace collect --name [PROCESS_NAME] --providers="Microsoft-Diagnostics-DiagnosticSource:::FilterAndPayloadSpecs=[AS]Merq,System.Diagnostics.Metrics:::Metrics=Merq"
+```
+
+Monitoring metrics via [dotnet-counters](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-counters):
+
+```shell
+dotnet counters monitor --process-id [PROCESS_ID] --counters Merq
+```
+
 ## Duck Typing Support
 
 <!-- #duck -->

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using static Merq.Telemetry;
 
 namespace System.Reactive.Subjects;
