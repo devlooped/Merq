@@ -39,9 +39,9 @@ using var listener = new ActivityListener
 {
     ActivityStarted = activity => MarkupLine($"[grey]Activity started: {activity.OperationName}[/]"),
     ActivityStopped = activity => MarkupLine($"[grey]Activity stopped: {activity.OperationName}[/]"),
+    Sample = (ref ActivityCreationOptions<ActivityContext> options) => options.Source.Name == "Merq" ? ActivitySamplingResult.AllData : ActivitySamplingResult.None,
     ShouldListenTo = source => source.Name == "Merq",
 };
-
 ActivitySource.AddActivityListener(listener);
 
 // Setup OpenTelemetry: https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs
