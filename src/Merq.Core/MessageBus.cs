@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -183,14 +184,11 @@ public class MessageBus : IMessageBus
         return FindCommandMapper(type, out _) is not null;
     });
 
-    /// <summary>
-    /// Executes the given synchronous command.
-    /// </summary>
-    /// <param name="command">The command parameters for the execution.</param>
-    public void Execute(ICommand command)
+    /// <inheritdoc/>
+    public void Execute(ICommand command, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartCommandActivity(type, command);
+        using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
 
         try
         {
@@ -213,16 +211,11 @@ public class MessageBus : IMessageBus
         }
     }
 
-    /// <summary>
-    /// Executes the given synchronous command and returns a result from it.
-    /// </summary>
-    /// <typeparam name="TResult">The return type of the command execution.</typeparam>
-    /// <param name="command">The command parameters for the execution.</param>
-    /// <returns>The result of executing the command.</returns>
-    public TResult Execute<TResult>(ICommand<TResult> command)
+    /// <inheritdoc/>
+    public TResult Execute<TResult>(ICommand<TResult> command, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartCommandActivity(type, command);
+        using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
 
         try
         {
@@ -245,15 +238,11 @@ public class MessageBus : IMessageBus
         }
     }
 
-    /// <summary>
-    /// Executes the given asynchronous command.
-    /// </summary>
-    /// <param name="command">The command parameters for the execution.</param>
-    /// <param name="cancellation">Cancellation token to cancel command execution.</param>
-    public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default)
+    /// <inheritdoc/>
+    public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartCommandActivity(type, command);
+        using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
 
         try
         {
@@ -276,17 +265,11 @@ public class MessageBus : IMessageBus
         }
     }
 
-    /// <summary>
-    /// Executes the given asynchronous command and returns a result from it.
-    /// </summary>
-    /// <typeparam name="TResult">The return type of the command execution.</typeparam>
-    /// <param name="command">The command parameters for the execution.</param>
-    /// <param name="cancellation">Cancellation token to cancel command execution.</param>
-    /// <returns>The result of executing the command.</returns>
-    public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default)
+    /// <inheritdoc/>
+    public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
-        using var activity = StartCommandActivity(type, command);
+        using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
 
         try
         {
@@ -309,13 +292,11 @@ public class MessageBus : IMessageBus
         }
     }
 
-    /// <summary>
-    /// Notifies the bus of an event.
-    /// </summary>
-    public void Notify<TEvent>(TEvent e)
+    /// <inheritdoc/>
+    public void Notify<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
-        using var activity = StartEventActivity(type, e);
+        using var activity = StartEventActivity(type, e, callerName, callerFile, callerLine);
         var watch = Stopwatch.StartNew();
 
         try
@@ -342,7 +323,7 @@ public class MessageBus : IMessageBus
             {
                 try
                 {
-                    subject.OnNext(e);
+                    subject.OnNext(e, callerName, callerFile, callerLine);
                 }
                 catch (Exception ex)
                 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using System.Runtime.CompilerServices;
 
 namespace Merq;
 
@@ -44,12 +43,13 @@ static class Telemetry
     //          NOTE: this is not an entirely satisfactory way to tell events from commands apart.
     public const string Process = "process";
 
-    public static Activity? StartCommandActivity(Type type, object command) => StartActivity(type, Process, "Command", command);
+    public static Activity? StartCommandActivity(Type type, object command, string? callerName, string? callerFile, int? callerLine)
+        => StartActivity(type, Process, callerName, callerFile, callerLine, "Command", command);
 
-    public static Activity? StartEventActivity(Type type, object @event) => StartActivity(type, Publish, "Event", @event);
+    public static Activity? StartEventActivity(Type type, object @event, string? callerName, string? callerFile, int? callerLine)
+        => StartActivity(type, Publish, callerName, callerFile, callerLine, "Event", @event);
 
-    public static Activity? StartActivity(Type type, string operation, string? property = default, object? value = default,
-        [CallerMemberName] string? member = default, [CallerFilePath] string? file = default, [CallerLineNumber] int? line = default)
+    public static Activity? StartActivity(Type type, string operation, string? callerName, string? callerFile, int? callerLine, string? property = default, object? value = default)
     {
         if (operation == Publish)
             events.Add(1, new KeyValuePair<string, object?>("Name", type.FullName));
@@ -61,9 +61,9 @@ static class Telemetry
         // The event/command is the destination in our case, and the operation distinguishes
         // events (publish/receive operations) from commands (process operation).
         var activity = tracer.CreateActivity($"{type.FullName} {operation}", ActivityKind.Producer)
-            ?.SetTag("code.function", member)
-            ?.SetTag("code.filepath", file)
-            ?.SetTag("code.lineno", line)
+            ?.SetTag("code.function", callerName)
+            ?.SetTag("code.filepath", callerFile)
+            ?.SetTag("code.lineno", callerLine)
             ?.SetTag("messaging.system", "merq")
             ?.SetTag("messaging.destination.name", type.FullName)
             ?.SetTag("messaging.destination.kind", "topic")
