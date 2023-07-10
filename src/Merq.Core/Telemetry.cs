@@ -34,15 +34,15 @@ static class Telemetry
 
     // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md#operation-names
     // publish:	A message is sent to a destination by a message producer/client.
-    //          This would be the event being published to the bus. Granted 
-    public const string Publish = nameof(Publish);
+    //          This would be the event being published to the bus. 
+    public const string Publish = "publish";
     // receive:	A message is received from a destination by a message consumer/server.
     //          This would be the event being received by an event handler via the OnNext on the Subject.
-    public const string Receive = nameof(Receive);
+    public const string Receive = "receive";
     // process: A message that was previously received from a destination is processed by a message consumer/server.
     //          The "destination" would be the message bus, which would process the execution of the command by invoking a handler.
     //          NOTE: this is not an entirely satisfactory way to tell events from commands apart.
-    public const string Process = nameof(Process);
+    public const string Process = "process";
 
     public static Activity? StartCommandActivity(Type type, object command) => StartActivity(type, Process, "Command", command);
 
@@ -57,10 +57,10 @@ static class Telemetry
             commands.Add(1, new KeyValuePair<string, object?>("Name", type.FullName));
 
         // Span name convention should be: <destination> <operation> (see https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md#span-name)
-        // Requirement is that the destination has low cardinality. In our case, the destination is 
-        // the logical operation being performed, such as "Execute", "Notify" or "Deliver". The 
-        // operation is actually the type being acted on (such as CreateUser -a command- or UserCreated -event).
-        var activity = tracer.CreateActivity($"{operation}/{type.FullName}", ActivityKind.Producer)
+        // Requirement is that the destination has low cardinality.
+        // The event/command is the destination in our case, and the operation distinguishes
+        // events (publish/receive operations) from commands (process operation).
+        var activity = tracer.CreateActivity($"{type.FullName} {operation}", ActivityKind.Producer)
             ?.SetTag("code.function", member)
             ?.SetTag("code.filepath", file)
             ?.SetTag("code.lineno", line)
