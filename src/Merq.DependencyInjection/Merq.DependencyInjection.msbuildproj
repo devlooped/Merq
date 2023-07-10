@@ -15,7 +15,7 @@
     <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" TargetFramework="$(TargetFramework)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
+    <ProjectReference Include="..\Merq.AutoMapper\Merq.AutoMapper.csproj" TargetFramework="$(TargetFramework)" />
     <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
