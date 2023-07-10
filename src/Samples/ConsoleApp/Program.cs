@@ -14,7 +14,6 @@ using static Spectre.Console.AnsiConsole;
 var source = new ActivitySource("ConsoleApp");
 var config = new ConfigurationBuilder()
     .AddUserSecrets(ThisAssembly.Project.UserSecretsId)
-    .AddEnvironmentVariables()
     .Build();
 
 // Initialize services
