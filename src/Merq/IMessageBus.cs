@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters. BOGUS: https://github.com/dotnet/roslyn/issues/16564#issuecomment-1629556744
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
