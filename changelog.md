@@ -1,5 +1,19 @@
 # Changelog
 
+## [v2.0.0-rc.2](https://github.com/devlooped/Merq/tree/v2.0.0-rc.2) (2023-07-10)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.1...v2.0.0-rc.2)
+
+:sparkles: Implemented enhancements:
+
+- Observability: add caller information to main API for improved telemetry [\#102](https://github.com/devlooped/Merq/issues/102)
+- Avoid losing caller information when invoking extension methods [\#104](https://github.com/devlooped/Merq/pull/104) (@kzu)
+- Add caller information to main API for improved telemetry [\#103](https://github.com/devlooped/Merq/pull/103) (@kzu)
+
+:twisted_rightwards_arrows: Merged:
+
+- Add public api analyzers to avoid inadvertent breaking changes [\#105](https://github.com/devlooped/Merq/pull/105) (@kzu)
+
 ## [v2.0.0-rc.1](https://github.com/devlooped/Merq/tree/v2.0.0-rc.1) (2023-07-07)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-beta.4...v2.0.0-rc.1)
