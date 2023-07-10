@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.0.0-rc.3](https://github.com/devlooped/Merq/tree/v2.0.0-rc.3) (2023-07-10)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.2...v2.0.0-rc.3)
+
+:bug: Fixed bugs:
+
+- Fix automapper dependency [\#106](https://github.com/devlooped/Merq/pull/106) (@kzu)
+
 ## [v2.0.0-rc.2](https://github.com/devlooped/Merq/tree/v2.0.0-rc.2) (2023-07-10)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.1...v2.0.0-rc.2)
