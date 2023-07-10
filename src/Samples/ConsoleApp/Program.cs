@@ -90,11 +90,11 @@ catch (NotSupportedException)
 }
 
 // Simulate long-running to collect telemetry from external process
-while (true)
-{
-    bus.Execute(new Library2::Library.Echo($"Hello World {Random.Shared.Next(0, 100)}"));
-    await Task.Delay(500);
-}
+//while (true)
+//{
+//    bus.Execute(new Library2::Library.Echo($"Hello World {Random.Shared.Next(0, 100)}"));
+//    await Task.Delay(500);
+//}
 
 // Test rapid fire messages
 //Parallel.For(0, 10, i 

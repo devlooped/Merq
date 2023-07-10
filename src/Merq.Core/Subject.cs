@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using static Merq.Telemetry;
 
 namespace System.Reactive.Subjects;
@@ -8,7 +9,7 @@ namespace System.Reactive.Subjects;
 // subject.
 abstract class Subject
 {
-    public abstract void OnNext(object value);
+    public abstract void OnNext(object value, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
 }
 
 partial class Subject<T> : Subject
@@ -19,13 +20,13 @@ partial class Subject<T> : Subject
     internal Subject(Func<Type, Type, Func<object, object>?> mapper) : this()
         => this.mapper = mapper;
 
-    public override void OnNext(object value)
+    public override void OnNext(object value, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         // Never attempt to map compatible types.
         if (mapper == null ||
             typeof(T).IsAssignableFrom(value.GetType()))
         {
-            using var activity = StartActivity(typeof(T), Receive);
+            using var activity = StartActivity(typeof(T), Receive, callerName: callerName, callerFile: callerFile, callerLine: callerLine);
             OnNext((T)value);
         }
         else if (maps.GetOrAdd(value.GetType(),
@@ -33,7 +34,7 @@ partial class Subject<T> : Subject
                 obj => (T)map(value) : null)
             is Func<object, T> map)
         {
-            using var activity = StartActivity(typeof(T), Receive);
+            using var activity = StartActivity(typeof(T), Receive, callerName: callerName, callerFile: callerFile, callerLine: callerLine);
             OnNext(map(value));
         }
     }
