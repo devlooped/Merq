@@ -246,8 +246,7 @@ using var tracer = Sdk
     .CreateTracerProviderBuilder()
     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("ConsoleApp"))
     .AddSource(source.Name)
-    .AddSource("Merq.Core")
-    .AddSource("Merq.AutoMapper")
+    .AddSource("Merq")
     .AddConsoleExporter()
     .AddZipkinExporter()
     .AddAzureMonitorTraceExporter(o => o.ConnectionString = config["AppInsights"])
@@ -265,6 +264,10 @@ Monitoring metrics via [dotnet-counters](https://learn.microsoft.com/en-us/dotne
 ```shell
 dotnet counters monitor --process-id [PROCESS_ID] --counters Merq
 ```
+
+Example rendering from the included sample console app:
+
+![dotnet-counters screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/dotnet-counters.png)
 
 ## Duck Typing Support
 
