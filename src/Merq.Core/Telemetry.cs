@@ -71,8 +71,11 @@ static class Telemetry
             ?.SetTag("messaging.protocol.name", type.Assembly.GetName().Name)
             ?.SetTag("messaging.protocol.version", type.Assembly.GetName().Version?.ToString() ?? "unknown");
 
-        if (property != null && value != null)
-            activity?.SetCustomProperty(property, value);
+        if (property != null && value != null &&
+            // Additional optimization so we don't incur allocation of activity custom props storage 
+            // unless someone is actually requesting the data. See https://github.com/open-telemetry/opentelemetry-dotnet/issues/1397 
+            activity?.IsAllDataRequested == true)
+            activity.SetCustomProperty(property, value);
 
         activity?.Start();
 

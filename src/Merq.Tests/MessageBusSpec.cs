@@ -478,7 +478,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
                 if (a.GetTagItem("messaging.destination.name") is "Merq.CommandWithResult")
                     activity = a;
             },
-            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => _.Source.Name == "Merq" ? ActivitySamplingResult.AllData : ActivitySamplingResult.None,
             ShouldListenTo = source => source.Name == "Merq",
         };
 
@@ -497,7 +497,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
         using var listener = new ActivityListener
         {
             ActivityStarted = x => activity = x,
-            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => _.Source.Name == "Merq" ? ActivitySamplingResult.AllData : ActivitySamplingResult.None,
             ShouldListenTo = source => source.Name == "Merq",
         };
 
