@@ -447,10 +447,14 @@ public record MessageBusSpec(ITestOutputHelper Output)
     [Fact]
     public void when_notifying_can_access_event_from_activity_stop()
     {
-        object? e = default;
+        Activity? activity = default;
         using var listener = new ActivityListener
         {
-            ActivityStopped = activity => e = activity.GetCustomProperty("Event"),
+            ActivityStopped = a =>
+            {
+                if (a.GetTagItem("messaging.destination.name") is "Merq.ConcreteEvent")
+                    activity = a;
+            },
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
             ShouldListenTo = source => source.Name == "Merq",
         };
@@ -459,26 +463,31 @@ public record MessageBusSpec(ITestOutputHelper Output)
 
         bus.Notify(new ConcreteEvent());
 
-        Assert.NotNull(e);
-        Assert.IsType<ConcreteEvent>(e);
+        Assert.NotNull(activity);
+        Assert.IsType<ConcreteEvent>(activity.GetCustomProperty("Event"));
     }
 
     [Fact]
-    public void when_executing_can_access_event_from_activity_stop()
+    public void when_executing_can_access_command_from_activity_started()
     {
-        object? c = default;
+        Activity? activity = default;
         using var listener = new ActivityListener
         {
-            ActivityStopped = activity => c = activity.GetCustomProperty("Command"),
+            ActivityStarted = a =>
+            {
+                if (a.GetTagItem("messaging.destination.name") is "Merq.CommandWithResult")
+                    activity = a;
+            },
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
             ShouldListenTo = source => source.Name == "Merq",
         };
 
         ActivitySource.AddActivityListener(listener);
 
-        Assert.Throws<InvalidOperationException>(() => bus.Execute(new Command()));
+        Assert.Throws<InvalidOperationException>(() => bus.Execute(new CommandWithResult()));
 
-        Assert.NotNull(c);
+        Assert.NotNull(activity);
+        Assert.IsType<CommandWithResult>(activity.GetCustomProperty("Command"));
     }
 
     [Fact]
