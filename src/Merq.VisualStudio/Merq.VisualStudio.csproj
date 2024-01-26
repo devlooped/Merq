@@ -13,6 +13,7 @@
     <PackageReference Include="System.ComponentModel.Composition" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" />
     <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" />
   </ItemGroup>
 
   <ItemGroup>

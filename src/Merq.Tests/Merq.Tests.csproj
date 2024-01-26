@@ -32,6 +32,7 @@
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" />
   </ItemGroup>
 
   <ItemGroup>
