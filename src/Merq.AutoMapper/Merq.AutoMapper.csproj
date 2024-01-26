@@ -16,6 +16,7 @@
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
