@@ -180,6 +180,51 @@ as a validation mechanism via `CanExecute<T>`, as shown above in the `FindDocume
 Commands can notify new events, and event observers/subscribers can in turn 
 execute commands.
 
+## Analyzers and Code Fixes
+
+Beyond the compiler complaining, *Merq* also provides a set of analyzers and 
+code fixes to learn the patterns and avoid common mistakes. For example, if you
+created a simple record to use as a command, such as:
+
+```csharp
+public record Echo(string Message);
+```
+
+And then tried to implement a command handler for it:
+
+```csharp
+public class EchoHandler : ICommandHandler<Echo>
+{
+}
+```
+
+the compiler would immediately complain about various contraints and interfaces 
+that aren't satisfied due to the requirements on the `Echo` type itself. For 
+a seasoned *Merq* developer, this is a no-brainer, but for new developers, 
+it can be a bit puzzling:
+
+![compiler warnings screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/command-interfaces.png)
+
+A code fix is provided to automatically implement the required interfaces 
+in this case:
+
+![code fix to implement ICommand screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/implement-icommand.png)
+
+Likewise, if a consumer attempted to invoke the above `Echo` command asynchronously 
+(known as the [async over sync anti-pattern](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/)), 
+they would get a somewhat unintuitive compiler error:
+
+![error executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command.png)
+
+But the second error is more helpful, since it points to the actual problem, 
+and a code fix can be applied to resolve it:
+
+![code fix for executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command-fix.png)
+
+The same analyzers and code fixes are provided for the opposite anti-pattern, 
+known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/), 
+where a synchronous command is executed asynchronously.
+
 <!-- #core -->
 
 ## Message Bus
@@ -208,6 +253,7 @@ bus.Execute(new MyCommand());
 bus.Observe<MyEvent>().Subscribe(e => Console.WriteLine(e.Message));
 ```
 
+
 <!-- #implementation -->
 
 When using [dependency injection for .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection), 
@@ -218,18 +264,29 @@ provides a simple mechanism for registering the message bus:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 ...
-// Automatically add the message bus and all command handlers and 
-// event producers in the current project and any dependencies
-// The enableAutoMapping parameter enables duck typing for events and commands
-// across assemblies
-builder.Services.AddMessageBus(enableAutoMapping: false);
+builder.Services.AddMessageBus();
 ```
 
-The `AddMessageBus` extension method leverages compile-time code generation to avoid 
-negatively impacting run-time app startup, via the dependency on 
-[Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
-This also ensures that all proper service interfaces are registered for the various 
-components.
+All command handlers and event producers need to be registered with the 
+services collection as usual, using the main interface for the component, 
+such as `ICommandHandler<T>`. 
+
+To drastically simplify registration of handlers and producers, we 
+recommend the [Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
+package, which provides a simple attribute-based mechanism for automatically 
+emitting at compile-time the required service registrations for all types 
+marked with the provided `[Service]` attribute, which also allows setting the 
+component lifetime, such as `[Service(ServiceLifetime.Transient)]`.
+
+This allows to simply mark all command handlers and event producers as 
+`[Service]` and then register them all with a single line of code:
+
+```csharp
+builder.Services.AddServices();
+```
+
+In addition, the service bus can also be instantiated directly with 
+`new MessageBus(serviceProvider)`.
 
 ### Telemetry and Monitoring
 
@@ -281,10 +338,18 @@ operations with it (like `Observe` an event and `Execute` a command), in a "duck
 As long as the types' full name match, the conversion will happen automatically. Since this 
 functionality isn't required in many scenarios, and since there are a myriad ways to implement 
 such an object mapping functionality, the `Merq.Core` package only provides the hooks to enable 
-this, but does not provide any built-in implementation for it.
+this, but does not provide any built-in implementation for it. In other words, no duck typing 
+is performed by default.
 
 The [Merq.AutoMapper](https://www.nuget.org/packages/Merq.AutoMapper) package provides one such 
-implementation, based on the excelent [AutoMapper](https://automapper.org/) library.
+implementation, based on the excelent [AutoMapper](https://automapper.org/) library. It can be 
+registered with the DI container as follows:
+
+```csharp
+builder.Services.AddMessageBus<AutoMapperMessageBus>();
+// register all services, including handlers and producers
+builder.Services.AddServices();
+```
 
 <!-- #duck -->
 
@@ -292,12 +357,12 @@ implementation, based on the excelent [AutoMapper](https://automapper.org/) libr
 
 # Dogfooding
 
-[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Devlooped.Merq/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.dev/vpre/Devlooped.Merq/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.dev/index.json)
 [![Build](https://github.com/devlooped/Merq/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/Merq/actions)
 
 We also produce CI packages from branches and pull requests so you can dogfood builds as quickly as they are produced. 
 
-The CI feed is `https://pkg.kzu.io/index.json`. 
+The CI feed is `https://pkg.kzu.dev/index.json`. 
 
 The versioning scheme for packages is:
 
