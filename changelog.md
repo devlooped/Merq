@@ -1,5 +1,18 @@
 # Changelog
 
+## [v2.0.0-rc.4](https://github.com/devlooped/Merq/tree/v2.0.0-rc.4) (2024-01-27)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.3...v2.0.0-rc.4)
+
+:sparkles: Implemented enhancements:
+
+- Switch to central package versions [\#111](https://github.com/devlooped/Merq/pull/111) (@kzu)
+- Only set activity custom property when sampling AllData [\#107](https://github.com/devlooped/Merq/pull/107) (@kzu)
+
+:hammer: Other:
+
+- Switch to central package versions now that floating versions are supported [\#110](https://github.com/devlooped/Merq/issues/110)
+
 ## [v2.0.0-rc.3](https://github.com/devlooped/Merq/tree/v2.0.0-rc.3) (2023-07-10)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.2...v2.0.0-rc.3)
