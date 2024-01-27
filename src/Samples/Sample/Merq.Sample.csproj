@@ -13,8 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Merq\Merq.csproj" />
-    <ProjectReference Include="..\..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

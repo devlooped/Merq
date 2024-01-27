@@ -13,11 +13,15 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Pack="false" />
     <PackageReference Include="PolySharp" Pack="false" />
-    <PackageReference Include="Superpower" PrivateAssets="all" />
+    <PackageReference Include="Superpower" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReferenceCopyLocalPaths Include="$(PkgSuperpower)\lib\netstandard2.0\Superpower.dll" />
   </ItemGroup>
 
 </Project>

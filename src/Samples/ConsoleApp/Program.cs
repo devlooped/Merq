@@ -46,6 +46,7 @@ using var listener = new ActivityListener
 };
 ActivitySource.AddActivityListener(listener);
 
+
 // Setup OpenTelemetry: https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs
 using var tracer = Sdk
     .CreateTracerProviderBuilder()
@@ -55,7 +56,13 @@ using var tracer = Sdk
     .AddSource("Merq.AutoMapper")
     .AddConsoleExporter()
     .AddZipkinExporter()
-    .AddAzureMonitorTraceExporter(o => o.ConnectionString = config["AppInsights"])
+    .AddAzureMonitorTraceExporter(o =>
+    {
+        if (string.IsNullOrEmpty(config["AppInsights"]))
+            MarkupLine("[red]AppInsights instrumentation key not found. Set `AppInsights` user secret.[/]");
+        else
+            o.ConnectionString = config["AppInsights"];
+    })
     .Build();
 
 MarkupLine("[yellow]Executing with command from same assembly[/]");
@@ -83,6 +90,7 @@ WriteLine(message);
 
 try
 {
+    MarkupLine("[yellow]Showcase error telemetry with invalid empty message[/]");
     using var _ = source.StartActivity("Error");
     // Showcase error telemetry
     bus.Execute(new Library1::Library.Echo(""));
