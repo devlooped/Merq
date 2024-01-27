@@ -69,6 +69,13 @@ void OnItemShipped(ItemShipped e) => // Refresh item status
 public void Dispose() => subscription.Dispose();
 ```
 
+In addition to event producers just invoking `Notify`, they can also be 
+implemented as `IObservable<TEvent>` directly, which is useful when the
+producer is itself an observable sequence. 
+
+Both features integrate seamlessly and leverage all the power of 
+[Reactive Extensions](https://github.com/dotnet/reactive).
+
 
 ## Commands
 
