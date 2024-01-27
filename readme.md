@@ -81,6 +81,15 @@ record CancelOrder(string OrderId) : IAsyncCommand;
 Unlike events, command messages need to signal the invocation style they require 
 for execution:
 
+| Scenario | Interface | Invocation |
+| --- | --- | --- |
+| void synchronous command | `ICommand` | `IMessageBus.Execute(command)` |
+| value-returning synchronous command | `ICommand<TResult>` | `var result = await IMessageBus.Execute(command)` |
+| void asynchronous command | `IAsyncCommand` | `await IMessageBus.ExecuteAsync(command)` |
+| value-returning asynchronous command | `IAsyncCommand<TResult>` | `var result = await IMessageBus.ExecuteAsync(command)` |
+
+The above command can be executed using the following code:
+
 ```csharp
 // perhaps a method invoked when a user 
 // clicks/taps a Cancel button next to an order
@@ -103,17 +112,6 @@ void OnSignOut() => bus.Execute(new SignOut());
 // or alternatively, for void commands that have no additional data:
 void OnSignOut() => bus.Execute<SignOut>();
 ```
-
-There are also `ICommand<TResult>` and `IAsyncCommand<TResult>` interfaces 
-to signal that the execution produces a result.
-
-While these marker interfaces on the command messages might seem unnecessary, 
-they are actually quite important. They solve a key problem that execution
-abstractions face: whether a command execution is synchronous or asynchronous 
-(as well as void or value-returning) should *not* be abstracted away since 
-otherwise you can end up in two common anti-patterns (i.e. [async guidelines for ASP.NET](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md)), 
-known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/) and 
-[async over sync](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/).
 
 The marker interfaces on the command messages drive the compiler to only allow 
 the right invocation style on the message bus, as defined by the command author:
@@ -156,9 +154,18 @@ IEnumerable<string> files = await bus.ExecuteAsync(new FindDocuments("*.json"));
 
 If the consumer tries to use `Execute`, the compiler will complain that the 
 command does not implement `ICommand<TResult>`, which is the synchronous version 
-of the marker interface. Likewise, mistakes cannot be made when implementing the 
-handler, since the handler interfaces define constraints on what the commands must 
-implement:
+of the marker interface. 
+
+While these marker interfaces on the command messages might seem unnecessary, 
+they are actually quite important. They solve a key problem that execution
+abstractions face: whether a command execution is synchronous or asynchronous 
+(as well as void or value-returning) should *not* be abstracted away since 
+otherwise you can end up in two common anti-patterns (i.e. [async guidelines for ASP.NET](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md)), 
+known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/) and 
+[async over sync](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/).
+
+Likewise, mistakes cannot be made when implementing the handler, since the 
+handler interfaces define constraints on what the commands must implement:
 
 ```csharp
 // sync
@@ -203,23 +210,23 @@ that aren't satisfied due to the requirements on the `Echo` type itself. For
 a seasoned *Merq* developer, this is a no-brainer, but for new developers, 
 it can be a bit puzzling:
 
-![compiler warnings screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/command-interfaces.png)
+![compiler warnings screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/command-interfaces.png?raw=true)
 
 A code fix is provided to automatically implement the required interfaces 
 in this case:
 
-![code fix to implement ICommand screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/implement-icommand.png)
+![code fix to implement ICommand screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/implement-icommand.png?raw=true)
 
 Likewise, if a consumer attempted to invoke the above `Echo` command asynchronously 
 (known as the [async over sync anti-pattern](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/)), 
 they would get a somewhat unintuitive compiler error:
 
-![error executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command.png)
+![error executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command.png?raw=true)
 
 But the second error is more helpful, since it points to the actual problem, 
 and a code fix can be applied to resolve it:
 
-![code fix for executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command-fix.png)
+![code fix for executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command-fix.png?raw=true)
 
 The same analyzers and code fixes are provided for the opposite anti-pattern, 
 known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/), 
@@ -269,7 +276,7 @@ builder.Services.AddMessageBus();
 
 All command handlers and event producers need to be registered with the 
 services collection as usual, using the main interface for the component, 
-such as `ICommandHandler<T>`. 
+such as `ICommandHandler<T>` and `IObservable<TEvent>`.
 
 To drastically simplify registration of handlers and producers, we 
 recommend the [Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
@@ -284,9 +291,6 @@ This allows to simply mark all command handlers and event producers as
 ```csharp
 builder.Services.AddServices();
 ```
-
-In addition, the service bus can also be instantiated directly with 
-`new MessageBus(serviceProvider)`.
 
 ### Telemetry and Monitoring
 
