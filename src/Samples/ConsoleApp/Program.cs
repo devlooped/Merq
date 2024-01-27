@@ -18,8 +18,10 @@ var config = new ConfigurationBuilder()
 
 // Initialize services
 var collection = new ServiceCollection();
+// Add automapping message bus
+collection.AddMessageBus<AutoMapperMessageBus>();
 // Library1 contains [Service]-annotated classes, which will be automatically registered here.
-collection.AddMessageBus(addDiscoveredServices: true, enableAutoMapping: true);
+collection.AddServices();
 
 // Showcase collecting telemetry from external process
 // Usage:
