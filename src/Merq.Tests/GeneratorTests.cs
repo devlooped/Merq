@@ -14,7 +14,7 @@ public record GeneratorTests(ITestOutputHelper Output)
     {
         var collection = new ServiceCollection();
 
-        collection.AddMessageBus();
+        collection.AddMessageBus().AddServices();
 
         var services = collection.BuildServiceProvider();
 
@@ -26,7 +26,7 @@ public record GeneratorTests(ITestOutputHelper Output)
     {
         var collection = new ServiceCollection();
 
-        collection.AddMessageBus();
+        collection.AddMessageBus().AddServices();
 
         var services = collection.BuildServiceProvider();
 
@@ -41,7 +41,7 @@ public record GeneratorTests(ITestOutputHelper Output)
     {
         var collection = new ServiceCollection();
 
-        collection.AddMessageBus();
+        collection.AddMessageBus().AddServices();
 
         var services = collection.BuildServiceProvider();
 
@@ -56,7 +56,7 @@ public record GeneratorTests(ITestOutputHelper Output)
     {
         var collection = new ServiceCollection();
 
-        collection.AddMessageBus();
+        collection.AddMessageBus().AddServices();
 
         var services = collection.BuildServiceProvider();
 
@@ -77,7 +77,7 @@ public record GeneratorTests(ITestOutputHelper Output)
     {
         var collection = new ServiceCollection();
 
-        collection.AddMessageBus();
+        collection.AddMessageBus().AddServices();
 
         var services = collection.BuildServiceProvider();
 
