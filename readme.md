@@ -217,23 +217,23 @@ that aren't satisfied due to the requirements on the `Echo` type itself. For
 a seasoned *Merq* developer, this is a no-brainer, but for new developers, 
 it can be a bit puzzling:
 
-![compiler warnings screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/command-interfaces.png?raw=true)
+![compiler warnings screenshot](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/command-interfaces.png)
 
 A code fix is provided to automatically implement the required interfaces 
 in this case:
 
-![code fix to implement ICommand screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/implement-icommand.png?raw=true)
+![code fix to implement ICommand screenshot](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/implement-icommand.png)
 
 Likewise, if a consumer attempted to invoke the above `Echo` command asynchronously 
 (known as the [async over sync anti-pattern](https://devblogs.microsoft.com/pfxteam/should-i-expose-asynchronous-wrappers-for-synchronous-methods/)), 
 they would get a somewhat unintuitive compiler error:
 
-![error executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command.png?raw=true)
+![error executing sync command as async](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/async-sync-command.png)
 
 But the second error is more helpful, since it points to the actual problem, 
 and a code fix can be applied to resolve it:
 
-![code fix for executing sync command as async](https://github.com/devlooped/Merq/blob/main/assets/img/async-sync-command-fix.png?raw=true)
+![code fix for executing sync command as async](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/async-sync-command-fix.png)
 
 The same analyzers and code fixes are provided for the opposite anti-pattern, 
 known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/), 
@@ -341,7 +341,7 @@ dotnet counters monitor --process-id [PROCESS_ID] --counters Merq
 
 Example rendering from the included sample console app:
 
-![dotnet-counters screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/dotnet-counters.png?raw=true)
+![dotnet-counters screenshot](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/dotnet-counters.png)
 
 ## Duck Typing Support
 
