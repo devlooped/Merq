@@ -88,7 +88,7 @@ for execution:
 | void asynchronous command | `IAsyncCommand` | `await IMessageBus.ExecuteAsync(command)` |
 | value-returning asynchronous command | `IAsyncCommand<TResult>` | `var result = await IMessageBus.ExecuteAsync(command)` |
 
-The above command can be executed using the following code:
+The sample command shown before can be executed using the following code:
 
 ```csharp
 // perhaps a method invoked when a user 
@@ -276,14 +276,20 @@ builder.Services.AddMessageBus();
 
 All command handlers and event producers need to be registered with the 
 services collection as usual, using the main interface for the component, 
-such as `ICommandHandler<T>` and `IObservable<TEvent>`.
+such as `ICommandHandler<T>` and `IObservable<TEvent>`. 
+
+> NOTE: *Merq* makes no assumptions about the lifetime of the registered 
+> components, so it's up to the consumer to register them with the desired
+> lifetime.
 
 To drastically simplify registration of handlers and producers, we 
 recommend the [Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
 package, which provides a simple attribute-based mechanism for automatically 
 emitting at compile-time the required service registrations for all types 
 marked with the provided `[Service]` attribute, which also allows setting the 
-component lifetime, such as `[Service(ServiceLifetime.Transient)]`.
+component lifetime, such as `[Service(ServiceLifetime.Transient)]` (default 
+lifetime is `ServiceLifetime.Singleton` for this source generator-based 
+package).
 
 This allows to simply mark all command handlers and event producers as 
 `[Service]` and then register them all with a single line of code:
@@ -328,7 +334,7 @@ dotnet counters monitor --process-id [PROCESS_ID] --counters Merq
 
 Example rendering from the included sample console app:
 
-![dotnet-counters screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/dotnet-counters.png)
+![dotnet-counters screenshot](https://github.com/devlooped/Merq/blob/main/assets/img/dotnet-counters.png?raw=true)
 
 ## Duck Typing Support
 
