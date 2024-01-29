@@ -34,6 +34,7 @@ public record MessageBusSpec(ITestOutputHelper Output)
             .AddSingleton<ICanExecute<StreamCommand>>(handler)
             .BuildServiceProvider());
 
+        Assert.True(bus.CanHandle(command));
         Assert.True(bus.CanExecute(command));
 
         var values = new List<int>();
