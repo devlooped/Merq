@@ -10,6 +10,8 @@
     <Description>
       Interfaces for authoring loosely coupled components that communicate via command and event messages within an application.
     </Description>
+    <!-- We introduce new breaking changes in main interface, this is expected for a major version -->
+    <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
 
   <ItemGroup>
