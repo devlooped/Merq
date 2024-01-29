@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.0.0-rc.6](https://github.com/devlooped/Merq/tree/v2.0.0-rc.6) (2024-01-29)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.5...v2.0.0-rc.6)
+
+:sparkles: Implemented enhancements:
+
+- Add support for async streams from command execution [\#114](https://github.com/devlooped/Merq/pull/114) (@kzu)
+
 ## [v2.0.0-rc.5](https://github.com/devlooped/Merq/tree/v2.0.0-rc.5) (2024-01-27)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.4...v2.0.0-rc.5)
