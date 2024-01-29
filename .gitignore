@@ -4,7 +4,8 @@ obj
 artifacts
 pack
 TestResults
-BenchmarkDotNet.Artifacts	
+results
+BenchmarkDotNet.Artifacts
 .vs
 .vscode
 .idea
