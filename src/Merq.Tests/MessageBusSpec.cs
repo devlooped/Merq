@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,63 @@ partial record Foo { }
 public record MessageBusSpec(ITestOutputHelper Output)
 {
     readonly IMessageBus bus = new MessageBus(new ServiceCollection().BuildServiceProvider());
+
+#if NET6_0_OR_GREATER
+
+    [Fact]
+    public async Task when_executing_stream_then_gets_results()
+    {
+        var handler = new StreamCommandHandler();
+        var command = new StreamCommand(3);
+
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<IStreamCommandHandler<StreamCommand, int>>(handler)
+            .AddSingleton<ICanExecute<StreamCommand>>(handler)
+            .BuildServiceProvider());
+
+        Assert.True(bus.CanExecute(command));
+
+        var values = new List<int>();
+
+        await foreach (var value in bus.ExecuteStream(command, CancellationToken.None))
+            values.Add(value);
+
+        Assert.Equal(new[] { 0, 1, 2 }, values);
+    }
+
+    [Fact]
+    public async Task when_executing_stream_then_can_cancel_enumeration()
+    {
+        var handler = new StreamCommandHandler();
+        var command = new StreamCommand(3);
+        var cts = new CancellationTokenSource();
+
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton<IStreamCommandHandler<StreamCommand, int>>(handler)
+            .AddSingleton<ICanExecute<StreamCommand>>(handler)
+            .BuildServiceProvider());
+
+        Assert.True(bus.CanExecute(command));
+
+        var values = new List<int>();
+
+        try
+        {
+            await foreach (var value in bus.ExecuteStream(command, cts.Token))
+            {
+                values.Add(value);
+                if (values.Count == 2)
+                    cts.Cancel();
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+
+        Assert.Equal(new[] { 0, 1 }, values);
+    }
+
+#endif
 
     [Fact]
     public void when_subscribing_external_producer_then_succeeds()
@@ -510,4 +568,25 @@ public record MessageBusSpec(ITestOutputHelper Output)
     }
 
     class NestedEvent { }
+
+#if NET6_0_OR_GREATER
+    public record StreamCommand(int Count) : IStreamCommand<int>;
+
+    class StreamCommandHandler : IStreamCommandHandler<StreamCommand, int>
+    {
+        public bool CanExecute(StreamCommand command) => command.Count > 0;
+
+        public async IAsyncEnumerable<int> ExecuteSteam(StreamCommand command, [EnumeratorCancellation] CancellationToken cancellation)
+        {
+            for (var i = 0; i < command.Count; i++)
+            {
+                //if (cancellation.IsCancellationRequested)
+                //    yield break;
+
+                await Task.Delay(0, cancellation);
+                yield return i;
+            }
+        }
+    }
+#endif
 }

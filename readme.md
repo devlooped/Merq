@@ -94,6 +94,7 @@ for execution:
 | value-returning synchronous command | `ICommand<TResult>` | `var result = await IMessageBus.Execute(command)` |
 | void asynchronous command | `IAsyncCommand` | `await IMessageBus.ExecuteAsync(command)` |
 | value-returning asynchronous command | `IAsyncCommand<TResult>` | `var result = await IMessageBus.ExecuteAsync(command)` |
+| async stream command | `IStreamCommand<TResult>` | `await foreach(var item in IMessageBus.ExecuteStream(command))` |
 
 The sample command shown before can be executed using the following code:
 
@@ -134,6 +135,8 @@ public interface IMessageBus
     Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
     // async value-returning
     Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
+    // async stream
+    IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation);
 }
 ```
 
@@ -182,6 +185,9 @@ public interface ICommandHandler<in TCommand, out TResult> : ... where TCommand 
 // async
 public interface IAsyncCommandHandler<in TCommand> : ... where TCommand : IAsyncCommand;
 public interface IAsyncCommandHandler<in TCommand, TResult> : ... where TCommand : IAsyncCommand<TResult>
+
+// async stream
+public interface IStreamCommandHandler<in TCommand, out TResult>: ... where TCommand : IStreamCommand<TResult>
 ```
 
 This design choice also makes it impossible to end up executing a command
@@ -193,6 +199,41 @@ as a validation mechanism via `CanExecute<T>`, as shown above in the `FindDocume
 
 Commands can notify new events, and event observers/subscribers can in turn 
 execute commands.
+
+### Async Streams
+
+For .NET6+ apps, *Merq* also supports [async streams](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/generate-consume-asynchronous-stream) 
+as a command invocation style. This is useful for scenarios where the command
+execution produces a potentially large number of results, and the consumer
+wants to process them as they are produced, rather than waiting for the entire
+sequence to be produced.
+
+For example, the filter documents command above could be implemented as an 
+async stream command instead:
+
+```csharp
+record FindDocuments(string Filter) : IStreamCommand<string>;
+
+class FindDocumentsHandler : IStreamCommandHandler<FindDocument, string>
+{
+    public bool CanExecute(FindDocument command) => !string.IsNullOrEmpty(command.Filter);
+    
+    public async IAsyncEnumerable<string> ExecuteAsync(FindDocument command, [EnumeratorCancellation] CancellationToken cancellation)
+    {
+        await foreach (var file in FindFilesAsync(command.Filter, cancellation))
+            yield return file;
+    }
+}
+```
+
+In order to execute such command, the only execute method the compiler will allow 
+is:
+
+```csharp
+await foreach (var file in bus.ExecuteStream(new FindDocuments("*.json")))
+    Console.WriteLine(file);
+```
+
 
 ## Analyzers and Code Fixes
 
