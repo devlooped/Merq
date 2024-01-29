@@ -73,7 +73,7 @@ public class MessageBus : IMessageBus
     readonly IServiceProvider services;
     readonly IServiceCollection? collection;
 
-    // These executors are needed when the commadn types involved are not public. 
+    // These executors are needed when the command types involved are not public. 
     // For the public cases, we just rely on the built-in dynamic dispatching
     readonly ConcurrentDictionary<Type, VoidDispatcher> voidExecutors = new();
     readonly ConcurrentDictionary<Type, VoidAsyncDispatcher> voidAsyncExecutors = new();
@@ -194,15 +194,18 @@ public class MessageBus : IMessageBus
 
         try
         {
-            if (type.IsPublic)
+#if DYNAMIC_DISPATCH
+
+            if (type.IsPublic || type.IsNestedPublic)
                 // For public types, we can use the faster dynamic dispatch approach
                 ExecuteCore((dynamic)command);
             else
+#endif
                 voidExecutors.GetOrAdd(type, type
-                    => (VoidDispatcher)Activator.CreateInstance(
-                        typeof(VoidDispatcher<>).MakeGenericType(type),
-                        this)!)
-                .Execute(command);
+                        => (VoidDispatcher)Activator.CreateInstance(
+                            typeof(VoidDispatcher<>).MakeGenericType(type),
+                            this)!)
+                    .Execute(command);
         }
         catch (Exception e)
         {
@@ -221,9 +224,11 @@ public class MessageBus : IMessageBus
 
         try
         {
-            if (type.IsPublic)
+#if DYNAMIC_DISPATCH
+            if (type.IsPublic || type.IsNestedPublic)
                 // For public types, we can use the faster dynamic dispatch approach
                 return WithResult<TResult>().Execute((dynamic)command);
+#endif
 
             return (TResult)resultExecutors.GetOrAdd(type, type
                     => (ResultDispatcher)Activator.CreateInstance(
@@ -248,10 +253,11 @@ public class MessageBus : IMessageBus
 
         try
         {
-            if (type.IsPublic)
+#if DYNAMIC_DISPATCH
+            if (type.IsPublic || type.IsNestedPublic)
                 // For public types, we can use the faster dynamic dispatch approach
                 return ExecuteAsyncCore((dynamic)command, cancellation);
-
+#endif
             return voidAsyncExecutors.GetOrAdd(type, type
                 => (VoidAsyncDispatcher)Activator.CreateInstance(
                     typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
@@ -275,10 +281,11 @@ public class MessageBus : IMessageBus
 
         try
         {
-            if (type.IsPublic)
+#if DYNAMIC_DISPATCH
+            if (type.IsPublic || type.IsNestedPublic)
                 // For public types, we can use the faster dynamic dispatch approach
                 return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
-
+#endif
             return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
                 => (ResultAsyncDispatcher)Activator.CreateInstance(
                     typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
@@ -303,10 +310,11 @@ public class MessageBus : IMessageBus
 
         try
         {
+#if DYNAMIC_DISPATCH
             if (type.IsPublic || type.IsNestedPublic)
                 // For public types, we can use the faster dynamic dispatch approach
                 return WithResult<TResult>().ExecuteStream((dynamic)command, cancellation);
-
+#endif
             return (IAsyncEnumerable<TResult>)resultAsyncExecutors.GetOrAdd(type, type
                 => (ResultAsyncDispatcher)Activator.CreateInstance(
                     typeof(ResultStreamDispatcher<,>).MakeGenericType(type, typeof(TResult)),
@@ -734,7 +742,8 @@ public class MessageBus : IMessageBus
 
     class VoidDispatcher<TCommand>(MessageBus bus) : VoidDispatcher where TCommand : ICommand
     {
-        public override void Execute(IExecutable command) => bus.ExecuteCore((TCommand)command);
+        public override void Execute(IExecutable command)
+            => bus.ExecuteCore((TCommand)command);
     }
 
     abstract class ResultDispatcher
@@ -744,7 +753,8 @@ public class MessageBus : IMessageBus
 
     class ResultDispatcher<TCommand, TResult>(MessageBus bus) : ResultDispatcher where TCommand : ICommand<TResult>
     {
-        public override object? Execute(IExecutable command) => bus.ExecuteCore<TCommand, TResult>((TCommand)command);
+        public override object? Execute(IExecutable command)
+            => bus.ExecuteCore<TCommand, TResult>((TCommand)command);
     }
 
     abstract class VoidAsyncDispatcher
@@ -754,7 +764,8 @@ public class MessageBus : IMessageBus
 
     class VoidAsyncDispatcher<TCommand>(MessageBus bus) : VoidAsyncDispatcher where TCommand : IAsyncCommand
     {
-        public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation) => bus.ExecuteAsyncCore((TCommand)command, cancellation);
+        public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation)
+            => bus.ExecuteAsyncCore((TCommand)command, cancellation);
     }
 
     abstract class ResultAsyncDispatcher

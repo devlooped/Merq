@@ -10,6 +10,7 @@
       $(Title)
       Only the main application assembly needs to reference this package. Components and extensions can simply reference the interfaces in Merq.
     </Description>
+    <DefineConstants>$(DefineConstants);DYNAMIC_DISPATCH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
