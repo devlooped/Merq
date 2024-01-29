@@ -1,17 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Running;
-using Merq;
 using Microsoft.Extensions.DependencyInjection;
 
-var summary = BenchmarkRunner.Run<MainBenchmark>();
+namespace Merq.PublicVsPrivate;
 
-public class MainBenchmark
+public class Benchmark
 {
-    IMessageBus dibus;
-    IMessageBus corebus;    
+    IMessageBus? bus;
 
-    public MainBenchmark()
+    [GlobalSetup]
+    public void Setup()
     {
         var handler = new MyCommandHandler();
         var nonpublic = new MyInternalCommandHandler();
@@ -22,21 +19,14 @@ public class MainBenchmark
             .AddSingleton<IExecutableCommandHandler<MyInternalCommand>>(nonpublic)
             .AddSingleton<ICommandHandler<MyInternalCommand>>(nonpublic);
 
-        dibus = services.AddMessageBus().BuildServiceProvider().GetRequiredService<IMessageBus>();
-        corebus = new MessageBus(services.BuildServiceProvider());
+        bus = new MessageBus(services.BuildServiceProvider());
     }
 
     [Benchmark]
-    public void CachedDowncastPublicTypes() => dibus.Execute(new MyCommand());
+    public void DynamicDispatchPublicTypes() => bus?.Execute(new MyCommand());
 
     [Benchmark]
-    public void DynamicDispatchPublicTypes() => corebus.Execute(new MyCommand());
-
-    [Benchmark]
-    public void DowncastDINonPublic() => dibus.Execute(new MyInternalCommand());
-
-    [Benchmark]
-    public void DowncastNonPublic() => corebus.Execute(new MyInternalCommand());
+    public void DowncastNonPublic() => bus?.Execute(new MyInternalCommand());
 }
 
 public record MyCommand() : ICommand;
