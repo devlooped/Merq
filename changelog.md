@@ -1,5 +1,21 @@
 # Changelog
 
+## [v2.0.0](https://github.com/devlooped/Merq/tree/v2.0.0) (2024-01-29)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.6...v2.0.0)
+
+:sparkles: Implemented enhancements:
+
+- Allow async enumerable stream results [\#113](https://github.com/devlooped/Merq/issues/113)
+
+:hammer: Other:
+
+- Benchmark dynamic dispatch performance characteristics [\#116](https://github.com/devlooped/Merq/issues/116)
+
+:twisted_rightwards_arrows: Merged:
+
+- Dynamic dispatch benchmarks [\#118](https://github.com/devlooped/Merq/pull/118) (@kzu)
+
 ## [v2.0.0-rc.6](https://github.com/devlooped/Merq/tree/v2.0.0-rc.6) (2024-01-29)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.5...v2.0.0-rc.6)
@@ -110,6 +126,11 @@
 - Add support for duck typing of commands [\#33](https://github.com/devlooped/Merq/issues/33)
 - Add support for duck typing on events [\#31](https://github.com/devlooped/Merq/issues/31)
 - Allow derived message bus implementation to monitor used event contracts [\#19](https://github.com/devlooped/Merq/issues/19)
+- Make duck-typing support pluggable [\#60](https://github.com/devlooped/Merq/pull/60) (@kzu)
+- Provide analyzer + code fix for turning sync command to async and viceversa [\#39](https://github.com/devlooped/Merq/pull/39) (@kzu)
+- Support sync/async execute fixer on returning commands too [\#35](https://github.com/devlooped/Merq/pull/35) (@kzu)
+- Duck typing of events and commands [\#34](https://github.com/devlooped/Merq/pull/34) (@kzu)
+- Allow derived message bus implementation to monitor used event contracts [\#20](https://github.com/devlooped/Merq/pull/20) (@kzu)
 
 :hammer: Other:
 
@@ -120,15 +141,10 @@
 
 - Add pages and oss artifacts [\#62](https://github.com/devlooped/Merq/pull/62) (@kzu)
 - Update to modern color [\#61](https://github.com/devlooped/Merq/pull/61) (@kzu)
-- Make duck-typing support pluggable [\#60](https://github.com/devlooped/Merq/pull/60) (@kzu)
 - Upgrade to centrally managed package versions [\#52](https://github.com/devlooped/Merq/pull/52) (@kzu)
 - Add support for collections in dynamic record creation factories [\#50](https://github.com/devlooped/Merq/pull/50) (@kzu)
 - Add support for hierarchical record creation from generated factories [\#48](https://github.com/devlooped/Merq/pull/48) (@kzu)
 - Add comprehensive tests for analyzers and code fixes [\#46](https://github.com/devlooped/Merq/pull/46) (@kzu)
-- Provide analyzer + code fix for turning sync command to async and viceversa [\#39](https://github.com/devlooped/Merq/pull/39) (@kzu)
-- Support sync/async execute fixer on returning commands too [\#35](https://github.com/devlooped/Merq/pull/35) (@kzu)
-- Duck typing of events and commands [\#34](https://github.com/devlooped/Merq/pull/34) (@kzu)
-- Allow derived message bus implementation to monitor used event contracts [\#20](https://github.com/devlooped/Merq/pull/20) (@kzu)
 - Unified IMessageBus interface [\#16](https://github.com/devlooped/Merq/pull/16) (@kzu)
 - Add dynamic OS matrix [\#15](https://github.com/devlooped/Merq/pull/15) (@kzu)
 
