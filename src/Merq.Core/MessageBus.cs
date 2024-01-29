@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -53,7 +54,7 @@ namespace Merq;
 public class MessageBus : IMessageBus
 {
     static readonly ConcurrentDictionary<Type, Type> handlerTypeMap = new();
-    static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute)) ?? 
+    static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute)) ??
         throw new InvalidOperationException($"{nameof(MessageBus)}.{nameof(CanExecute)} not found");
 
     // All subjects active in the event stream.
@@ -293,6 +294,37 @@ public class MessageBus : IMessageBus
         }
     }
 
+#if NET6_0_OR_GREATER
+    /// <inheritdoc/>
+    public IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    {
+        var type = GetCommandType(command);
+        using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
+
+        try
+        {
+            if (type.IsPublic || type.IsNestedPublic)
+                // For public types, we can use the faster dynamic dispatch approach
+                return WithResult<TResult>().ExecuteStream((dynamic)command, cancellation);
+
+            return (IAsyncEnumerable<TResult>)resultAsyncExecutors.GetOrAdd(type, type
+                => (ResultAsyncDispatcher)Activator.CreateInstance(
+                    typeof(ResultStreamDispatcher<,>).MakeGenericType(type, typeof(TResult)),
+                    this)!)
+                .ExecuteAsync(command, cancellation);
+        }
+        catch (Exception e)
+        {
+            activity.RecordException(e);
+            // Rethrow original exception to preserve stacktrace.
+            ExceptionDispatchInfo.Capture(e).Throw();
+            throw;
+        }
+    }
+#endif
+
+
+
     /// <inheritdoc/>
     public void Notify<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
@@ -420,6 +452,12 @@ public class MessageBus : IMessageBus
                     i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncCommand<>)) is Type iface2)
                 return typeof(IAsyncCommandHandler<,>).MakeGenericType(type, iface2.GetGenericArguments()[0]);
 
+#if NET6_0_OR_GREATER
+            if (type.GetInterfaces().FirstOrDefault(i =>
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IStreamCommand<>)) is Type iface3)
+                return typeof(IStreamCommandHandler<,>).MakeGenericType(type, iface3.GetGenericArguments()[0]);
+#endif
+
             throw new InvalidOperationException($"Type {type} does not implement any command interface.");
         });
     }
@@ -453,7 +491,11 @@ public class MessageBus : IMessageBus
                     generic != typeof(ICommandHandler<>) &&
                     generic != typeof(ICommandHandler<,>) &&
                     generic != typeof(IAsyncCommandHandler<>) &&
-                    generic != typeof(IAsyncCommandHandler<,>))
+                    generic != typeof(IAsyncCommandHandler<,>)
+#if NET6_0_OR_GREATER
+                    && generic != typeof(IStreamCommandHandler<,>)
+#endif
+                    )
                     continue;
 
                 var arg = descriptor.ServiceType.GetGenericArguments()[0];
@@ -596,32 +638,62 @@ public class MessageBus : IMessageBus
         throw new InvalidOperationException($"No service for type '{typeof(IAsyncCommandHandler<TCommand, TResult>)}' has been registered.");
     }
 
+#if NET6_0_OR_GREATER
+    IAsyncEnumerable<TResult> ExecuteStreamCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
+    {
+        var handler = services.GetService<IStreamCommandHandler<TCommand, TResult>>();
+        if (handler != null)
+        {
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                return handler.ExecuteSteam(command, cancellation);
+            }
+            finally
+            {
+                Processing.Record(watch.ElapsedMilliseconds,
+                    new Tag("Command", typeof(TCommand).FullName),
+                    new Tag("Handler", handler.GetType().FullName));
+            }
+        }
+
+        // See if we can convert from the TCommand to a compatible type with 
+        // a registered command handler
+        if (FindCommandMapper(typeof(TCommand), out var commandType) is Func<dynamic, object> factory &&
+            commandType is not null &&
+            factory.Invoke(command) is IStreamCommand<TResult> converted)
+        {
+            return ExecuteStream(converted, cancellation);
+        }
+
+        throw new InvalidOperationException($"No service for type '{typeof(IStreamCommandHandler<TCommand, TResult>)}' has been registered.");
+    }
+#endif
+
     // dynamic dispatch cannot infer TResult from TCommand, so we need to use a generic method
     // that first "sets" the TResult and then use dynamic dispatch on the resulting instance.
     With<TResult> WithResult<TResult>() => new(this);
 
-    readonly struct With<TResult>
+    readonly struct With<TResult>(MessageBus bus)
     {
-        readonly MessageBus bus;
-
-        public With(MessageBus bus) => this.bus = bus;
+        readonly MessageBus bus = bus;
 
         public TResult Execute<TCommand>(TCommand command) where TCommand : ICommand<TResult>
             => bus.ExecuteCore<TCommand, TResult>(command);
 
         public Task<TResult> ExecuteAsync<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
             => bus.ExecuteAsyncCore<TCommand, TResult>(command, cancellation);
+
+#if NET6_0_OR_GREATER
+        public IAsyncEnumerable<TResult> ExecuteStream<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
+            => bus.ExecuteStreamCore<TCommand, TResult>(command, cancellation);
+#endif
     }
 
     #region Event Helpers
 
-    class CompositeObservable<T> : IObservable<T>
+    class CompositeObservable<T>(params IObservable<T>[] observables) : IObservable<T>
     {
-        readonly IObservable<T>[] observables;
-
-        public CompositeObservable(params IObservable<T>[] observables)
-            => this.observables = observables;
-
         public IDisposable Subscribe(IObserver<T> observer)
             => new CompositeDisposable(observables
                 .Select(observable => observable.Subscribe(observer)).ToArray());
@@ -660,12 +732,8 @@ public class MessageBus : IMessageBus
         public abstract void Execute(IExecutable command);
     }
 
-    class VoidDispatcher<TCommand> : VoidDispatcher where TCommand : ICommand
+    class VoidDispatcher<TCommand>(MessageBus bus) : VoidDispatcher where TCommand : ICommand
     {
-        readonly MessageBus bus;
-
-        public VoidDispatcher(MessageBus bus) => this.bus = bus;
-
         public override void Execute(IExecutable command) => bus.ExecuteCore((TCommand)command);
     }
 
@@ -674,12 +742,8 @@ public class MessageBus : IMessageBus
         public abstract object? Execute(IExecutable command);
     }
 
-    class ResultDispatcher<TCommand, TResult> : ResultDispatcher where TCommand : ICommand<TResult>
+    class ResultDispatcher<TCommand, TResult>(MessageBus bus) : ResultDispatcher where TCommand : ICommand<TResult>
     {
-        readonly MessageBus bus;
-
-        public ResultDispatcher(MessageBus bus) => this.bus = bus;
-
         public override object? Execute(IExecutable command) => bus.ExecuteCore<TCommand, TResult>((TCommand)command);
     }
 
@@ -688,12 +752,8 @@ public class MessageBus : IMessageBus
         public abstract Task ExecuteAsync(IExecutable command, CancellationToken cancellation);
     }
 
-    class VoidAsyncDispatcher<TCommand> : VoidAsyncDispatcher where TCommand : IAsyncCommand
+    class VoidAsyncDispatcher<TCommand>(MessageBus bus) : VoidAsyncDispatcher where TCommand : IAsyncCommand
     {
-        readonly MessageBus bus;
-
-        public VoidAsyncDispatcher(MessageBus bus) => this.bus = bus;
-
         public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation) => bus.ExecuteAsyncCore((TCommand)command, cancellation);
     }
 
@@ -702,15 +762,19 @@ public class MessageBus : IMessageBus
         public abstract object ExecuteAsync(IExecutable command, CancellationToken cancellation);
     }
 
-    class ResultAsyncDispatcher<TCommand, TResult> : ResultAsyncDispatcher where TCommand : IAsyncCommand<TResult>
+    class ResultAsyncDispatcher<TCommand, TResult>(MessageBus bus) : ResultAsyncDispatcher where TCommand : IAsyncCommand<TResult>
     {
-        readonly MessageBus bus;
-
-        public ResultAsyncDispatcher(MessageBus bus) => this.bus = bus;
-
         public override object ExecuteAsync(IExecutable command, CancellationToken cancellation)
             => bus.ExecuteAsyncCore<TCommand, TResult>((TCommand)command, cancellation);
     }
+
+#if NET6_0_OR_GREATER
+    class ResultStreamDispatcher<TCommand, TResult>(MessageBus bus) : ResultAsyncDispatcher where TCommand : IStreamCommand<TResult>
+    {
+        public override object ExecuteAsync(IExecutable command, CancellationToken cancellation)
+            => bus.ExecuteStreamCore<TCommand, TResult>((TCommand)command, cancellation);
+    }
+#endif
 
     #endregion
 }

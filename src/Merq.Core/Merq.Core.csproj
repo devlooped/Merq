@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <PackageId>Merq.Core</PackageId>
     <Title>
       Merq: Default Message Bus (Commands + Events) Implementation, for internal application architecture via command and event messages.

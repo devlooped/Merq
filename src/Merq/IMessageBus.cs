@@ -1,5 +1,6 @@
 ﻿#pragma warning disable RS0026 // Do not add multiple public overloads with optional parameters. BOGUS: https://github.com/dotnet/roslyn/issues/16564#issuecomment-1629556744
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -80,6 +81,20 @@ public interface IMessageBus
     /// <param name="callerLine">Optional calling line number, provided by default by the compiler.</param>
     /// <returns>The result of executing the command.</returns>
     Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
+
+#if NET6_0_OR_GREATER
+    /// <summary>
+    /// Executes the given command that returns an async stream of values.
+    /// </summary>
+    /// <typeparam name="TResult">The type of values returned by the async stream.</typeparam>
+    /// <param name="command">The command parameters for the execution.</param>
+    /// <param name="cancellation">Cancellation token to cancel async enumeration.</param>
+    /// <param name="callerName">Optional calling member name, provided by default by the compiler.</param>
+    /// <param name="callerFile">Optional calling file name, provided by default by the compiler.</param>
+    /// <param name="callerLine">Optional calling line number, provided by default by the compiler.</param>
+    /// <returns>The async streaming results from the command execution.</returns>
+    IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
+#endif
 
     /// <summary>
     /// Notifies the bus of an event.

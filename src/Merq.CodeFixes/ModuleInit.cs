@@ -19,10 +19,10 @@ static class ModuleInit
         AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
         {
             var name = new AssemblyName(e.Name);
-            if (name.Name == "Superpower" && 
-                Path.GetDirectoryName(typeof(ModuleInit).Assembly.ManifestModule.FullyQualifiedName) is string dir && 
+            if (name.Name == "Superpower" &&
+                Path.GetDirectoryName(typeof(ModuleInit).Assembly.ManifestModule.FullyQualifiedName) is string dir &&
                 Path.Combine(dir, "Superpower.dll") is string path &&
-                File.Exists(path) && 
+                File.Exists(path) &&
                 Assembly.LoadFrom(path) is Assembly asm)
             {
                 return asm;

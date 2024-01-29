@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <PackageId>Merq</PackageId>
+    <LangVersion>Latest</LangVersion>
     <Title>
       Merq: Message Bus (Commands + Events) Interfaces, for internal application architecture via command and event messages.
     </Title>
@@ -10,6 +11,10 @@
       Interfaces for authoring loosely coupled components that communicate via command and event messages within an application.
     </Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="PublicAPI\net6.0\PublicAPI.Shipped.txt" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
@@ -30,6 +35,12 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Merq.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt')" />
+    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt')" />
+    <AdditionalFiles Include="PublicAPI\net6.0\PublicAPI.Shipped.txt" />
   </ItemGroup>
 
 </Project>
