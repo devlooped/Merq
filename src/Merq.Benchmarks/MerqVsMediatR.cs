@@ -1,10 +1,10 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace Merq.MerqVsMediatR;
 

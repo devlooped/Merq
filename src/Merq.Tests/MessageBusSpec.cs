@@ -468,6 +468,22 @@ public record MessageBusSpec(ITestOutputHelper Output)
     }
 
     [Fact]
+    public void when_executing_nested_public_command_then_invokes_handler()
+    {
+        var handler = new Mock<ICommandHandler<NestedPublicCommand>>();
+        var bus = new MessageBus(new ServiceCollection()
+            .AddSingleton(handler.Object)
+            .AddSingleton<IExecutableCommandHandler<NestedPublicCommand>>(handler.Object)
+            .BuildServiceProvider());
+
+        var command = new NestedPublicCommand();
+
+        bus.Execute(command);
+
+        handler.Verify(x => x.Execute(command));
+    }
+
+    [Fact]
     public void when_executing_non_public_command_result_then_invokes_handler()
     {
         var handler = new NonPublicCommandResultHandler();
@@ -569,6 +585,8 @@ public record MessageBusSpec(ITestOutputHelper Output)
     }
 
     class NestedEvent { }
+
+    public class NestedPublicCommand : ICommand { }
 
 #if NET6_0_OR_GREATER
     public record StreamCommand(int Count) : IStreamCommand<int>;
