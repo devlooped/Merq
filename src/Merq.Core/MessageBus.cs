@@ -53,7 +53,8 @@ namespace Merq;
 public class MessageBus : IMessageBus
 {
     static readonly ConcurrentDictionary<Type, Type> handlerTypeMap = new();
-    static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute));
+    static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute)) ?? 
+        throw new InvalidOperationException($"{nameof(MessageBus)}.{nameof(CanExecute)} not found");
 
     // All subjects active in the event stream.
     readonly ConcurrentDictionary<Type, Subject> subjects = new();
@@ -199,7 +200,7 @@ public class MessageBus : IMessageBus
                 voidExecutors.GetOrAdd(type, type
                     => (VoidDispatcher)Activator.CreateInstance(
                         typeof(VoidDispatcher<>).MakeGenericType(type),
-                        this))
+                        this)!)
                 .Execute(command);
         }
         catch (Exception e)
@@ -226,7 +227,7 @@ public class MessageBus : IMessageBus
             return (TResult)resultExecutors.GetOrAdd(type, type
                     => (ResultDispatcher)Activator.CreateInstance(
                        typeof(ResultDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                       this))
+                       this)!)
                 .Execute(command)!;
         }
         catch (Exception e)
@@ -253,7 +254,7 @@ public class MessageBus : IMessageBus
             return voidAsyncExecutors.GetOrAdd(type, type
                 => (VoidAsyncDispatcher)Activator.CreateInstance(
                     typeof(VoidAsyncDispatcher<>).MakeGenericType(type),
-                    this))
+                    this)!)
                 .ExecuteAsync(command, cancellation);
         }
         catch (Exception e)
@@ -280,7 +281,7 @@ public class MessageBus : IMessageBus
             return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
                 => (ResultAsyncDispatcher)Activator.CreateInstance(
                     typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
-                    this))
+                    this)!)
                 .ExecuteAsync(command, cancellation);
         }
         catch (Exception e)
@@ -314,7 +315,7 @@ public class MessageBus : IMessageBus
                 .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
                 .Select(subjectEventType => subjects[subjectEventType])
                 .Concat(dynamicSubjects
-                    .GetOrAdd(type.FullName, _ => new())
+                    .GetOrAdd(type.FullName ?? type.Name, _ => new())
                     .Where(pair => pair.Key != type && pair.Value != null)
                     .Select(pair => pair.Value!))
                 .ToArray());
@@ -361,7 +362,7 @@ public class MessageBus : IMessageBus
         });
 
         var dynamicSubject = GetMapper() is Func<Type, Type, Func<object, object>?> mapper ?
-            (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName, _ => new()).GetOrAdd(eventType, type =>
+            (Subject<TEvent>?)dynamicSubjects.GetOrAdd(eventType.FullName ?? eventType.Name, _ => new()).GetOrAdd(eventType, type =>
             {
                 // If we're creating a new subject, we need to clear the cache of compatible subjects
                 compatibleSubjects.Clear();
