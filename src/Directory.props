@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <PackageProjectUrl>https://github.com/devlooped/Merq</PackageProjectUrl>
+    <PackageProjectUrl>https://www.clarius.org/Merq</PackageProjectUrl>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
