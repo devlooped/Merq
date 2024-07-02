@@ -10,28 +10,26 @@ on:
 env:
   DOTNET_NOLOGO: true
   Configuration: Release
-
+  PackOnBuild: true
+  GeneratePackageOnBuild: true
+  VersionLabel: ${{ github.ref }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - name: 🤘 checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with: 
           submodules: recursive
           fetch-depth: 0
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:version=${GITHUB_REF#refs/*/v} -bl:build.binlog
+        run: dotnet build -m:1 -bl:build.binlog
 
       - name: 🧪 test
         uses: ./.github/workflows/test
-
-      - name: 📦 pack
-        run: dotnet pack -m:1 -p:version=${GITHUB_REF#refs/*/v} -bl:pack.binlog
-
-      - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
 
       - name: 🐛 logs
         uses: actions/upload-artifact@v3
@@ -39,3 +37,6 @@ jobs:
         with:
           name: logs
           path: '*.binlog'
+
+      - name: 🚀 nuget
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
