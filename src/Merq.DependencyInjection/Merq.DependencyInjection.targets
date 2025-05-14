@@ -1,9 +1,0 @@
-﻿<Project>
-
-  <ItemGroup>
-    <Compile Update="@(Compile -> WithMetadataValue('NuGetPackageId', 'Merq.DependencyInjection'))"
-             Visible="false"
-             Link="Merq\%(Filename)%(Extension)"/>
-  </ItemGroup>
-
-</Project>

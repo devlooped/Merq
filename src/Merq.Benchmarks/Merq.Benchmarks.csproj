@@ -15,14 +15,13 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection" PrivateAssets="all"/>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="Merq.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
+    <ProjectReference Include="..\Merq\Merq.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Devlooped.Dynamically" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
@@ -36,9 +32,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
-    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" />
-    <ProjectReference Include="..\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Merq\Merq.csproj" />
+    <ProjectReference Include="..\Merq.Abstractions\Merq.Abstractions.csproj" />
     <ProjectReference Include="..\Samples\Library1\Library1.csproj" Aliases="Library1" />
     <ProjectReference Include="..\Samples\Library2\Library2.csproj" Aliases="Library2" />
     <ProjectReference Include="..\Samples\Merq.Dynamically\Merq.Dynamically.csproj" />

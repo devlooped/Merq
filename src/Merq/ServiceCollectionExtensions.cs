@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// with a <see cref="IServiceCollection"/>.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
-static partial class MerqServicesExtension
+public static partial class MerqServiceCollectionExtensions
 {
     /// <summary>
     /// Adds the <see cref="IMessageBus"/> service to the collection.

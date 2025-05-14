@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq", "src\Merq\Merq.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Abstractions", "src\Merq.Abstractions\Merq.Abstractions.csproj", "{C6B16D17-4F6A-4457-8497-92068E53DE39}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Core", "src\Merq.Core\Merq.Core.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq", "src\Merq\Merq.csproj", "{33BDD9D1-3E01-49C1-AB46-50941DFFD5D4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.VisualStudio", "src\Merq.VisualStudio\Merq.VisualStudio.csproj", "{4497EC4D-62B4-4B20-8A4F-15F10B0452FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.Tests", "src\Merq.Tests\Merq.Tests.csproj", "{A82ADE56-3DF7-435F-830A-4970D508CAFC}"
-EndProject
-Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Merq.DependencyInjection", "src\Merq.DependencyInjection\Merq.DependencyInjection.msbuildproj", "{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merq.VisualStudio.Tests", "src\Merq.VisualStudio.Tests\Merq.VisualStudio.Tests.csproj", "{DA774F3B-698B-4BF0-9116-27656BBDA965}"
 EndProject
@@ -59,10 +57,6 @@ Global
 		{A82ADE56-3DF7-435F-830A-4970D508CAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A82ADE56-3DF7-435F-830A-4970D508CAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A82ADE56-3DF7-435F-830A-4970D508CAFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A13A6CD-08DD-496B-ACB7-A52CEC8E1FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA774F3B-698B-4BF0-9116-27656BBDA965}.Release|Any CPU.ActiveCfg = Release|Any CPU
