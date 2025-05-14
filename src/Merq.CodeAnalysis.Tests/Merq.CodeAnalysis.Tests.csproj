@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq.Core\Merq.Core.csproj" AdditionalProperties="TargetFramework=netstandard2.0" />
     <ProjectReference Include="..\Merq\Merq.csproj" AdditionalProperties="TargetFramework=netstandard2.0" />
+    <ProjectReference Include="..\Merq.Abstractions\Merq.Abstractions.csproj" AdditionalProperties="TargetFramework=netstandard2.0" />
     <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Merq.CodeFixes\Merq.CodeFixes.csproj" />
   </ItemGroup>

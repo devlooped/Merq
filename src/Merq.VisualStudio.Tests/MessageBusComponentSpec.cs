@@ -46,8 +46,10 @@ public class MessageBusComponentSpec(ITestOutputHelper Output)
         var bus = exportProvider.GetExportedValue<IMessageBus>();
 
         var services = new ServiceCollection();
+#pragma warning disable DDI001
         services.AddKeyedTransient("Merq.IMessageBus.Default", (s, k) => new Lazy<IMessageBus>(
             () => s.GetRequiredKeyedService<global::Merq.MessageBusComponent>(k)));
+#pragma warning restore DDI001
 
         Assert.NotNull(bus);
 

@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Merq\Merq.csproj" />
     <ProjectReference Include="..\..\Merq.AutoMapper\Merq.AutoMapper.csproj" />
     <ProjectReference Include="..\Library1\Library1.csproj" Aliases="Library1" />
     <ProjectReference Include="..\Library2\Library2.csproj" Aliases="Library2" />
@@ -37,8 +38,6 @@
     <!-- Analyzers and code fixes otherwise automatically added by Merq package -->
     <ProjectReference Include="..\..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <!-- Source included in Merq.DependencyInjection package to register message bus. -->
-    <Compile Include="..\..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" Visible="false" />
     <!-- Dependency otherwise brought-in by Merq.DependencyInjection for automated service discovery and registration at compile-time. -->
     <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
   </ItemGroup>

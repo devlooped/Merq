@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+    <PackageId>Merq.Abstractions</PackageId>
+    <LangVersion>Latest</LangVersion>
+    <Title>
+      Merq: Message Bus (Commands + Events) mediator abstractions, for internal application architecture via command and event messages.
+    </Title>
+    <Description>
+      Interfaces for authoring loosely coupled components that communicate via command and event messages within an application.
+    </Description>
+    <!-- We introduce new breaking changes in main interface, this is expected for a major version -->
+    <EnablePackageValidation>false</EnablePackageValidation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.CSharp" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="$(TargetFramework) == 'netstandard2.0'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Merq.Abstractions.targets" PackFolder="build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Merq.Tests" />
+  </ItemGroup>
+
+</Project>

@@ -280,20 +280,11 @@ The same analyzers and code fixes are provided for the opposite anti-pattern,
 known as [sync over async](https://devblogs.microsoft.com/pfxteam/should-i-expose-synchronous-wrappers-for-asynchronous-methods/), 
 where a synchronous command is executed asynchronously.
 
-<!-- #core -->
+## Hosting
 
-## Message Bus
-
-The default implementation lives in a separate package [Merq.Core](https://www.nuget.org/packages/Merq.Core) 
-so that application components can take a dependency on just the interfaces.
-
-[![Version](https://img.shields.io/nuget/vpre/Merq.Core.svg?color=royalblue)](https://www.nuget.org/packages/Merq.Core)
-[![Downloads](https://img.shields.io/nuget/dt/Merq.Core.svg?color=green)](https://www.nuget.org/packages/Merq.Core)
-
-<!-- #implementation -->
 The default implementation of the message bus interface `IMessageBus` has 
 no external dependencies and can be instantiated via the `MessageBus` constructor 
-directly.
+directly by an application host.
 
 The bus locates command handlers and event producers via the passed-in 
 `IServiceProvider` instance in the constructor:
@@ -308,14 +299,9 @@ bus.Execute(new MyCommand());
 bus.Observe<MyEvent>().Subscribe(e => Console.WriteLine(e.Message));
 ```
 
+Merq integrates out of the box with [dependency injection for .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection), making it straightforward to 
+properly register the bus and all command handlers and event producers.
 
-<!-- #implementation -->
-
-When using [dependency injection for .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection), 
-the [Merq.DependencyInjection](https://www.nuget.org/packages/Merq.DependencyInjection) package 
-provides a simple mechanism for registering the message bus:
-
-<!-- #di -->
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 ...
@@ -324,7 +310,9 @@ builder.Services.AddMessageBus();
 
 All command handlers and event producers need to be registered with the 
 services collection as usual, using the main interface for the component, 
-such as `ICommandHandler<T>` and `IObservable<TEvent>`. 
+such as `ICommandHandler<T>` and `IObservable<TEvent>`. In addition, if 
+you use the `IMessageBus.CanExecute<T>` method, handlers need to also be 
+registered with the `ICanExecute<T>` interface.
 
 > NOTE: *Merq* makes no assumptions about the lifetime of the registered 
 > components, so it's up to the consumer to register them with the desired
@@ -346,7 +334,10 @@ This allows to simply mark all command handlers and event producers as
 builder.Services.AddServices();
 ```
 
-### Telemetry and Monitoring
+This package emits all registrations at compile-time using source generators, 
+so run-time performance is not affected at all.
+
+## Telemetry and Monitoring
 
 The core implementation of the `IMessageBus` is instrumented with `ActivitySource` and 
 `Metric`, providing out of the box support for [Open Telemetry](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs)-based monitoring, as well 
@@ -384,35 +375,7 @@ Example rendering from the included sample console app:
 
 ![dotnet-counters screenshot](https://raw.githubusercontent.com/devlooped/Merq/main/assets/img/dotnet-counters.png)
 
-## Duck Typing Support
-
-<!-- #duck -->
-Being able to loosely couple both events (and their consumers) and command execution (from their 
-command handler implementations) is a key feature of Merq. To take this decoupling to the extreme, 
-Merq allows a similar capability as allowed by the TypeScript/JavaScript in VSCode: you can just 
-copy/paste an event/command definition as *source* into your assembly, and perform the regular 
-operations with it (like `Observe` an event and `Execute` a command), in a "duck typing" manner.
-
-As long as the types' full name match, the conversion will happen automatically. Since this 
-functionality isn't required in many scenarios, and since there are a myriad ways to implement 
-such an object mapping functionality, the `Merq.Core` package only provides the hooks to enable 
-this, but does not provide any built-in implementation for it. In other words, no duck typing 
-is performed by default.
-
-The [Merq.AutoMapper](https://www.nuget.org/packages/Merq.AutoMapper) package provides one such 
-implementation, based on the excelent [AutoMapper](https://automapper.org/) library. It can be 
-registered with the DI container as follows:
-
-```csharp
-builder.Services.AddMessageBus<AutoMapperMessageBus>();
-// register all services, including handlers and producers
-builder.Services.AddServices();
-```
-
-<!-- #duck -->
-
-<!-- #perf -->
-# Performance
+## Performance
 
 The performance of Merq is on par with the best implementations of the 
 the same pattern, for example [MediatR](https://www.nuget.org/packages/mediatr). 
@@ -438,7 +401,42 @@ Intel Core i9-10900T CPU 1.90GHz, 1 CPU, 20 logical and 10 physical cores
 
 <!-- ./src/Merq.Benchmarks/BenchmarkDotNet.Artifacts/results/Merq.MerqVsMediatR.Benchmark-report-github.md -->
 
-<!-- #perf -->
+## Abstractions 
+
+[![Version](https://img.shields.io/nuget/vpre/Merq.Abstractions.svg?color=royalblue)](https://www.nuget.org/packages/Merq.Abstractions)
+[![Downloads](https://img.shields.io/nuget/dt/Merq.Abstractions.svg?color=green)](https://www.nuget.org/packages/Merq.Abstractions)
+
+<!-- #abstractions -->
+The [Merq.Abstractions](https://www.nuget.org/packages/Merq.Abstractions) 
+contains just the interfaces for [Merq](https://www.nuget.org/packages/Merq) for scenarios where 
+messages are shared across multiple assemblies or defined separately from the main app host.
+<!-- #abstractions -->
+
+## Duck Typing
+
+Being able to loosely couple both events (and their consumers) and command execution (from their 
+command handler implementations) is a key feature of Merq. To take this decoupling to the extreme, 
+Merq allows a similar capability as allowed by the TypeScript/JavaScript in VSCode: you can just 
+copy/paste an event/command definition as *source* into your assembly, and perform the regular 
+operations with it (like `Observe` an event and `Execute` a command), in a "duck typing" manner.
+
+As long as the types' full name match, the conversion will happen automatically. Since this 
+functionality isn't required in many scenarios, and since there are a myriad ways to implement 
+such an object mapping functionality, the `Merq.Core` package only provides the hooks to enable 
+this, but does not provide any built-in implementation for it. In other words, no duck typing 
+is performed by default.
+
+The [Merq.AutoMapper](https://www.nuget.org/packages/Merq.AutoMapper) package provides one such 
+implementation, based on the excelent [AutoMapper](https://automapper.org/) library. It can be 
+registered with the DI container as follows:
+
+```csharp
+builder.Services.AddMessageBus<AutoMapperMessageBus>();
+// register all services, including handlers and producers
+builder.Services.AddServices();
+```
+
+<!-- #core -->
 
 <!-- #ci -->
 
