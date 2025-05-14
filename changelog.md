@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.1.0](https://github.com/devlooped/Merq/tree/v2.1.0) (2025-05-14)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0...v2.1.0)
+
+:sparkles: Implemented enhancements:
+
+- Switch to ValueTask\<T\> and refactor Notify \> NotifyAsync [\#125](https://github.com/devlooped/Merq/issues/125)
+- Add .NET8-specific forget Task implementation [\#162](https://github.com/devlooped/Merq/pull/162) (@kzu)
+- Change NotifyAsync to Task from ValueTask [\#160](https://github.com/devlooped/Merq/pull/160) (@kzu)
+- Rename Notify \> NotifyAsync to allow async eventing scenarios [\#156](https://github.com/devlooped/Merq/pull/156) (@kzu)
+
 ## [v2.0.0](https://github.com/devlooped/Merq/tree/v2.0.0) (2024-01-29)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0-rc.6...v2.0.0)
