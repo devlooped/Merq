@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
     <PackageId>Merq</PackageId>
     <LangVersion>Latest</LangVersion>
     <Title>
@@ -17,7 +17,6 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="Microsoft.CSharp" />
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Pack="false" PrivateAssets="all" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="$(TargetFramework) == 'netstandard2.0'" />
   </ItemGroup>
 
@@ -32,11 +31,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Merq.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt')" />
-    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt')" />
   </ItemGroup>
 
 </Project>
