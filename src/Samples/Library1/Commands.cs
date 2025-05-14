@@ -24,14 +24,8 @@ public class NoOpHandler : ICommandHandler<NoOp>
 }
 
 [Service]
-public class EchoHandler : ICommandHandler<Echo, string>
+public class EchoHandler(IMessageBus bus) : ICommandHandler<Echo, string>
 {
-    readonly IMessageBus? bus;
-
-    public EchoHandler() { }
-
-    public EchoHandler(IMessageBus bus) => this.bus = bus;
-
     public bool CanExecute(Echo command) => !string.IsNullOrEmpty(command.Message);
 
     public string Execute(Echo command)
@@ -39,27 +33,20 @@ public class EchoHandler : ICommandHandler<Echo, string>
         if (string.IsNullOrEmpty(command.Message))
             throw new NotSupportedException("Cannot echo an empty or null message");
 
-        bus?.Notify(new OnDidSay(command.Message));
+        bus.NotifyAsync(new OnDidSay(command.Message)).Forget();
         return command.Message;
     }
 }
 
 [Service]
-public class EchoAsyncHandler : IAsyncCommandHandler<EchoAsync, string>
+public class EchoAsyncHandler(IMessageBus bus) : IAsyncCommandHandler<EchoAsync, string>
 {
-    readonly IMessageBus? bus;
-
-    public EchoAsyncHandler() { }
-
-    public EchoAsyncHandler(IMessageBus bus) => this.bus = bus;
-
-
     public bool CanExecute(EchoAsync command) => true;
 
-    public Task<string> ExecuteAsync(EchoAsync command, CancellationToken cancellation = default)
+    public async Task<string> ExecuteAsync(EchoAsync command, CancellationToken cancellation = default)
     {
-        bus?.Notify(new OnDidSay(command.Message));
-        return Task.FromResult(command.Message);
+        await bus.NotifyAsync(new OnDidSay(command.Message));
+        return command.Message;
     }
 }
 

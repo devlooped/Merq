@@ -28,10 +28,12 @@ Merq.IMessageBus.Execute(Merq.ICommand! command, string? callerName = null, stri
 Merq.IMessageBus.Execute<TResult>(Merq.ICommand<TResult>! command, string? callerName = null, string? callerFile = null, int? callerLine = null) -> TResult
 Merq.IMessageBus.ExecuteAsync(Merq.IAsyncCommand! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task!
 Merq.IMessageBus.ExecuteAsync<TResult>(Merq.IAsyncCommand<TResult>! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task<TResult>!
-Merq.IMessageBus.NotifyAsync<TEvent>(TEvent e, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask
+Merq.IMessageBus.NotifyAsync<TEvent>(TEvent e, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task!
 Merq.IMessageBus.Observe<TEvent>() -> System.IObservable<TEvent>!
 Merq.IMessageBusExtensions
 static Merq.IMessageBusExtensions.Execute<TCommand>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
 static Merq.IMessageBusExtensions.Notify<TEvent>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
 static Merq.IMessageBusExtensions.Notify<TEvent>(this Merq.IMessageBus! bus, TEvent e, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
-static Merq.IMessageBusExtensions.NotifyAsync<TEvent>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask
+static Merq.IMessageBusExtensions.NotifyAsync<TEvent>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task!
+Merq.TaskExtensions
+static Merq.TaskExtensions.Forget(this System.Threading.Tasks.Task! task) -> void
