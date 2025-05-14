@@ -16,8 +16,8 @@
     <PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-    <PackageVersion Include="ThisAssembly.AssemblyInfo" Version="2.0.8" />
-    <PackageVersion Include="ThisAssembly.Project" Version="2.0.8" />
+    <PackageVersion Include="ThisAssembly.AssemblyInfo" Version="2.0.14" />
+    <PackageVersion Include="ThisAssembly.Project" Version="2.0.14" />
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
