@@ -3,7 +3,6 @@ using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -12,7 +11,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task AddHandlerReturnType()
     {
-        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -58,7 +57,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task AddAsyncHandlerReturnType()
     {
-        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -108,7 +107,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task FixHandlerReturnType()
     {
-        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -155,7 +154,7 @@ public class CommandHandlerFixerTests
     [Fact]
     public async Task FixAsyncHandlerReturnType()
     {
-        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandHandlerAnalyzer, CommandHandlerReturnFixer, DefaultVerifier>
         {
             TestCode =
             """

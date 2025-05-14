@@ -13,7 +13,7 @@ using static Spectre.Console.AnsiConsole;
 
 var source = new ActivitySource("ConsoleApp");
 var config = new ConfigurationBuilder()
-    .AddUserSecrets(ThisAssembly.Project.UserSecretsId)
+    .AddUserSecrets<Program>()
     .Build();
 
 // Initialize services

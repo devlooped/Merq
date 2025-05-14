@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Merq;
 
-public record GeneratorTests(ITestOutputHelper Output)
+public class GeneratorTests(ITestOutputHelper Output)
 {
     [Fact]
     public void CanRegisterProjectReferenceHandler()

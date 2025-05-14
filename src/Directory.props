@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageProjectUrl>https://www.clarius.org/Merq</PackageProjectUrl>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <NoWarn>NU1507;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Label="StrongName">

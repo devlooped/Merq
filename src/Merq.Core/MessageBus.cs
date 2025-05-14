@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -51,7 +50,14 @@ namespace Merq;
 /// async over sync and sync over async.
 /// </para>
 /// </remarks>
-public class MessageBus : IMessageBus
+/// <remarks>
+/// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
+/// that resolves instances of command handlers and external event producers.
+/// </remarks>
+/// <param name="services">The <see cref="IServiceProvider"/> that contains the registrations for 
+/// command handlers and event producers.
+/// </param>
+public class MessageBus(IServiceProvider services) : IMessageBus
 {
     static readonly ConcurrentDictionary<Type, Type> handlerTypeMap = new();
     static readonly MethodInfo canExecuteMethod = typeof(MessageBus).GetMethod(nameof(CanExecute)) ??
@@ -70,8 +76,8 @@ public class MessageBus : IMessageBus
     readonly ConcurrentDictionary<Type, ServiceDescriptor?> mappedHandlers = new();
     readonly ConcurrentDictionary<Type, (Type TargetCommand, Func<dynamic, object> CommandFactory)?> mappedCommands = new();
 
-    readonly IServiceProvider services;
-    readonly IServiceCollection? collection;
+    readonly IServiceProvider services = services;
+    readonly IServiceCollection? collection = services.GetServices<IServiceCollection>().FirstOrDefault();
 
     // These executors are needed when the command types involved are not public. 
     // For the public cases, we just rely on the built-in dynamic dispatching
@@ -79,20 +85,6 @@ public class MessageBus : IMessageBus
     readonly ConcurrentDictionary<Type, VoidAsyncDispatcher> voidAsyncExecutors = new();
     readonly ConcurrentDictionary<Type, ResultDispatcher> resultExecutors = new();
     readonly ConcurrentDictionary<Type, ResultAsyncDispatcher> resultAsyncExecutors = new();
-
-    /// <summary>
-    /// Instantiates the message bus with the given <see cref="IServiceProvider"/> 
-    /// that resolves instances of command handlers and external event producers.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceProvider"/> that contains the registrations for 
-    /// command handlers and event producers.
-    /// </param>
-    public MessageBus(IServiceProvider services)
-    {
-        this.services = services;
-        // This allows MEF-based services to not throw when we request a non-required service.
-        collection = services.GetServices<IServiceCollection>().FirstOrDefault();
-    }
 
     /// <summary>
     /// Determines whether the given command can be executed by a registered 
@@ -303,7 +295,7 @@ public class MessageBus : IMessageBus
 
 #if NET6_0_OR_GREATER
     /// <inheritdoc/>
-    public IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    public System.Collections.Generic.IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
         using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
@@ -315,7 +307,7 @@ public class MessageBus : IMessageBus
                 // For public types, we can use the faster dynamic dispatch approach
                 return WithResult<TResult>().ExecuteStream((dynamic)command, cancellation);
 #endif
-            return (IAsyncEnumerable<TResult>)resultAsyncExecutors.GetOrAdd(type, type
+            return (System.Collections.Generic.IAsyncEnumerable<TResult>)resultAsyncExecutors.GetOrAdd(type, type
                 => (ResultAsyncDispatcher)Activator.CreateInstance(
                     typeof(ResultStreamDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                     this)!)
@@ -331,10 +323,8 @@ public class MessageBus : IMessageBus
     }
 #endif
 
-
-
     /// <inheritdoc/>
-    public void Notify<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    public ValueTask NotifyAsync<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
         using var activity = StartEventActivity(type, e, callerName, callerFile, callerLine);
@@ -381,6 +371,8 @@ public class MessageBus : IMessageBus
         {
             Publishing.Record(watch.ElapsedMilliseconds, new Tag("Event", type.FullName));
         }
+
+        return new ValueTask();
     }
 
     /// <summary>
@@ -647,7 +639,7 @@ public class MessageBus : IMessageBus
     }
 
 #if NET6_0_OR_GREATER
-    IAsyncEnumerable<TResult> ExecuteStreamCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
+    System.Collections.Generic.IAsyncEnumerable<TResult> ExecuteStreamCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
     {
         var handler = services.GetService<IStreamCommandHandler<TCommand, TResult>>();
         if (handler != null)
@@ -693,7 +685,7 @@ public class MessageBus : IMessageBus
             => bus.ExecuteAsyncCore<TCommand, TResult>(command, cancellation);
 
 #if NET6_0_OR_GREATER
-        public IAsyncEnumerable<TResult> ExecuteStream<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
+        public System.Collections.Generic.IAsyncEnumerable<TResult> ExecuteStream<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IStreamCommand<TResult>
             => bus.ExecuteStreamCore<TCommand, TResult>(command, cancellation);
 #endif
     }

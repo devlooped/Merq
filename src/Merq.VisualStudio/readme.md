@@ -37,11 +37,32 @@ class MyComponent
     {
         // do something, perhaps execute some command?
         bus.Execute(new MyCommand("Hello World"));
-
-        // perhaps raise further events?
-        bus.Notify(new MyOtherEvent());
     }
 }
+```
+
+If the event handler needs to be async for some reason (i.e. you're pushing 
+additional events or executing async commands), you can use the following pattern:
+
+```csharp
+    [ImportingConstructor]
+    public MyComponent(IMessageBus bus)
+    {
+        this.bus = bus;
+        
+        bus.Observe<ConcreteEvent>()
+           .Select(value => Observable.FromAsync(async () => await OnSolutionOpened(value)))
+           .Subscribe();
+    }
+
+    async Task OnSolutionOpened(ConcreteEvent e)
+    {
+        // do something, perhaps execute some command?
+        await bus.ExecuteAsync(new MyCommand("Hello World"));
+
+        // perhaps raise further events?
+        await bus.NotifyAsync(new MyEvent(42));
+    }
 ```
 
 To export command handlers to VS, you must export them with the relevant interface 

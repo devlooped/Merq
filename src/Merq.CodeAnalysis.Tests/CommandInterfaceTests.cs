@@ -2,9 +2,8 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
-using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
-using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
+using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandInterfaceAnalyzer, Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace Merq;
 
@@ -13,7 +12,7 @@ public class CommandInterfaceTests
     [Fact]
     public async Task NonPublicCommand()
     {
-        var test = new CSharpAnalyzerTest<PublicCommandAnalyzer, XUnitVerifier>
+        var test = new CSharpAnalyzerTest<PublicCommandAnalyzer, DefaultVerifier>
         {
             TestCode = """
             using Merq;

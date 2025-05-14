@@ -7,8 +7,8 @@ namespace Merq;
 
 static class Telemetry
 {
-    static readonly ActivitySource tracer = new("Merq", ThisAssembly.Project.Version);
-    static Meter Meter { get; } = new Meter("Merq", ThisAssembly.Project.Version);
+    static readonly ActivitySource tracer = new("Merq", ThisAssembly.Info.Version);
+    static Meter Meter { get; } = new Meter("Merq", ThisAssembly.Info.Version);
 
     static readonly Counter<long> commands;
     static readonly Counter<long> events;

@@ -8,7 +8,7 @@ using Moq;
 
 namespace Merq;
 
-public record MessageBusServiceSpec(ITestOutputHelper Output)
+public class MessageBusServiceSpec(ITestOutputHelper Output)
 {
     IMessageBus bus = new ServiceCollection()
         .AddMessageBus()
@@ -58,7 +58,7 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
     }
 
     [Fact]
-    public void given_external_producer_then_can_notify_event()
+    public async Task given_external_producer_then_can_notify_event()
     {
         var producer = new Subject<ConcreteEvent>();
 
@@ -74,81 +74,81 @@ public record MessageBusServiceSpec(ITestOutputHelper Output)
 
         bus.Observe<ConcreteEvent>().Subscribe(e => actual = e);
 
-        bus.Notify(expected);
+        await bus.NotifyAsync(expected);
 
         Assert.Equal(expected, actual);
     }
 
     [Fact]
-    public void when_subscribing_subject_then_succeeds()
+    public async Task when_subscribing_subject_then_succeeds()
     {
         int? value = default;
         bus.Observe<int>().Subscribe(i => value = i);
 
-        bus.Notify(42);
+        await bus.NotifyAsync(42);
 
         Assert.Equal(42, value);
     }
 
     [Fact]
-    public void when_notifying_null_event_then_throws()
-        => Assert.Throws<ArgumentNullException>(() => bus.Notify<object?>(null));
+    public async Task when_notifying_null_event_then_throws()
+        => await Assert.ThrowsAsync<ArgumentNullException>(async () => await bus.NotifyAsync<object?>(null));
 
     [Fact]
-    public void when_notifying_non_public_event_type_then_calls_subscriber()
+    public async Task when_notifying_non_public_event_type_then_calls_subscriber()
     {
         var called = false;
 
         bus.Observe<NonPublicEvent>().Subscribe(x => called = true);
 
-        bus.Notify(new NonPublicEvent());
+        await bus.NotifyAsync(new NonPublicEvent());
 
         Assert.True(called);
     }
 
     [Fact]
-    public void when_notifying_nested_non_public_event_type_then_calls_subscriber()
+    public async Task when_notifying_nested_non_public_event_type_then_calls_subscriber()
     {
         var called = false;
 
         bus.Observe<NestedEvent>().Subscribe(x => called = true);
 
-        bus.Notify(new NestedEvent());
+        await bus.NotifyAsync(new NestedEvent());
 
         Assert.True(called);
     }
 
     [Fact]
-    public void when_notifying_non_subscribed_event_then_does_not_call_subscriber()
+    public async Task when_notifying_non_subscribed_event_then_does_not_call_subscriber()
     {
         var called = false;
 
         using var subs = bus.Observe<ConcreteEvent>().Subscribe(c => called = true);
 
-        bus.Notify(new AnotherEvent());
+        await bus.NotifyAsync(new AnotherEvent());
 
         Assert.False(called);
     }
 
     [Fact]
-    public void when_notifying_subscribed_event_using_base_type_then_calls_derived_subscriber()
+    public async Task when_notifying_subscribed_event_using_base_type_then_calls_derived_subscriber()
     {
         var called = false;
         using var subscription = bus.Observe<ConcreteEvent>().Subscribe(c => called = true);
 
         BaseEvent e = new ConcreteEvent();
-        bus.Notify(e);
+        await bus.NotifyAsync(e);
 
         Assert.True(called);
     }
 
     [Fact]
-    public void when_subscribing_as_event_interface_then_calls_subscriber()
+    public async Task when_subscribing_as_event_interface_then_calls_subscriber()
     {
         var called = false;
         using var subs = bus.Observe<IBaseEvent>().Subscribe(c => called = true);
 
-        bus.Notify(new ConcreteEvent());
+        await bus.NotifyAsync(new ConcreteEvent());
 
         Assert.True(called);
     }

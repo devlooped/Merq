@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿#if NET6_0_OR_GREATER
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Merq;
-
-#if NET6_0_OR_GREATER
 
 /// <summary>
 /// Marker interface for asynchronous commands whose execution results in a 
@@ -32,5 +31,4 @@ public interface IStreamCommandHandler<in TCommand, out TResult> : ICanExecute<T
     /// <returns>The result of the execution.</returns>
     IAsyncEnumerable<TResult> ExecuteSteam(TCommand command, CancellationToken cancellation);
 }
-
 #endif
