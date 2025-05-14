@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -73,5 +72,5 @@ public class PingMerqAsync : IAsyncCommand<string>;
 public class PingMerqAsyncHandler : IAsyncCommandHandler<PingMerqAsync, string>
 {
     public bool CanExecute(PingMerqAsync command) => true;
-    public Task<string> ExecuteAsync(PingMerqAsync command, CancellationToken cancellation) => Task.FromResult("Pong");
+    public ValueTask<string> ExecuteAsync(PingMerqAsync command, CancellationToken cancellation) => ValueTask.FromResult("Pong");
 }

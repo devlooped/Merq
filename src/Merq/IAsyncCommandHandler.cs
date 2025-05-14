@@ -23,7 +23,7 @@ public interface IAsyncCommandHandler<in TCommand> : IAsyncCommandHandler, IExec
     /// </summary>
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
-    Task ExecuteAsync(TCommand command, CancellationToken cancellation = default);
+    ValueTask ExecuteAsync(TCommand command, CancellationToken cancellation = default);
 }
 
 /// <summary>
@@ -44,5 +44,5 @@ public interface IAsyncCommandHandler<in TCommand, TResult> : IAsyncCommandHandl
     /// <param name="command">The command parameters for the execution.</param>
     /// <param name="cancellation">Cancellation token to cancel command execution.</param>
     /// <returns>The result of the execution.</returns>
-    Task<TResult> ExecuteAsync(TCommand command, CancellationToken cancellation = default);
+    ValueTask<TResult> ExecuteAsync(TCommand command, CancellationToken cancellation = default);
 }

@@ -238,7 +238,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
     }
 
     /// <inheritdoc/>
-    public Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    public ValueTask ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
         using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
@@ -266,7 +266,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
     }
 
     /// <inheritdoc/>
-    public Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    public ValueTask<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = GetCommandType(command);
         using var activity = StartCommandActivity(type, command, callerName, callerFile, callerLine);
@@ -278,7 +278,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
                 // For public types, we can use the faster dynamic dispatch approach
                 return WithResult<TResult>().ExecuteAsync((dynamic)command, cancellation);
 #endif
-            return (Task<TResult>)resultAsyncExecutors.GetOrAdd(type, type
+            return (ValueTask<TResult>)resultAsyncExecutors.GetOrAdd(type, type
                 => (ResultAsyncDispatcher)Activator.CreateInstance(
                     typeof(ResultAsyncDispatcher<,>).MakeGenericType(type, typeof(TResult)),
                     this)!)
@@ -548,7 +548,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
         throw new InvalidOperationException($"No service for type '{typeof(ICommandHandler<TCommand>)}' has been registered.");
     }
 
-    Task ExecuteAsyncCore<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
+    ValueTask ExecuteAsyncCore<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand
     {
         var handler = services.GetService<IAsyncCommandHandler<TCommand>>();
         if (handler != null)
@@ -608,7 +608,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
         throw new InvalidOperationException($"No service for type '{typeof(ICommandHandler<TCommand, TResult>)}' has been registered.");
     }
 
-    Task<TResult> ExecuteAsyncCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
+    ValueTask<TResult> ExecuteAsyncCore<TCommand, TResult>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
     {
         var handler = services.GetService<IAsyncCommandHandler<TCommand, TResult>>();
         if (handler != null)
@@ -681,7 +681,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
         public TResult Execute<TCommand>(TCommand command) where TCommand : ICommand<TResult>
             => bus.ExecuteCore<TCommand, TResult>(command);
 
-        public Task<TResult> ExecuteAsync<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
+        public ValueTask<TResult> ExecuteAsync<TCommand>(TCommand command, CancellationToken cancellation) where TCommand : IAsyncCommand<TResult>
             => bus.ExecuteAsyncCore<TCommand, TResult>(command, cancellation);
 
 #if NET6_0_OR_GREATER
@@ -751,12 +751,12 @@ public class MessageBus(IServiceProvider services) : IMessageBus
 
     abstract class VoidAsyncDispatcher
     {
-        public abstract Task ExecuteAsync(IExecutable command, CancellationToken cancellation);
+        public abstract ValueTask ExecuteAsync(IExecutable command, CancellationToken cancellation);
     }
 
     class VoidAsyncDispatcher<TCommand>(MessageBus bus) : VoidAsyncDispatcher where TCommand : IAsyncCommand
     {
-        public override Task ExecuteAsync(IExecutable command, CancellationToken cancellation)
+        public override ValueTask ExecuteAsync(IExecutable command, CancellationToken cancellation)
             => bus.ExecuteAsyncCore((TCommand)command, cancellation);
     }
 

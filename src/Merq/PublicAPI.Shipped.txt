@@ -2,10 +2,10 @@
 Merq.IAsyncCommand
 Merq.IAsyncCommand<TResult>
 Merq.IAsyncCommandHandler
-Merq.IAsyncCommandHandler<TCommand, TResult>
-Merq.IAsyncCommandHandler<TCommand, TResult>.ExecuteAsync(TCommand command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<TResult>!
 Merq.IAsyncCommandHandler<TCommand>
-Merq.IAsyncCommandHandler<TCommand>.ExecuteAsync(TCommand command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Merq.IAsyncCommandHandler<TCommand, TResult>
+Merq.IAsyncCommandHandler<TCommand, TResult>.ExecuteAsync(TCommand command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<TResult>
+Merq.IAsyncCommandHandler<TCommand>.ExecuteAsync(TCommand command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
 Merq.ICanExecute<TCommand>
 Merq.ICanExecute<TCommand>.CanExecute(TCommand command) -> bool
 Merq.ICommand
@@ -26,8 +26,8 @@ Merq.IMessageBus.CanHandle(Merq.IExecutable! command) -> bool
 Merq.IMessageBus.CanHandle<TCommand>() -> bool
 Merq.IMessageBus.Execute(Merq.ICommand! command, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
 Merq.IMessageBus.Execute<TResult>(Merq.ICommand<TResult>! command, string? callerName = null, string? callerFile = null, int? callerLine = null) -> TResult
-Merq.IMessageBus.ExecuteAsync(Merq.IAsyncCommand! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task!
-Merq.IMessageBus.ExecuteAsync<TResult>(Merq.IAsyncCommand<TResult>! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.Task<TResult>!
+Merq.IMessageBus.ExecuteAsync(Merq.IAsyncCommand! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask
+Merq.IMessageBus.ExecuteAsync<TResult>(Merq.IAsyncCommand<TResult>! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask<TResult>
 Merq.IMessageBus.NotifyAsync<TEvent>(TEvent e, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask
 Merq.IMessageBus.Observe<TEvent>() -> System.IObservable<TEvent>!
 Merq.IMessageBusExtensions
@@ -35,3 +35,5 @@ static Merq.IMessageBusExtensions.Execute<TCommand>(this Merq.IMessageBus! bus, 
 static Merq.IMessageBusExtensions.Notify<TEvent>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
 static Merq.IMessageBusExtensions.Notify<TEvent>(this Merq.IMessageBus! bus, TEvent e, string? callerName = null, string? callerFile = null, int? callerLine = null) -> void
 static Merq.IMessageBusExtensions.NotifyAsync<TEvent>(this Merq.IMessageBus! bus, string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Threading.Tasks.ValueTask
+Merq.ValueTaskExtensions
+static Merq.ValueTaskExtensions.Forget(this System.Threading.Tasks.ValueTask task) -> void

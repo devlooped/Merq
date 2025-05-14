@@ -68,7 +68,7 @@ public interface IMessageBus
     /// <param name="callerName">Optional calling member name, provided by default by the compiler.</param>
     /// <param name="callerFile">Optional calling file name, provided by default by the compiler.</param>
     /// <param name="callerLine">Optional calling line number, provided by default by the compiler.</param>
-    Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
+    ValueTask ExecuteAsync(IAsyncCommand command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
 
     /// <summary>
     /// Executes the given asynchronous command and returns a result from it.
@@ -80,7 +80,7 @@ public interface IMessageBus
     /// <param name="callerFile">Optional calling file name, provided by default by the compiler.</param>
     /// <param name="callerLine">Optional calling line number, provided by default by the compiler.</param>
     /// <returns>The result of executing the command.</returns>
-    Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
+    ValueTask<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation = default, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
 
 #if NET6_0_OR_GREATER
     /// <summary>

@@ -45,7 +45,7 @@ The events-based API surface on the message bus is simple enough:
 ```csharp
 public interface IMessageBus
 {
-    void Notify<TEvent>(TEvent e);
+    ValueTask NotifyAsync<TEvent>(TEvent e);
     IObservable<TEvent> Observe<TEvent>();
 }
 ```
@@ -132,9 +132,9 @@ public interface IMessageBus
     // sync value-returning
     TResult Execute<TResult>(ICommand<TResult> command);
     // async void
-    Task ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
+    ValueTask ExecuteAsync(IAsyncCommand command, CancellationToken cancellation);
     // async value-returning
-    Task<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
+    ValueTask<TResult> ExecuteAsync<TResult>(IAsyncCommand<TResult> command, CancellationToken cancellation);
     // async stream
     IAsyncEnumerable<TResult> ExecuteStream<TResult>(IStreamCommand<TResult> command, CancellationToken cancellation);
 }
@@ -150,7 +150,7 @@ class FindDocumentsHandler : IAsyncCommandHandler<FindDocument, IEnumerable<stri
 {
     public bool CanExecute(FindDocument command) => !string.IsNullOrEmpty(command.Filter);
     
-    public Task<IEnumerable<string>> ExecuteAsync(FindDocument command, CancellationToken cancellation)
+    public ValueTask<IEnumerable<string>> ExecuteAsync(FindDocument command, CancellationToken cancellation)
         => // evaluate command.Filter across all documents and return matches
 }
 ```
@@ -410,6 +410,16 @@ builder.Services.AddServices();
 ```
 
 <!-- #duck -->
+
+<!-- #perf -->
+# Performance
+
+The performance of Merq is on par with the best implementations of the 
+the same pattern, for example [MediatR](https://www.nuget.org/packages/mediatr):
+
+<!-- include ./src/Merq.Benchmarks/BenchmarkDotNet.Artifacts/results/Merq.MerqVsMediatR.Benchmark-report-github.md -->
+
+<!-- #perf -->
 
 <!-- #ci -->
 

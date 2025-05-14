@@ -204,7 +204,7 @@ public class MessageBusServiceSpec(ITestOutputHelper Output)
         Assert.False(bus.CanExecute(new AsyncCommand()));
         Assert.False(bus.CanHandle<AsyncCommand>());
         Assert.False(bus.CanHandle(new AsyncCommand()));
-        await Assert.ThrowsAsync<InvalidOperationException>(() => bus.ExecuteAsync(new AsyncCommand(), CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await bus.ExecuteAsync(new AsyncCommand(), CancellationToken.None));
     }
 
     [Fact]
@@ -213,7 +213,7 @@ public class MessageBusServiceSpec(ITestOutputHelper Output)
         Assert.False(bus.CanExecute(new AsyncCommandWithResult()));
         Assert.False(bus.CanHandle<AsyncCommandWithResult>());
         Assert.False(bus.CanHandle(new AsyncCommandWithResult()));
-        await Assert.ThrowsAsync<InvalidOperationException>(() => bus.ExecuteAsync(new AsyncCommandWithResult(), CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await bus.ExecuteAsync(new AsyncCommandWithResult(), CancellationToken.None));
     }
 
     [Fact]
