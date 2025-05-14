@@ -3,7 +3,6 @@ using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -12,7 +11,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncCommand()
     {
-        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -62,7 +61,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteSyncWithAsyncReturnCommand()
     {
-        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -112,7 +111,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteGenericSyncWithAsyncCommand()
     {
-        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, SyncToAsyncFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -162,7 +161,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncCommand()
     {
-        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -212,7 +211,7 @@ public class CommandExecuteFixerTests
     [Fact]
     public async Task ExecuteAsyncWithSyncReturnCommand()
     {
-        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandExecuteAnalyzer, AsyncToSyncFixer, DefaultVerifier>
         {
             TestCode =
             """

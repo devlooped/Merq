@@ -19,12 +19,11 @@
   <ItemGroup>
     <PackageReference Include="Devlooped.Dynamically" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="PolySharp" />
-    <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />

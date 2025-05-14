@@ -10,7 +10,6 @@
     <Content Include="Merq.DependencyInjection.targets" PackFolder="build" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="NuGetizer" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@ using Merq.CodeFixes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Merq;
 
@@ -12,7 +11,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingCommandInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -58,7 +57,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingCommandReturnInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -105,7 +104,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingAsyncCommandInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -155,7 +154,7 @@ public class CommandFixerTests
     [Fact]
     public async Task AddMissingAsyncCommandReturnInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -206,7 +205,7 @@ public class CommandFixerTests
     [Fact]
     public async Task FixCommandReturnTypeInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """
@@ -251,7 +250,7 @@ public class CommandFixerTests
     [Fact]
     public async Task FixAsyncCommandReturnTypeInterface()
     {
-        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, XUnitVerifier>
+        var test = new CSharpCodeFixTest<CommandInterfaceAnalyzer, CommandInterfaceFixer, DefaultVerifier>
         {
             TestCode =
             """

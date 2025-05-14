@@ -331,7 +331,7 @@ such as `ICommandHandler<T>` and `IObservable<TEvent>`.
 > lifetime.
 
 To drastically simplify registration of handlers and producers, we 
-recommend the [Devlooped.Extensions.DependencyInjection.Attributed](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection.Attributed/).
+recommend the [Devlooped.Extensions.DependencyInjection](https://www.nuget.org/packages/Devlooped.Extensions.DependencyInjection/).
 package, which provides a simple attribute-based mechanism for automatically 
 emitting at compile-time the required service registrations for all types 
 marked with the provided `[Service]` attribute, which also allows setting the 
@@ -415,12 +415,12 @@ builder.Services.AddServices();
 
 # Dogfooding
 
-[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.dev/vpre/Devlooped.Merq/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.dev/index.json)
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.app/vpre/Merq/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.app/index.json)
 [![Build](https://github.com/devlooped/Merq/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/Merq/actions)
 
 We also produce CI packages from branches and pull requests so you can dogfood builds as quickly as they are produced. 
 
-The CI feed is `https://pkg.kzu.dev/index.json`. 
+The CI feed is `https://pkg.kzu.app/index.json`. 
 
 The versioning scheme for packages is:
 

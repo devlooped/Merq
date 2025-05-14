@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
-using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
+using Analyzer = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
+using AnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Merq.CommandHandlerAnalyzer, Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace Merq;
 

@@ -15,15 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="PublicAPI\net6.0\PublicAPI.Shipped.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="NuGetizer" />
-    <PackageReference Include="ThisAssembly.Project" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Pack="false" PrivateAssets="all" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="$(TargetFramework) == 'netstandard2.0'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +37,6 @@
   <ItemGroup>
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt')" />
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" Condition="Exists('PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt')" />
-    <AdditionalFiles Include="PublicAPI\net6.0\PublicAPI.Shipped.txt" />
   </ItemGroup>
 
 </Project>

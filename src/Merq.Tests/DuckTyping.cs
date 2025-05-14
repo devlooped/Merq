@@ -53,7 +53,7 @@ public abstract class DuckTyping
 
 #if NET6_0_OR_GREATER
     [Fact]
-    public void ConvertEvent()
+    public async Task ConvertEvent()
     {
         var bus = CreateMessageBus();
         string? message = null;
@@ -61,13 +61,13 @@ public abstract class DuckTyping
         bus.Observe<Library1::Library.DuckEvent>()
             .Subscribe(e => message = e.Message);
 
-        bus.Notify(new Library2::Library.DuckEvent("Foo"));
+        await bus.NotifyAsync(new Library2::Library.DuckEvent("Foo"));
 
         Assert.Equal("Foo", message);
     }
 
     [Fact]
-    public void ConvertEventHierarchy()
+    public async Task ConvertEventHierarchy()
     {
         var bus = CreateMessageBus();
         int sumstarts = 0;
@@ -75,7 +75,7 @@ public abstract class DuckTyping
         bus.Observe<Library1::Library.OnDidEdit>()
             .Subscribe(e => sumstarts = e.Buffer.Lines.Select(l => l.Start).Sum(p => p.X));
 
-        bus.Notify(new Library2::Library.OnDidEdit(
+        await bus.NotifyAsync(new Library2::Library.OnDidEdit(
             new Library2::Library.Buffer(new[]
             {
                 new Library2::Library.Line(new Library2::Library.Point(1, 2), new Library2::Library.Point(3, 4)) ,
@@ -86,7 +86,7 @@ public abstract class DuckTyping
     }
 
     [Fact]
-    public void CustomConvertEvent()
+    public async Task CustomConvertEvent()
     {
         var bus = CreateMessageBus();
         Library2::Library.Line? line = null;
@@ -94,7 +94,7 @@ public abstract class DuckTyping
         bus.Observe<Library2::Library.OnDidDrawLine>()
             .Subscribe(e => line = e.Line);
 
-        bus.Notify(new Library1::Library.OnDidDrawLine(new Library1::Library.Line(new Library1::Library.Point(1, 2), new Library1::Library.Point(3, 4))));
+        await bus.NotifyAsync(new Library1::Library.OnDidDrawLine(new Library1::Library.Line(new Library1::Library.Point(1, 2), new Library1::Library.Point(3, 4))));
 
         Assert.NotNull(line);
         Assert.Equal(1, line.Start.X);

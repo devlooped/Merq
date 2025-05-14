@@ -20,7 +20,6 @@
     <PackageReference Include="OpenTelemetry.Exporter.Zipkin" />
     <PackageReference Include="RxFree" />
     <PackageReference Include="Spectre.Console" />
-    <PackageReference Include="ThisAssembly.Project" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +40,7 @@
     <!-- Source included in Merq.DependencyInjection package to register message bus. -->
     <Compile Include="..\..\Merq.DependencyInjection\MerqServicesExtension.cs" Link="MerqServicesExtension.cs" Visible="false" />
     <!-- Dependency otherwise brought-in by Merq.DependencyInjection for automated service discovery and registration at compile-time. -->
-    <PackageReference Include="Devlooped.Extensions.DependencyInjection.Attributed" />
+    <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
   </ItemGroup>
 
 </Project>

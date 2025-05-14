@@ -5,6 +5,7 @@ using System.ComponentModel.Composition.Primitives;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Composition;
 using Microsoft.VisualStudio.Shell;
@@ -12,7 +13,7 @@ using Moq;
 
 namespace Merq;
 
-public record MessageBusComponentSpec(ITestOutputHelper Output)
+public class MessageBusComponentSpec(ITestOutputHelper Output)
 {
     [Fact]
     public async Task ComposeAsync()
@@ -43,6 +44,10 @@ public record MessageBusComponentSpec(ITestOutputHelper Output)
         MockComponentModel.Provider = exportProvider;
 
         var bus = exportProvider.GetExportedValue<IMessageBus>();
+
+        var services = new ServiceCollection();
+        services.AddKeyedTransient("Merq.IMessageBus.Default", (s, k) => new Lazy<IMessageBus>(
+            () => s.GetRequiredKeyedService<global::Merq.MessageBusComponent>(k)));
 
         Assert.NotNull(bus);
 
