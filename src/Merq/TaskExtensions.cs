@@ -26,6 +26,9 @@ public static class TaskExtensions
         // More info about the state machine: https://blogs.msdn.microsoft.com/seteplia/2017/11/30/dissecting-the-async-methods-in-c/?WT.mc_id=DT-MVP-5003978
         async static Task ForgetAwaited(Task task)
         {
+#if NET8_0_OR_GREATER
+            await task.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+#else
             try
             {
                 // No need to resume on the original SynchronizationContext, so use ConfigureAwait(false)
@@ -35,6 +38,7 @@ public static class TaskExtensions
             {
                 // Nothing to do here
             }
+#endif
         }
     }
 }

@@ -1,5 +1,0 @@
-#nullable enable
-Merq.IStreamCommand<TResult>
-Merq.IStreamCommandHandler<TCommand, TResult>
-Merq.IStreamCommandHandler<TCommand, TResult>.ExecuteSteam(TCommand command, System.Threading.CancellationToken cancellation) -> System.Collections.Generic.IAsyncEnumerable<TResult>!
-Merq.IMessageBus.ExecuteStream<TResult>(Merq.IStreamCommand<TResult>! command, System.Threading.CancellationToken cancellation = default(System.Threading.CancellationToken), string? callerName = null, string? callerFile = null, int? callerLine = null) -> System.Collections.Generic.IAsyncEnumerable<TResult>!
