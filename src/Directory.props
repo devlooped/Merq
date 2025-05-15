@@ -1,6 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <PackageProjectUrl>https://www.clarius.org/Merq</PackageProjectUrl>
+    <Product>Merq</Product>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <NoWarn>NU1507;$(NoWarn)</NoWarn>
   </PropertyGroup>
