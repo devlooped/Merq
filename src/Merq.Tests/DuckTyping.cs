@@ -21,22 +21,14 @@ public partial record OtherMessageEvent(string Message)
 
 public class DynamicDuckTyping : DuckTyping
 {
-    protected override IMessageBus CreateMessageBus(IServiceCollection? services = null)
-    {
-        services ??= new ServiceCollection();
-        services.AddSingleton<IMessageBus>(sp => new DynamicallyMessageBus(sp));
-        return services.BuildServiceProvider().GetRequiredService<IMessageBus>();
-    }
+    protected override IMessageBus CreateMessageBus(IServiceProvider? services = null) =>
+        new DynamicallyMessageBus(services ?? new MockServiceProvider());
 }
 
 public class AutoMapperDuckTyping : DuckTyping
 {
-    protected override IMessageBus CreateMessageBus(IServiceCollection? services = null)
-    {
-        services ??= new ServiceCollection();
-        services.AddSingleton<IMessageBus>(sp => new AutoMapperMessageBus(sp));
-        return services.BuildServiceProvider().GetRequiredService<IMessageBus>();
-    }
+    protected override IMessageBus CreateMessageBus(IServiceProvider? services = null) =>
+        new AutoMapperMessageBus(services ?? new MockServiceProvider());
 
     [Fact]
     public void ExecuteWithExtraCtorArg()
@@ -45,7 +37,7 @@ public class AutoMapperDuckTyping : DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton(handler.Object);
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.Echo2("Foo");
 
@@ -57,7 +49,7 @@ public class AutoMapperDuckTyping : DuckTyping
 
 public abstract class DuckTyping
 {
-    protected abstract IMessageBus CreateMessageBus(IServiceCollection? services = null);
+    protected abstract IMessageBus CreateMessageBus(IServiceProvider? services = null);
 
 #if NET6_0_OR_GREATER
     [Fact]
@@ -118,7 +110,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         Assert.True(bus.CanHandle<Library2::Library.Echo>());
         Assert.True(bus.CanHandle(new Library2::Library.Echo("Foo")));
@@ -130,7 +122,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.Echo("Foo");
 
@@ -143,7 +135,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<ICommandHandler<Library1::Library.Echo, string>, Library1::Library.EchoHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.Echo("Foo");
 
@@ -158,7 +150,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<ICommandHandler<Library1::Library.NoOp>, Library1::Library.NoOpHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.NoOp();
 
@@ -171,7 +163,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<IAsyncCommandHandler<Library1::Library.EchoAsync, string>, Library1::Library.EchoAsyncHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.EchoAsync("Foo");
 
@@ -186,7 +178,7 @@ public abstract class DuckTyping
         var services = new ServiceCollection();
         services.AddSingleton<IAsyncCommandHandler<Library1::Library.NoOpAsync>, Library1::Library.NoOpAsyncHandler>();
         services.AddSingleton(typeof(IServiceCollection), _ => services);
-        var bus = CreateMessageBus(services);
+        var bus = CreateMessageBus(services.BuildServiceProvider());
 
         var cmd = new Library2::Library.NoOpAsync();
 
