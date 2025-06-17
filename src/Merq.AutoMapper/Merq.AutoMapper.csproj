@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net472</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net472</TargetFrameworks>
     <PackageId>Merq.AutoMapper</PackageId>
     <Title>A specialized Message Bus that allows cross observing and executing of events and commands from structurally compatible types even if they are from disparate assemblies, as long as their full name is the same, otherwise known as "duck typing".</Title>
     <Description>$(Title)</Description>
