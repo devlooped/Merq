@@ -20,6 +20,10 @@ architectures, but their benefits can be applied to apps too, especially
 extensible ones where multiple teams can contribute extensions which 
 are composed at run-time.
 
+> [!NOTE]
+> This is also commonly used as a Mediator pattern, such as in 
+> [MediatR](https://www.nuget.org/packages/MediatR) and others libraries.
+
 The resulting improved decoupling between components makes it easier to evolve 
 them independently, while improving discoverability of available commands and 
 events. You can see this approach applied in the real world in 
