@@ -129,7 +129,7 @@ public class MessageBusSpec(ITestOutputHelper Output)
         public void given_external_producer_then_can_notify_eventAsync()
         {
     */
-    public async Task given_external_producer_then_can_notify_eventAsync()
+    public void given_external_producer_then_can_notify_eventAsync()
     {
         var producer = new Subject<ConcreteEvent>();
 
@@ -143,81 +143,81 @@ public class MessageBusSpec(ITestOutputHelper Output)
 
         bus.Observe<ConcreteEvent>().Subscribe(e => actual = e);
 
-        await bus.NotifyAsync(expected);
+        bus.Notify(expected);
 
         Assert.Equal(expected, actual);
     }
 
     [Fact]
-    public async Task when_subscribing_subject_then_succeedsAsync()
+    public void when_subscribing_subject_then_succeedsAsync()
     {
         int? value = default;
         bus.Observe<int>().Subscribe(i => value = i);
 
-        await bus.NotifyAsync(42);
+        bus.Notify(42);
 
         Assert.Equal(42, value);
     }
 
     [Fact]
-    public Task when_notifying_null_event_then_throws()
-        => Assert.ThrowsAsync<ArgumentNullException>(async () => await bus.NotifyAsync<object?>(null));
+    public void when_notifying_null_event_then_throws()
+        => Assert.Throws<ArgumentNullException>(() => bus.Notify<object?>(null));
 
     [Fact]
-    public async Task when_notifying_non_public_event_type_then_calls_subscriber()
+    public void when_notifying_non_public_event_type_then_calls_subscriber()
     {
         var called = false;
 
         bus.Observe<NonPublicEvent>().Subscribe(x => called = true);
 
-        await bus.NotifyAsync(new NonPublicEvent());
+        bus.Notify(new NonPublicEvent());
 
         Assert.True(called);
     }
 
     [Fact]
-    public async Task when_notifying_nested_non_public_event_type_then_calls_subscriber()
+    public void when_notifying_nested_non_public_event_type_then_calls_subscriber()
     {
         var called = false;
 
         bus.Observe<NestedEvent>().Subscribe(x => called = true);
 
-        await bus.NotifyAsync(new NestedEvent());
+        bus.Notify(new NestedEvent());
 
         Assert.True(called);
     }
 
     [Fact]
-    public async Task when_notifying_non_subscribed_event_then_does_not_call_subscriber()
+    public void when_notifying_non_subscribed_event_then_does_not_call_subscriber()
     {
         var called = false;
 
         using var subs = bus.Observe<ConcreteEvent>().Subscribe(c => called = true);
 
-        await bus.NotifyAsync(new AnotherEvent());
+        bus.Notify(new AnotherEvent());
 
         Assert.False(called);
     }
 
     [Fact]
-    public async Task when_notifying_subscribed_event_using_base_type_then_calls_derived_subscriber()
+    public void when_notifying_subscribed_event_using_base_type_then_calls_derived_subscriber()
     {
         var called = false;
         using var subscription = bus.Observe<ConcreteEvent>().Subscribe(c => called = true);
 
         BaseEvent e = new ConcreteEvent();
-        await bus.NotifyAsync(e);
+        bus.Notify(e);
 
         Assert.True(called);
     }
 
     [Fact]
-    public async Task when_subscribing_as_event_interface_then_calls_subscriber()
+    public void when_subscribing_as_event_interface_then_calls_subscriber()
     {
         var called = false;
         using var subs = bus.Observe<IBaseEvent>().Subscribe(c => called = true);
 
-        await bus.NotifyAsync(new ConcreteEvent());
+        bus.Notify(new ConcreteEvent());
 
         Assert.True(called);
     }
@@ -491,19 +491,15 @@ public class MessageBusSpec(ITestOutputHelper Output)
         bus.Execute(command);
 
         handler.Verify(x => x.Execute(command));
-
-        bus.Observe<ConcreteEvent>()
-            .Select(value => Observable.FromAsync(async () => await OnSolutionOpened(value)))
-            .Subscribe();
     }
 
-    async Task OnSolutionOpened(ConcreteEvent e)
+    void OnSolutionOpened(ConcreteEvent e)
     {
         // do something, perhaps execute some command?
         // bus.Execute(new MyCommand("Hello World"));
 
         // perhaps raise further events?
-        await bus.NotifyAsync(new ConcreteEvent());
+        bus.Notify(new ConcreteEvent());
     }
 
     [Fact]
@@ -543,7 +539,7 @@ public class MessageBusSpec(ITestOutputHelper Output)
     }
 
     [Fact]
-    public async Task when_notifying_can_access_event_from_activity_stop()
+    public void when_notifying_can_access_event_from_activity_stop()
     {
         Activity? activity = default;
         using var listener = new ActivityListener
@@ -559,7 +555,7 @@ public class MessageBusSpec(ITestOutputHelper Output)
 
         ActivitySource.AddActivityListener(listener);
 
-        await bus.NotifyAsync(new ConcreteEvent());
+        bus.Notify(new ConcreteEvent());
 
         Assert.NotNull(activity);
         Assert.IsType<ConcreteEvent>(activity.GetCustomProperty("Event"));

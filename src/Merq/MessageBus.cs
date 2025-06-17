@@ -324,7 +324,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
 #endif
 
     /// <inheritdoc/>
-    public ValueTask NotifyAsync<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
+    public void Notify<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
     {
         var type = (e ?? throw new ArgumentNullException(nameof(e))).GetType();
         using var activity = StartEventActivity(type, e, callerName, callerFile, callerLine);
@@ -371,8 +371,6 @@ public class MessageBus(IServiceProvider services) : IMessageBus
         {
             Publishing.Record(watch.ElapsedMilliseconds, new Tag("Event", type.FullName));
         }
-
-        return new ValueTask();
     }
 
     /// <summary>
