@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>true</ImplicitUsings>
     <!-- Allow inspection of generated code under obj -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -41,5 +41,9 @@
     <!-- Dependency otherwise brought-in by Merq.DependencyInjection for automated service discovery and registration at compile-time. -->
     <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
   </ItemGroup>
+
+  <!-- Simulates actually installing the analyzers -->
+  <Import Project="..\..\SponsorLink\SponsorLink\buildTransitive\Devlooped.Sponsors.targets" />
+  <Import Project="..\..\SponsorLink\SponsorLink.Analyzer.Tests.targets" />
 
 </Project>

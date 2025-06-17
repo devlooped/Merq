@@ -16,13 +16,12 @@
 
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
-    <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="$(TargetFramework) == 'netstandard2.0'" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Merq.CodeAnalysis\Merq.CodeAnalysis.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,7 +17,6 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
     <PackageReference Include="Superpower" PrivateAssets="all" />
@@ -34,5 +33,8 @@
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />
   </ItemGroup>
+
+  <Import Project="..\SponsorLink\SponsorLink\buildTransitive\Devlooped.Sponsors.targets" />
+  <Import Project="..\SponsorLink\SponsorLink.Analyzer.Tests.targets" />
 
 </Project>

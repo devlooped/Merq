@@ -24,7 +24,6 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Microsoft.Reactive.Testing" />
-    <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" />

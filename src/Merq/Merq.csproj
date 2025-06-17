@@ -16,9 +16,9 @@
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <PackageReference Include="ThisAssembly.AssemblyInfo" PrivateAssets="all" />
     <PackageReference Include="RxFree" PrivateAssets="all" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
   <ItemGroup>

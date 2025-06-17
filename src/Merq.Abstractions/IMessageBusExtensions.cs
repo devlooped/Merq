@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Merq;
 
@@ -13,30 +10,10 @@ namespace Merq;
 public static class IMessageBusExtensions
 {
     /// <summary>
-    /// Notifies the bus of an event.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Obsolete("Use await NotifyAsync instead.")]
-    public static void Notify<TEvent>(this IMessageBus bus, TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default)
-    {
-        var result = bus.NotifyAsync(e, callerName, callerFile, callerLine);
-        while (!result.IsCompleted)
-            Thread.SpinWait(1);
-    }
-
-    /// <summary>
     /// Notifies the bus of a new event instance of <typeparamref name="TEvent"/>.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Obsolete("Use await NotifyAsync instead.")]
     public static void Notify<TEvent>(this IMessageBus bus, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default) where TEvent : new()
         => bus.Notify(new TEvent(), callerName, callerFile, callerLine);
-
-    /// <summary>
-    /// Notifies the bus of a new event instance of <typeparamref name="TEvent"/>.
-    /// </summary>
-    public static ValueTask NotifyAsync<TEvent>(this IMessageBus bus, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default) where TEvent : new()
-        => bus.NotifyAsync(new TEvent(), callerName, callerFile, callerLine);
 
     /// <summary>
     /// Executes the given synchronous command.

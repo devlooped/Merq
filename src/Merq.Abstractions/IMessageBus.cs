@@ -103,7 +103,7 @@ public interface IMessageBus
     /// <param name="callerName">Optional calling member name, provided by default by the compiler.</param>
     /// <param name="callerFile">Optional calling file name, provided by default by the compiler.</param>
     /// <param name="callerLine">Optional calling line number, provided by default by the compiler.</param>
-    ValueTask NotifyAsync<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
+    void Notify<TEvent>(TEvent e, [CallerMemberName] string? callerName = default, [CallerFilePath] string? callerFile = default, [CallerLineNumber] int? callerLine = default);
 
     /// <summary>
     /// Observes the events of a given type <typeparamref name="TEvent"/>.
