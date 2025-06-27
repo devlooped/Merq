@@ -493,7 +493,6 @@ The versioning scheme for packages is:
 [![Justin Wendlandt](https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/jwendl.png "Justin Wendlandt")](https://github.com/jwendl)
 [![Adrian Alonso](https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/adalon.png "Adrian Alonso")](https://github.com/adalon)
 [![Michael Hagedorn](https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/Eule02.png "Michael Hagedorn")](https://github.com/Eule02)
-[![Matt Frear](https://raw.githubusercontent.com/devlooped/sponsors/main/.github/avatars/mattfrear.png "Matt Frear")](https://github.com/mattfrear)
 
 
 <!-- sponsors.md -->
