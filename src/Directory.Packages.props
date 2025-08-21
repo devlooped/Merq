@@ -1,40 +1,40 @@
 ﻿<Project>
   <ItemGroup>
     <PackageVersion Include="AutoMapper" Version="12.0.0" />
-    <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.3.0" />
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.4.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.14.0" />
     <PackageVersion Include="Devlooped.Dynamically" Version="1.1.1" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Merq.DependencyInjection" Version="2.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.8" />
     <PackageVersion Include="NuGetizer" Version="1.2.3" />
     <PackageVersion Include="IFluentInterface" Version="2.1.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.9.0" />
     <PackageVersion Include="Spectre.Console" Version="0.49.1" />
     <PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
-    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.8" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageVersion Include="ThisAssembly.AssemblyInfo" Version="2.0.14" />
     <PackageVersion Include="ThisAssembly.Project" Version="2.0.14" />
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
     <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
-    <PackageVersion Include="System.ComponentModel.Composition" Version="6.0.0" />
+    <PackageVersion Include="System.ComponentModel.Composition" Version="9.0.8" />
     <PackageVersion Include="PolySharp" Version="1.14.1" />
     <PackageVersion Include="SharpYaml" Version="2.1.1" />
     <PackageVersion Include="Scriban" Version="5.11.0" />
     <PackageVersion Include="Superpower" Version="3.0.0" />
     <PackageVersion Include="Devlooped.Extensions.DependencyInjection" Version="2.1.0" />
     <PackageVersion Include="RxFree" Version="1.1.3" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="9.0.8" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup Label="Tests">
