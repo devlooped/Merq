@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Threading.Tasks.Extensions" VersionOverride="4.6.3" />
     <ReferenceCopyLocalPaths Include="$(PkgSuperpower)\lib\netstandard2.0\Superpower.dll" />
   </ItemGroup>
 
