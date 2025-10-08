@@ -12,7 +12,7 @@
     <PackageVersion Include="IFluentInterface" Version="2.1.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.9.0" />
-    <PackageVersion Include="Spectre.Console" Version="0.49.1" />
+    <PackageVersion Include="Spectre.Console" Version="0.51.1" />
     <PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
