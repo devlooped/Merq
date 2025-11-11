@@ -369,7 +369,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
         }
         finally
         {
-            Publishing.Record(watch.ElapsedMilliseconds, new Tag("Event", type.FullName));
+            Sending.Record(watch.ElapsedMilliseconds, new Tag("Event", type.FullName));
         }
     }
 
