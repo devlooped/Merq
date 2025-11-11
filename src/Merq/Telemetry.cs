@@ -22,8 +22,8 @@ static class Telemetry
     /// <summary>
     /// Duration of event publishing by the Merq message bus.
     /// </summary>
-    public static Histogram<long> Publishing { get; } =
-        Meter.CreateHistogram<long>("Publishing", unit: "ms", description: "Duration of event publishing by the Merq message bus.");
+    public static Histogram<long> Sending { get; } =
+        Meter.CreateHistogram<long>("Sending", unit: "ms", description: "Duration of event sending by the Merq message bus.");
 
     static Telemetry()
     {
@@ -31,10 +31,10 @@ static class Telemetry
         events = Meter.CreateCounter<long>("Events", description: "Events published to the Merq message bus.");
     }
 
-    // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md#operation-names
+    // See https://opentelemetry.io/docs/specs/semconv/messaging/messaging-spans/#operation-types
     // publish:	A message is sent to a destination by a message producer/client.
     //          This would be the event being published to the bus. 
-    public const string Publish = "publish";
+    public const string Send = "send";
     // receive:	A message is received from a destination by a message consumer/server.
     //          This would be the event being received by an event handler via the OnNext on the Subject.
     public const string Receive = "receive";
@@ -47,20 +47,20 @@ static class Telemetry
         => StartActivity(type, Process, callerName, callerFile, callerLine, "Command", command);
 
     public static Activity? StartEventActivity(Type type, object @event, string? callerName, string? callerFile, int? callerLine)
-        => StartActivity(type, Publish, callerName, callerFile, callerLine, "Event", @event);
+        => StartActivity(type, Send, callerName, callerFile, callerLine, "Event", @event);
 
     public static Activity? StartActivity(Type type, string operation, string? callerName, string? callerFile, int? callerLine, string? property = default, object? value = default)
     {
-        if (operation == Publish)
+        if (operation == Send)
             events.Add(1, new KeyValuePair<string, object?>("Name", type.FullName));
         else if (operation == Process)
             commands.Add(1, new KeyValuePair<string, object?>("Name", type.FullName));
 
-        // Span name convention should be: <destination> <operation> (see https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md#span-name)
+        // Span name convention should be: {messaging.operation.name} {destination} (see https://opentelemetry.io/docs/specs/semconv/messaging/messaging-spans/#span-name)
         // Requirement is that the destination has low cardinality.
         // The event/command is the destination in our case, and the operation distinguishes
         // events (publish/receive operations) from commands (process operation).
-        var activity = tracer.CreateActivity($"{type.FullName} {operation}", ActivityKind.Producer)
+        var activity = tracer.CreateActivity($"{operation} {type.FullName}", ActivityKind.Producer)
             ?.SetTag("code.function", callerName)
             ?.SetTag("code.filepath", callerFile)
             ?.SetTag("code.lineno", callerLine)
@@ -91,7 +91,7 @@ static class Telemetry
             activity.SetTag("otel.status_code", "ERROR");
             activity.SetTag("otel.status_description", e.Message);
 
-            // See https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/exceptions.md
+            // See https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/
             activity.AddEvent(new ActivityEvent("exception", tags: new()
             {
                 { "exception.message", e.Message },
