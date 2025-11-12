@@ -47,7 +47,4 @@
     <CompilerVisibleProperty Include="DebugMerqAnalyzer" Condition="'$(BuildingInsideVisualStudio)' != true" />
   </ItemGroup>
 
-  <Import Project="..\SponsorLink\SponsorLink\buildTransitive\Devlooped.Sponsors.targets" />
-  <Import Project="..\SponsorLink\SponsorLink.Analyzer.Tests.targets" />
-
 </Project>

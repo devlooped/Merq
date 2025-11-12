@@ -4,6 +4,9 @@
     <Product>Merq</Product>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <NoWarn>NU1507;$(NoWarn)</NoWarn>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>OSMFEULA.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Label="StrongName">

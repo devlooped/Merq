@@ -42,8 +42,4 @@
     <PackageReference Include="Devlooped.Extensions.DependencyInjection" />
   </ItemGroup>
 
-  <!-- Simulates actually installing the analyzers -->
-  <Import Project="..\..\SponsorLink\SponsorLink\buildTransitive\Devlooped.Sponsors.targets" />
-  <Import Project="..\..\SponsorLink\SponsorLink.Analyzer.Tests.targets" />
-
 </Project>

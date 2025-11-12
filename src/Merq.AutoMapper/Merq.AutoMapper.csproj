@@ -26,4 +26,8 @@
     <PackageReference Include="AutoMapper" VersionOverride="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\osmfeula.txt" Link="osmfeula.txt" PackagePath="OSMFEULA.txt" />
+  </ItemGroup>
+  
 </Project>

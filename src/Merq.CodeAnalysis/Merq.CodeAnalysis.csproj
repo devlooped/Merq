@@ -11,13 +11,6 @@
     <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
 
-  <PropertyGroup Label="SponsorLink">
-    <CustomAfterMicrosoftCSharpTargets>$(MSBuildThisFileDirectory)..\SponsorLink\SponsorLink.Analyzer.targets</CustomAfterMicrosoftCSharpTargets>
-    <FundingPackageId>Merq;Merq.Abstractions;Merq.VisualStudio</FundingPackageId>
-    <FundingPrefix>MERQ</FundingPrefix>
-    <FundingGrace>30</FundingGrace>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
@@ -26,9 +19,5 @@
     <PackageReference Include="Superpower" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Pack="false" />
   </ItemGroup>
-
-  <Target Name="VerifySponsorLink" AfterTargets="Build">
-    <Error Condition="'$(SponsorLinkImported)' != 'true'" Text="SponsorLink was not imported." />
-  </Target>
 
 </Project>
