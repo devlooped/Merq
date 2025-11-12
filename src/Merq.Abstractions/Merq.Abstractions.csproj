@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <None Update="Merq.Abstractions.targets" PackFolder="build" />
+    <None Include="..\..\osmfeula.txt" Link="osmfeula.txt" PackagePath="OSMFEULA.txt" />
   </ItemGroup>
 
   <ItemGroup>

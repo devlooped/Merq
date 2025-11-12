@@ -17,8 +17,4 @@
     <ProjectReference Include="..\..\Merq.CodeFixes\Merq.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Simulates actually installing the analyzers -->
-  <Import Project="..\..\SponsorLink\SponsorLink\buildTransitive\Devlooped.Sponsors.targets" />
-  <Import Project="..\..\SponsorLink\SponsorLink.Analyzer.Tests.targets" />
-
 </Project>

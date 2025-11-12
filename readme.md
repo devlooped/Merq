@@ -2,10 +2,11 @@
 ================
 
 [![Version](https://img.shields.io/nuget/vpre/Merq.svg?color=royalblue)](https://www.nuget.org/packages/Merq)
-[![Downloads](https://img.shields.io/nuget/dt/Merq.svg?color=green)](https://www.nuget.org/packages/Merq)
-[![License](https://img.shields.io/github/license/devlooped/Merq.svg?color=blue)](https://github.com/devlooped/Merq/blob/main/license.txt)
+[![Downloads](https://img.shields.io/nuget/dt/Merq.svg?color=darkmagenta)](https://www.nuget.org/packages/Merq)
+[![EULA](https://img.shields.io/badge/EULA-OSMF-blue?labelColor=black&color=C9FF30)](osmfeula.txt)
+[![OSS](https://img.shields.io/github/license/devlooped/oss.svg?color=blue)](license.txt) 
 
-<!-- #core -->
+<!-- #core-title -->
 > **Mercury:** messenger of the Roman gods
 
 > *Mercury* > *Merq-ry* > **Merq** 
@@ -33,7 +34,9 @@ Clearly, in the case of VSCode, everything is in-process, but the benefits of
 a clean and predictable API are pretty obvious.
 
 *Merq* provides the same capabilities for .NET apps. 
-
+<!-- #core-title -->
+<!-- include https://github.com/devlooped/.github/raw/main/osmf.md -->
+<!-- #core -->
 ## Events
 
 Events can be any type, there is no restriction or interfaces you must implement.

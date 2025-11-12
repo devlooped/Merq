@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <InternalVisibleTo Include="Merq.Core.Tests" />
+    <None Include="..\..\osmfeula.txt" Link="osmfeula.txt" PackagePath="OSMFEULA.txt" />
   </ItemGroup>
 
 </Project>
