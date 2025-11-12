@@ -1,5 +1,20 @@
 # Changelog
 
+## [v3.0.0-beta](https://github.com/devlooped/Merq/tree/v3.0.0-beta) (2025-11-12)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v3.0.0-alpha...v3.0.0-beta)
+
+:hammer: Other:
+
+- 💟 Adopting SponsorLink in v3.0 [\#166](https://github.com/devlooped/Merq/issues/166)
+
+:twisted_rightwards_arrows: Merged:
+
+- Adopt Open Source Maintenance Fee, drop SponsorLink [\#448](https://github.com/devlooped/Merq/pull/448) (@kzu)
+- Align with latest messaging semantic conventions in OTEL [\#442](https://github.com/devlooped/Merq/pull/442) (@kzu)
+- Drop deprecated .NET6 [\#441](https://github.com/devlooped/Merq/pull/441) (@kzu)
+- Add specific targets for .NET8 to core and automapper [\#171](https://github.com/devlooped/Merq/pull/171) (@kzu)
+
 ## [v3.0.0-alpha](https://github.com/devlooped/Merq/tree/v3.0.0-alpha) (2025-06-17)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v2.0.0...v3.0.0-alpha)
