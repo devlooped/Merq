@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.0.0-rc](https://github.com/devlooped/Merq/tree/v3.0.0-rc) (2025-12-17)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v3.0.0-beta...v3.0.0-rc)
+
+:twisted_rightwards_arrows: Merged:
+
+- Switch to XML-based SLNX [\#463](https://github.com/devlooped/Merq/pull/463) (@kzu)
+
 ## [v3.0.0-beta](https://github.com/devlooped/Merq/tree/v3.0.0-beta) (2025-11-12)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v3.0.0-alpha...v3.0.0-beta)
