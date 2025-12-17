@@ -32,7 +32,6 @@ public class MessageBusSpec(ITestOutputHelper Output)
 
         var bus = new MessageBus(new ServiceCollection()
             .AddSingleton<IStreamCommandHandler<StreamCommand, int>>(handler)
-            .AddSingleton<ICanExecute<StreamCommand>>(handler)
             .BuildServiceProvider());
 
         Assert.True(bus.CanHandle(command));

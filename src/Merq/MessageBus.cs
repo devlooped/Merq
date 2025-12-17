@@ -26,8 +26,6 @@ namespace Merq;
 /// they implement.
 /// <para>
 /// Command handlers, in turn, need to be registered with:
-/// * <see cref="ICanExecute{TCommand}"/>: to properly respond to invocations of 
-/// <see cref="IMessageBus.CanExecute{TCommand}(TCommand)"/>
 /// * <see cref="ICommandHandler{TCommand}"/>, <see cref="ICommandHandler{TCommand, TResult}"/>, 
 /// <see cref="IAsyncCommandHandler{TCommand}"/> or <see cref="IAsyncCommandHandler{TCommand, TResult}"/> 
 /// according to the corresponding marker interface implemented by the <c>TCommand</c> 
