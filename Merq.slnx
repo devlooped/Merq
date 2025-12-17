@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Samples/">
+    <Project Path="src/Merq.Benchmarks/Merq.Benchmarks.csproj" />
+    <Project Path="src/Samples/ConsoleApp/ConsoleApp.csproj" />
+    <Project Path="src/Samples/Library1/Library1.csproj" />
+    <Project Path="src/Samples/Library2/Library2.csproj" />
+    <Project Path="src/Samples/Merq.Dynamically/Merq.Dynamically.csproj" />
+    <Project Path="src/Samples/Sample/Merq.Sample.csproj" />
+  </Folder>
+  <Project Path="src/Merq.Abstractions/Merq.Abstractions.csproj" />
+  <Project Path="src/Merq.AutoMapper/Merq.AutoMapper.csproj" />
+  <Project Path="src/Merq.CodeAnalysis.Tests/Merq.CodeAnalysis.Tests.csproj" />
+  <Project Path="src/Merq.CodeAnalysis/Merq.CodeAnalysis.csproj" />
+  <Project Path="src/Merq.CodeFixes/Merq.CodeFixes.csproj" />
+  <Project Path="src/Merq.Tests/Merq.Tests.csproj" />
+  <Project Path="src/Merq.VisualStudio.Tests/Merq.VisualStudio.Tests.csproj" />
+  <Project Path="src/Merq.VisualStudio/Merq.VisualStudio.csproj" />
+  <Project Path="src/Merq/Merq.csproj" />
+</Solution>
