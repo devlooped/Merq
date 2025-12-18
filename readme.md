@@ -377,6 +377,21 @@ using var tracer = Sdk
     .Build();
 ```
 
+For integration from a plain CLI app with Aspire (or whenever an OLTP endpoint is provided as an 
+environment variable), you can simplify it as:
+
+```csharp
+var builder = Host.CreateApplicationBuilder(args);
+
+if (!string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
+{
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(x => x.AddService("MyApp"))
+        .WithTracing(x => x.AddSource("Merq").AddOtlpExporter())
+        .WithMetrics(x => x.AddMeter("Merq").AddOtlpExporter());
+}
+```
+
 Collecting traces via [dotnet-trace](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace):
 
 ```shell
