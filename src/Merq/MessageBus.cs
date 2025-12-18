@@ -339,14 +339,16 @@ public class MessageBus(IServiceProvider services) : IMessageBus
             // We call all subjects that are compatible with
             // the event type, not just concrete event type subscribers.
             // Also adds as compatible the dynamic conversion ones.
-            var compatible = compatibleSubjects.GetOrAdd(type, eventType => subjects.Keys
-                .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
-                .Select(subjectEventType => subjects[subjectEventType])
-                .Concat(dynamicSubjects
-                    .GetOrAdd(type.FullName ?? type.Name, _ => new())
-                    .Where(pair => pair.Key != type && pair.Value != null)
-                    .Select(pair => pair.Value!))
-                .ToArray());
+            var compatible = compatibleSubjects.GetOrAdd(type, eventType =>
+            [
+                .. subjects.Keys
+                        .Where(subjectEventType => subjectEventType.IsAssignableFrom(eventType))
+                        .Select(subjectEventType => subjects[subjectEventType]),
+                .. dynamicSubjects
+                        .GetOrAdd(type.FullName ?? type.Name, _ => new())
+                        .Where(pair => pair.Key != type && pair.Value != null)
+                        .Select(pair => pair.Value!),
+            ]);
 
             foreach (var subject in compatible)
             {
@@ -407,9 +409,9 @@ public class MessageBus(IServiceProvider services) : IMessageBus
 
         // Merge with any externally-produced observables that are compatible
         if (dynamicSubject == null)
-            return new CompositeObservable<TEvent>(new[] { typedSubject }.Concat(producers).ToArray());
+            return new CompositeObservable<TEvent>([typedSubject, .. producers]);
         else
-            return new CompositeObservable<TEvent>(new[] { typedSubject, dynamicSubject }.Concat(producers).ToArray());
+            return new CompositeObservable<TEvent>([typedSubject, dynamicSubject, .. producers]);
     }
 
     /// <summary>
@@ -691,8 +693,7 @@ public class MessageBus(IServiceProvider services) : IMessageBus
     class CompositeObservable<T>(params IObservable<T>[] observables) : IObservable<T>
     {
         public IDisposable Subscribe(IObserver<T> observer)
-            => new CompositeDisposable(observables
-                .Select(observable => observable.Subscribe(observer)).ToArray());
+            => new CompositeDisposable([.. observables.Select(observable => observable.Subscribe(observer))]);
     }
 
     #endregion
