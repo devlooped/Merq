@@ -1,5 +1,14 @@
 # Changelog
 
+## [v3.0.0](https://github.com/devlooped/Merq/tree/v3.0.0) (2025-12-18)
+
+[Full Changelog](https://github.com/devlooped/Merq/compare/v3.0.0-rc...v3.0.0)
+
+:twisted_rightwards_arrows: Merged:
+
+- Modernize code using collection expressions [\#473](https://github.com/devlooped/Merq/pull/473) (@kzu)
+- Drop mention of ICanExecute registration [\#464](https://github.com/devlooped/Merq/pull/464) (@kzu)
+
 ## [v3.0.0-rc](https://github.com/devlooped/Merq/tree/v3.0.0-rc) (2025-12-17)
 
 [Full Changelog](https://github.com/devlooped/Merq/compare/v3.0.0-beta...v3.0.0-rc)
