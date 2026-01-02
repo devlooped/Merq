@@ -7,7 +7,7 @@
     <PackageVersion Include="Devlooped.Dynamically" Version="1.1.1" />
     <PackageVersion Include="MediatR" Version="13.1.0" />
     <PackageVersion Include="Merq.DependencyInjection" Version="2.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
     <PackageVersion Include="NuGetizer" Version="1.2.3" />
     <PackageVersion Include="IFluentInterface" Version="2.1.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
@@ -22,8 +22,8 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
     <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
@@ -34,7 +34,7 @@
     <PackageVersion Include="Superpower" Version="3.0.0" />
     <PackageVersion Include="Devlooped.Extensions.DependencyInjection" Version="2.2.1" />
     <PackageVersion Include="RxFree" Version="1.1.3" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.EventSource" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup Label="Tests">
