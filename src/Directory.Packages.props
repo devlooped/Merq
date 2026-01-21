@@ -14,7 +14,7 @@
     <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.9.0" />
     <PackageVersion Include="Spectre.Console" Version="0.54.0" />
     <PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.2" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="ThisAssembly.AssemblyInfo" Version="2.1.2" />
     <PackageVersion Include="ThisAssembly.Project" Version="2.0.14" />
@@ -27,7 +27,7 @@
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="Microsoft.VisualStudio.Shell.Framework" Version="17.3.32804.24" />
     <PackageVersion Include="Microsoft.VisualStudio.ComponentModelHost" Version="17.3.198" />
-    <PackageVersion Include="System.ComponentModel.Composition" Version="6.0.0" />
+    <PackageVersion Include="System.ComponentModel.Composition" Version="10.0.2" />
     <PackageVersion Include="PolySharp" Version="1.14.1" />
     <PackageVersion Include="SharpYaml" Version="2.1.1" />
     <PackageVersion Include="Scriban" Version="5.11.0" />
