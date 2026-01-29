@@ -1,7 +1,7 @@
 ﻿<Project>
   <ItemGroup>
     <PackageVersion Include="AutoMapper" Version="12.0.0" />
-    <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.5.0" />
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.6.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.15.8" />
     <PackageVersion Include="Devlooped.Dynamically" Version="1.1.1" />
