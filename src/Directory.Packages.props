@@ -10,8 +10,8 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
     <PackageVersion Include="NuGetizer" Version="1.2.3" />
     <PackageVersion Include="IFluentInterface" Version="2.1.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.16.0" />
     <PackageVersion Include="Spectre.Console" Version="0.54.0" />
     <PackageVersion Include="System.Composition.AttributedModel" Version="6.0.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
