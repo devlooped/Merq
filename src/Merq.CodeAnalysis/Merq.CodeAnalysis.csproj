@@ -18,6 +18,7 @@
     <PackageReference Include="Scriban" Pack="false" IncludeAssets="build" />
     <PackageReference Include="Superpower" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Pack="false" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" />
   </ItemGroup>
 
 </Project>
