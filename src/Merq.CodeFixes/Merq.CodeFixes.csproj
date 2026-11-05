@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Pack="false" />
     <PackageReference Include="PolySharp" Pack="false" />
     <PackageReference Include="Superpower" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" />
   </ItemGroup>
 
   <ItemGroup>
